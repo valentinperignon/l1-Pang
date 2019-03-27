@@ -12,8 +12,8 @@
     // context
     var context = null;
 
-    // personnage du jeu
-    var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
+    // player
+    var player = {position: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3};
 
     // ------------------------------
     //  Functions
@@ -35,6 +35,12 @@
         // écouteurs
         document.addEventListener("keydown", captureAppuiToucheClavier)
         document.addEventListener("keyup", captureRelacheToucheClavier)
+
+        // initialisation du joueur
+        player.height = 75;
+        player.width = 75;
+        player.position.x = context.width/2 - player.width/2;
+        player.position.y = context.height - player.height;
 
         // lancement de la boucle de jeu
         boucleDeJeu();
@@ -71,6 +77,10 @@
     render = function() {
         // effacement de l'écran
         context.clearRect(0, 0, context.width, context.height);
+
+        // affichage du joueur
+        context.fillStyle = "black";
+        context.fillRect(player.position.x, player.position.y, player.height, player.width);
     }
 
 
