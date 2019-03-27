@@ -7,12 +7,15 @@
     <script>
 
     var context = null;
+    
+    //
 
     // rectangle dans le jeu :
     var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
     
     // Ballon
-    var ballon = {centerX:0, centerY:0, radius:30, color:"red"};
+    var ballon = {center: {x: 0, y:0}, radius:30, velocity:{ x: 1, y: 0}, gravity: {x :0, y: 9.81*0.0001}, color:"red"};
+
 
     // initialisation (appelée au chargement du corps du document <body onload="init">)
     init = function() {
@@ -21,8 +24,10 @@
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
 
-        ballon.centerX = cvs.width/2;
-        ballon.centerY=  ballon.radius + 2;
+
+        // The ballon is in the middle top
+        ballon.center.x = cvs.width/2;
+        ballon.center.y =  ballon.radius + 2;
 
         // on associe au document des écouteurs d'événements
         // --> voir http://www.w3schools.com/js/js_events.asp
@@ -47,13 +52,51 @@
         requestAnimationFrame(boucleDeJeu);
     }
 
+    // KeepBallonWithinBorders()
+    function KeepBallonWithinBorders(ballon){
+        //Top
+        if(ballon.center.y < ballon.radius){
+            ballon.center.y = ballon.radius;
+            ballon.velocity.y = -ballon.velocity.y;
+        }
+        //Bottom
+        if(ballon.center.y > cvs.height - ballon.radius){
+            ballon.center.y = cvs.height - ballon.radius;
+            ballon.velocity.y = -ballon.velocity.y;
+        }
+        //Left
+        if(ballon.center.x < ballon.radius){
+            ballon.center.x = ballon.radius;
+            ballon.velocity.x = -ballon.velocity.x;
+        }
+        //Right
+        if(ballon.center.x > cvs.width-ballon.radius){
+            ballon.center.x = cvs.width - ballon.radius;
+            ballon.velocity.x = -ballon.velocity.x;
+        }
+        return(ballon);
+    }
 
+    var lastUpdate = Date.now();
     /**
      *  Mise à jour de l'état du jeu
      *  @param  d   date courante
      */
     update = function(d) {
+        var delta = d-lastUpdate;
+        
+        // Update ballon.velocity
+        ballon.velocity.x += ballon.gravity.x*delta;
+        ballon.velocity.y += ballon.gravity.y*delta;
 
+        // Update ballon.center
+        ballon.center.x += ballon.velocity.x * delta;
+        ballon.center.y += ballon.velocity.y * delta; 
+        
+        //KeepBallonWithinBorders()
+        KeepBallonWithinBorders(ballon);
+
+        lastUpdate = d;
     }
 
 
@@ -70,7 +113,7 @@
         var context = canvas.getContext("2d");
         context.beginPath();
         context.fillStyle=circle.color
-        context.arc(circle.centerX, circle.centerY, circle.radius, 0, 2 * Math.PI);
+        context.arc(circle.center.x, circle.center.y, circle.radius, 0, 2 * Math.PI);
         context.fill();
         }
          
