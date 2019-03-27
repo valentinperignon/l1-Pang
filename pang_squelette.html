@@ -3,15 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Carré, déplacement, obstacles, collisions</title>
+    <title>Pang</title>
     <script>
 
     var context = null;
 
-    // rectangle dans le jeu :
-    var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
+    // plateforme dans le jeu :
+    var rectangle = { x: 0, y: 0, width: 0, height:0, vertical: true, exist:true };
+	
+	var platform = [];
+	const PLATFORM_SIZE = 40;
+	var numLevel = 1;
 
-
+	// dernière mise à jour
+    var lastUpdate = 0;
+	
+	
     // initialisation (appelée au chargement du corps du document <body onload="init">)
     init = function() {
         // instanciation de la variable globale contenant le contexte
@@ -23,8 +30,29 @@
         // --> voir http://www.w3schools.com/js/js_events.asp
 
         // 2 écouteurs pour le clavier (appui/relâchement d'une touche)
-        document.addEventListener("keydown", captureAppuiToucheClavier)
-        document.addEventListener("keyup", captureRelacheToucheClavier)
+        document.addEventListener("keydown", captureAppuiToucheClavier);
+        document.addEventListener("keyup", captureRelacheToucheClavier);
+
+		//Creation des plateformes horizontale
+		
+		switch(numLevel){
+			case 1 :{
+				for (var i=0; i < 4; i++) {
+					do {
+						platform[i] = {
+										x: Math.floor(context.width-(i+1)*150),
+					      				y: Math.floor(context.height/2-100),				
+					        			width: PLATFORM_SIZE*2,
+					        			height: PLATFORM_SIZE,
+										vertical: false,
+										exist: true
+		   	         				}; 
+					} while (platform[i].x > context.width - platform[i].width ||
+		   	               platform[i].y > context.height - platform[i].height);
+				}
+			break;
+			}
+        }
 
         // lancement de la boucle de jeu
         boucleDeJeu();
@@ -48,7 +76,8 @@
      *  @param  d   date courante
      */
     update = function(d) {
-
+		var delta = d - lastUpdate;
+        lastUpdate = d;
     }
 
 
@@ -58,7 +87,14 @@
     render = function() {
         // effacement de l'écran
         context.clearRect(0, 0, context.width, context.height);
+	
+		// dessin des obstacles
+        context.fillStyle="black";
+        for (var i=0; i < platform.length; i++) {
+        	context.fillRect(platform[i].x, platform[i].y, platform[i].width, platform [i].height);
+        }
     }
+
 
 
     /**
@@ -77,6 +113,15 @@
     captureRelacheToucheClavier = function(event) {
   
     }
+	collision = function(rect1, rect2) {
+        return !(rect1.x+rect1.largeur <= rect2.x ||
+                 rect1.x >= rect2.x+rect2.largeur ||
+                 rect1.y+rect1.hauteur <= rect2.y ||
+                 rect1.y >= rect2.y+rect2.hauteur);
+	}
+	/************************ Fonctions perso*******************************/
+
+	
 
     </script>
 </head>
