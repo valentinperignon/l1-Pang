@@ -44,6 +44,24 @@
         }
     }
 
+    keepPlayerWithinBorder = function() {
+        if(player.position.x < 0) {
+            player.position.x = 0;
+        } else {
+            if(player.position.x > context.width-player.width) {
+                player.position.x = context.width-player.width
+            }
+        }
+
+        if(player.position.y < 0) {
+            player.position.y = 0;
+        } else {
+            if(player.position.y > context.height-player.height) {
+                player.position.y = context.height-player.height
+            }
+        }
+    }
+
     // ------------------------------
     //  Game
     // ------------------------------
@@ -99,6 +117,7 @@
         var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
         player.position.x = newPosXPlayer;
         player.position.y = newPosYPlayer;
+        keepPlayerWithinBorder();
 
         // time update
         lastUpdate = d;
