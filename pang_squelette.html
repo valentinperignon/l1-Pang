@@ -3,34 +3,33 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Jeu pang</title>
+    <title>Pang</title>
     <script>
 
     // ------------------------------
     //  Variables
     // ------------------------------
 
-    // context
+    // Context
     var context = null;
     
-    // Pause
-    var playing = true;
+    // Is the game running or not ?
+    var isOnFocus = true;
     var pause = false;
 
-    // rectangle dans le jeu :
-    var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
+    // A ballon
+    // With the position, the radius, the velocity and the gravity for this ballon. Plus his color because it is beautiful.
+    var ballon = {center: {x: 0, y:0}, radius:50, velocity:{ x: 1, y: 0}, gravity: {x :0, y: 9.81/1000}, color:"red"};
     
-    // Ballon
-    var ballon = {center: {x: 0, y:0}, radius:100, velocity:{ x: 1, y: 0}, gravity: {x :0, y: 9.81/1000}, color:"red"};
-    
-    //LastUpdate
+    // when did we update the game last time ?
     var lastUpdate = Date.now();
     
-    // player
+    // A beautiful player
+    // With his position, his speed, his size and his others variables
     var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3};
     const PLAYER_SPEED = 500;
 
-    // gravite
+    // gravity (thanks Newton)
     const GRAVITY = {x: 0, y: 9.81};
 
    
@@ -38,6 +37,7 @@
     //  Functions
     // ------------------------------
 
+    // Moving the player horizontally
     playerMove = function(move) {
         if(move == 39) {
             player.speed.x = PLAYER_SPEED;
@@ -54,6 +54,7 @@
         }
     }
 
+    // It does exactly what you expect
     keepPlayerWithinBorder = function() {
         if(player.position.x < 0) {
             player.position.x = 0;
@@ -72,70 +73,8 @@
         }
     }
 
-    // ------------------------------
-    //  Game
-    // ------------------------------
-
-    /**
-     * Initialisation
-     */
-    init = function() {
-        // instanciation de la variable globale contenant le contexte
-        context = document.getElementById("cvs").getContext("2d");
-        context.width = document.getElementById("cvs").width;
-        context.height = document.getElementById("cvs").height;
-
-        //Pause if 
-        document.body.onblur = function() {
-            playing = false;
-        }
-        document.body.onfocus = function() {
-            playing = true;
-        }
-
-
-        // The ballon is in the middle top
-        ballon.center.x = cvs.width/2;
-        ballon.center.y =  ballon.radius + 2;
-
-        // on associe au document des écouteurs d'événements
-        // --> voir http://www.w3schools.com/js/js_events.asp
-
-        // 2 écouteurs pour le clavier (appui/relâchement d'une touche)
-        // écouteurs
-        document.addEventListener("keydown", captureAppuiToucheClavier)
-        document.addEventListener("keyup", captureRelacheToucheClavier)
-
-        // initialisation du joueur
-        player.height = 75;
-        player.width = 75;
-        player.position.x = context.width/2 - player.width/2;
-        player.position.y = context.height - player.height;
-
-        // lancement de la boucle de jeu
-        boucleDeJeu();
-    }
-
-    /*
-     * Game loop
-     */
-    boucleDeJeu = function() {
-        var delta = Date.now()-lastUpdate;
-        lastUpdate = Date.now();
-
-        if(playing && !pause){
-            // mise à jour de l'état du jeu
-            update(delta);
-            // affichage de l'état du jeu
-            render();
-        }
-        // rappel de la boucle de jeu
-        //  http://www.html5canvastutorials.com/advanced/html5-canvas-animation-stage/
-        requestAnimationFrame(boucleDeJeu);
-    }
-
-    // KeepBallonWithinBorders()
-    function KeepBallonWithinBorders(ballon){
+    // It does exactly what you expect
+    function keepBallonWithinBorders(ballon){
         //Top
         if(ballon.center.y < ballon.radius){
             ballon.center.y = ballon.radius;
@@ -161,11 +100,85 @@
         return(ballon);
     }
 
+    // like FillRect, but for circles
+    function fillCircle(circle){
+        var canvas = document.getElementById("cvs");
+        var context = canvas.getContext("2d");
+        context.beginPath();
+        context.fillStyle=circle.color
+        context.arc(circle.center.x, circle.center.y, circle.radius, 0, 2 * Math.PI);
+        context.fill();
+    }
+
+    // ------------------------------
+    //  Game
+    // ------------------------------
+
+    /**
+    * Initialization of the game
+    */
+    init = function() {
+        // Initizalisation of the global var context
+        context = document.getElementById("cvs").getContext("2d");
+        context.width = document.getElementById("cvs").width;
+        context.height = document.getElementById("cvs").height;
+
+        //Pause if it is not on focus 
+        document.body.onblur = function() {
+            isOnFocus = false;
+        }
+        document.body.onfocus = function() {
+            isOnFocus = true;
+        }
+
+
+        // The ballon is in the middle top
+        ballon.center.x = cvs.width/2;
+        ballon.center.y =  ballon.radius + 2;
+
+        // 2 listeners on the keyboard (keyup and keydown)
+        document.addEventListener("keydown", captureKeyboardPress)
+        document.addEventListener("keyup", captureKeyboardReleased)
+
+        // initialization of the player
+        player.height = 75;
+        player.width = 75;
+        player.position.x = context.width/2 - player.width/2;
+        player.position.y = context.height - player.height;
+
+        // Go my little game loop, and never stop
+        gameLoop();
+    }
+
+    /**
+    * Game loop
+    */
+    gameLoop = function() {
+        var delta = Date.now()-lastUpdate;
+        lastUpdate = Date.now();
+        
+        // Run the game if it is not on pause
+        if(!isOnFocus || pause){
+            document.title = "Pang - en pause";
+        } else {
+            document.title = "Pang";
+            
+            // update of the game's state
+            update(delta);
+            // draw the game
+            render();
+        }
+        
+        requestAnimationFrame(gameLoop);
+    }
+
+    
+
   
     /**
-     *  Game update
-     *  @param  d   current date
-     */
+    *  Game update
+    *  @param delta the time between now and the last update
+    */
     update = function(delta) {
         
         // Update ballon.velocity
@@ -176,11 +189,11 @@
         ballon.center.x += ballon.velocity.x * delta;
         ballon.center.y += ballon.velocity.y * delta; 
         
-        //KeepBallonWithinBorders()
-        KeepBallonWithinBorders(ballon);
+        //No, you will not stick out
+        keepBallonWithinBorders(ballon);
    
 
-        // déplacement du personnage
+        // Move the player
         var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
         player.position.x = newPosXPlayer;
         player.position.y = newPosYPlayer;
@@ -188,42 +201,38 @@
     }
 
 
+
+
+
     /**
-     *  Game render
-     */
+    *  Game render
+    */
     render = function() {
-        // effacement de l'écran
+        // Wiping the screen
         context.clearRect(0, 0, context.width, context.height);
-        
-        // like FillRect, but for circles
-        function fillCircle(circle)        {
-        var canvas = document.getElementById("cvs");
-        var context = canvas.getContext("2d");
-        context.beginPath();
-        context.fillStyle=circle.color
-        context.arc(circle.center.x, circle.center.y, circle.radius, 0, 2 * Math.PI);
-        context.fill();
-        }
          
 
         // Ballon displaying
         fillCircle(ballon);
 
-        // affichage du joueur
+        // Drawing of the player
         context.fillStyle = "blue";
         context.fillRect(player.position.x, player.position.y, player.height, player.width);
     }
 
 
     /**
-     *  Key down event
-     */
-    captureAppuiToucheClavier = function(event) {
+    *  Key down event
+    */
+    captureKeyboardPress = function(event) {
         switch (event.keyCode) {
+            // Player1 left or right
             case 39:
             case 37:
                 playerMove(event.keyCode);
             break;
+
+            // P means pause or unpause
             case 80:
                 pause = !pause;
             break;
@@ -232,13 +241,15 @@
     }
 
     /**
-     *  Key up event
-     */
-    captureRelacheToucheClavier = function(event) {
+    *  Key up event
+    */
+    captureKeyboardReleased = function(event) {
         switch (event.keyCode) {
+            //Player1 left or right
             case 39:
             case 37:
                 playerStopMove(event.keyCode);
+            break;
         }
     }
 
@@ -247,7 +258,7 @@
 
 <body onload="init()">
 
-    <canvas id="cvs" width="1920" height="1080" style="margin: 10px auto; border: solid 1px #000;"></canvas>
+    <canvas id="cvs" width="800" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
 
 </body>
 
