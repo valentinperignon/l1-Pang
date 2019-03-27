@@ -6,6 +6,11 @@
     <title>Jeu pang</title>
     <script>
 
+    // ------------------------------
+    //  Variables
+    // ------------------------------
+
+    // context
     var context = null;
     
     // Pause
@@ -19,8 +24,60 @@
     
     //LastUpdate
     var lastUpdate = Date.now();
+    
+    // player
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3};
+    const PLAYER_SPEED = 500;
 
-    // initialisation (appelée au chargement du corps du document <body onload="init">)
+    // gravite
+    const GRAVITY = {x: 0, y: 9.81};
+
+   
+    // ------------------------------
+    //  Functions
+    // ------------------------------
+
+    playerMove = function(move) {
+        if(move == 39) {
+            player.speed.x = PLAYER_SPEED;
+        } else {
+            player.speed.x = -PLAYER_SPEED;
+        }
+    }
+
+    playerStopMove = function(move) {
+        if(move == 39) {
+            player.speed.x = 0;
+        } else {
+            player.speed.x = 0;
+        }
+    }
+
+    keepPlayerWithinBorder = function() {
+        if(player.position.x < 0) {
+            player.position.x = 0;
+        } else {
+            if(player.position.x > context.width-player.width) {
+                player.position.x = context.width-player.width
+            }
+        }
+
+        if(player.position.y < 0) {
+            player.position.y = 0;
+        } else {
+            if(player.position.y > context.height-player.height) {
+                player.position.y = context.height-player.height
+            }
+        }
+    }
+
+    // ------------------------------
+    //  Game
+    // ------------------------------
+
+    /**
+     * Initialisation
+     */
     init = function() {
         // instanciation de la variable globale contenant le contexte
         context = document.getElementById("cvs").getContext("2d");
@@ -44,14 +101,23 @@
         // --> voir http://www.w3schools.com/js/js_events.asp
 
         // 2 écouteurs pour le clavier (appui/relâchement d'une touche)
+        // écouteurs
         document.addEventListener("keydown", captureAppuiToucheClavier)
         document.addEventListener("keyup", captureRelacheToucheClavier)
+
+        // initialisation du joueur
+        player.height = 75;
+        player.width = 75;
+        player.position.x = context.width/2 - player.width/2;
+        player.position.y = context.height - player.height;
 
         // lancement de la boucle de jeu
         boucleDeJeu();
     }
 
-
+    /*
+     * Game loop
+     */
     boucleDeJeu = function() {
         var delta = Date.now()-lastUpdate;
         lastUpdate = Date.now();
@@ -63,7 +129,6 @@
             render();
         }
         // rappel de la boucle de jeu
-        // requestAnimationFrame est une fonction JS servant à pré-calculer le prochain affichage
         //  http://www.html5canvastutorials.com/advanced/html5-canvas-animation-stage/
         requestAnimationFrame(boucleDeJeu);
     }
@@ -97,8 +162,8 @@
 
   
     /**
-     *  Mise à jour de l'état du jeu
-     *  @param  d   date courante
+     *  Game update
+     *  @param  d   current date
      */
     update = function(delta) {
         
@@ -112,11 +177,19 @@
         
         //KeepBallonWithinBorders()
         KeepBallonWithinBorders(ballon);
+   
+
+        // déplacement du personnage
+        var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
+        player.position.x = newPosXPlayer;
+        player.position.y = newPosYPlayer;
+        keepPlayerWithinBorder();
+
     }
 
 
     /**
-     *  Fonction réalisant le rendu de l'état du jeu
+     *  Game render
      */
     render = function() {
         // effacement de l'écran
@@ -135,24 +208,33 @@
 
         // Ballon displaying
         fillCircle(ballon);
+
+        // affichage du joueur
+        context.fillStyle = "blue";
+        context.fillRect(player.position.x, player.position.y, player.height, player.width);
     }
 
 
     /**
-     *  Fonction appelée lorsqu'une touche du clavier est appuyée
-     *  Associée à l'événement "keyDown"
+     *  Key down event
      */
     captureAppuiToucheClavier = function(event) {
-        // pratique pour connaître les keyCode des touches du clavier :
-        //  --> http://www.cambiaresearch.com/articles/15/javascript-key-codes
+        switch (event.keyCode) {
+            case 39:
+            case 37:
+                playerMove(event.keyCode);
+        }
     }
 
     /**
-     *  Fonction appelée lorsqu'une touche du clavier est relâchée
-     *  Associée à l'événement "keyUp"
+     *  Key up event
      */
     captureRelacheToucheClavier = function(event) {
-  
+        switch (event.keyCode) {
+            case 39:
+            case 37:
+                playerStopMove(event.keyCode);
+        }
     }
 
     </script>
