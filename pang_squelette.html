@@ -10,7 +10,9 @@
 
     // rectangle dans le jeu :
     var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
-
+    
+    // Ballon
+    var ballon = {centreX:0, centreY:0, rayon:1}
 
     // initialisation (appelée au chargement du corps du document <body onload="init">)
     init = function() {
@@ -18,6 +20,9 @@
         context = document.getElementById("cvs").getContext("2d");
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
+
+        ballon.centreX = cvs.width/2;
+        ballon.centreY=  ballon.rayon + 2;
 
         // on associe au document des écouteurs d'événements
         // --> voir http://www.w3schools.com/js/js_events.asp
