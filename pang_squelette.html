@@ -5,24 +5,34 @@
     <meta charset="UTF-8">
     <title>Carré, déplacement, obstacles, collisions</title>
     <script>
+    // ------------------------------
+    //  Variables
+    // ------------------------------
 
+    // context
     var context = null;
 
-    // rectangle dans le jeu :
+    // personnage du jeu
     var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
 
+    // ------------------------------
+    //  Functions
+    // ------------------------------
 
-    // initialisation (appelée au chargement du corps du document <body onload="init">)
+    // ------------------------------
+    //  Game
+    // ------------------------------
+
+    /**
+     * Initialisation
+     */
     init = function() {
         // instanciation de la variable globale contenant le contexte
         context = document.getElementById("cvs").getContext("2d");
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
 
-        // on associe au document des écouteurs d'événements
-        // --> voir http://www.w3schools.com/js/js_events.asp
-
-        // 2 écouteurs pour le clavier (appui/relâchement d'une touche)
+        // écouteurs
         document.addEventListener("keydown", captureAppuiToucheClavier)
         document.addEventListener("keyup", captureRelacheToucheClavier)
 
@@ -30,14 +40,17 @@
         boucleDeJeu();
     }
 
-
+    /*
+     * Game loop
+     */
     boucleDeJeu = function() {
         // mise à jour de l'état du jeu
         update(Date.now());
+
         // affichage de l'état du jeu
         render();
+
         // rappel de la boucle de jeu
-        // requestAnimationFrame est une fonction JS servant à pré-calculer le prochain affichage
         //  http://www.html5canvastutorials.com/advanced/html5-canvas-animation-stage/
         requestAnimationFrame(boucleDeJeu);
     }
@@ -75,7 +88,7 @@
      *  Associée à l'événement "keyUp"
      */
     captureRelacheToucheClavier = function(event) {
-  
+
     }
 
     </script>
