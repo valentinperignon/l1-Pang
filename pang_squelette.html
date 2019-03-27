@@ -12,7 +12,7 @@
     var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
     
     // Ballon
-    var ballon = {centreX:0, centreY:0, rayon:1}
+    var ballon = {centerX:0, centerY:0, radius:30, color:"red"};
 
     // initialisation (appelée au chargement du corps du document <body onload="init">)
     init = function() {
@@ -21,8 +21,8 @@
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
 
-        ballon.centreX = cvs.width/2;
-        ballon.centreY=  ballon.rayon + 2;
+        ballon.centerX = cvs.width/2;
+        ballon.centerY=  ballon.radius + 2;
 
         // on associe au document des écouteurs d'événements
         // --> voir http://www.w3schools.com/js/js_events.asp
@@ -63,6 +63,20 @@
     render = function() {
         // effacement de l'écran
         context.clearRect(0, 0, context.width, context.height);
+        
+        // like FillRect, but for circles
+        function fillCircle(circle)        {
+        var canvas = document.getElementById("cvs");
+        var context = canvas.getContext("2d");
+        context.beginPath();
+        context.fillStyle=circle.color
+        context.arc(circle.centerX, circle.centerY, circle.radius, 0, 2 * Math.PI);
+        context.fill();
+        }
+         
+
+        // Ballon displaying
+        fillCircle(ballon);
     }
 
 
