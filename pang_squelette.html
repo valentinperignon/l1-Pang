@@ -15,6 +15,7 @@
     
     // Pause
     var playing = true;
+    var pause = false;
 
     // rectangle dans le jeu :
     var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
@@ -122,7 +123,7 @@
         var delta = Date.now()-lastUpdate;
         lastUpdate = Date.now();
 
-        if(playing){
+        if(playing && !pause){
             // mise à jour de l'état du jeu
             update(delta);
             // affichage de l'état du jeu
@@ -184,7 +185,6 @@
         player.position.x = newPosXPlayer;
         player.position.y = newPosYPlayer;
         keepPlayerWithinBorder();
-
     }
 
 
@@ -223,6 +223,11 @@
             case 39:
             case 37:
                 playerMove(event.keyCode);
+            break;
+            case 80:
+                pause = !pause;
+            break;
+
         }
     }
 
