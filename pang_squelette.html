@@ -30,7 +30,7 @@
 
     // A beautiful player
     // With his position, his speed, his size and his others variables
-    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, up: false, livesNumber: 3};
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, up: false, down: false, livesNumber: 3};
     const PLAYER_SPEED = 500;
 
     // gravity (thanks Newton)
@@ -84,6 +84,13 @@
         var indiceLadder = findLadder();
         if(indiceLadder != -1) {
             player.speed.y = -PLAYER_SPEED/2;
+        }
+    }
+
+    playerDown = function() {
+        var indiceLadder = findLadder();
+        if(indiceLadder != -1) {
+            player.speed.y = PLAYER_SPEED/2;
         }
     }
 
@@ -298,6 +305,14 @@
                 playerStopUp();
             }
         }
+        // Player down
+        if(player.down) {
+            playerDown();
+            if(findLadder() == -1) {
+                player.down = false;
+                playerStopUp();
+            }
+        }
     }
 
     /**
@@ -340,6 +355,9 @@
             // Player1 up or down
             case 38:
                 player.up = true;
+                break;
+            case 40:
+                player.down = true;
                 break;
 
             // 'P' means pause or unpause
