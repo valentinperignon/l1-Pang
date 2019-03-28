@@ -30,6 +30,9 @@
     var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3};
     const PLAYER_SPEED = 500;
 
+    // A incredible grappleHook
+    var grappleHook = {startposition:{x:0, y:0}, length:0, shooting:false};
+
     // gravity (thanks Newton)
     const GRAVITY = {x: 0, y: 9.81};
 
@@ -136,6 +139,70 @@
         context.fill();
     }
 
+    // Is the ballonX between the x and x + width of the rectangle ? Return boolean
+    // Inputs : ballon with x, rectangle with x and width
+    function isBetweenX(ballonPosition,rectangle){
+        return(ballonPosition.x > rectangle.x && ballonPosition.x < rectangle.x + rectangle.width)
+    }
+
+    // Shoot grapple hook
+    function shootGrappleHook(player){
+        if(grappleHook.shooting==false){
+            grappleHook.shooting = true;
+            grappleHook.startposition.x = player.position.x+player.width/2;
+            grappleHook.startposition.y = player.position.y+player.height;
+            grappleHook.length = 0;
+        }
+    }
+
+    // Delete grapple hook
+    function deleteGrappleHook(grappleHook){
+        grappleHook.shooting = false;
+        grappleHook.startposition = {x:0, y:0};
+        grappleHook.length = 0;
+    }
+
+    // Checking if the grapple hook should stop
+    function ifGrappleHookStopped(grappleHook){
+        
+        // Hit the top of the screen
+        if(grappleHook.startposition.y - grappleHook.length < 0){
+            deleteGrappleHook(grappleHook);
+        } else {
+
+            //Hit a platform
+            var isItHittingPlatform = false;
+
+            for(var i=0 ; i<platform.length ; i++){
+                if(platform[i].exist && isBetweenX(grappleHook.startposition,platform[i])){
+                    if(cvs.height - grappleHook.length < platform[i].y + platform[i].height){
+                        deleteGrappleHook(grappleHook);
+                        isItHittingPlatform = true;
+                        if(platform[i].isDestructible){
+                            platform[i].exist = false;
+                        }
+                    }
+                }
+            }
+
+            if(!isItHittingPlatform){
+                
+                //Hitting a balloon
+                var isItHittingBalloon = false;
+                
+                for(var i=0 ; i<1 ; i++){
+                    if(ballon.radius>0 && platform[i].exist){
+                        if(ballon.center.x-grappleHook.startposition.x < ballon.radius && ballon.center.y+ballon.radius > cvs.height-grappleHook.length){
+                            deleteGrappleHook(grappleHook);
+                            ballon.radius = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
     // ------------------------------
     //  Game
     // ------------------------------
@@ -147,6 +214,8 @@
 
 
 
+  
+	
     // initialisation (appelée au chargement du corps du document <body onload="init">)
     init = function() {
        // Initizalisation of the global var context
@@ -189,9 +258,9 @@
 				      				y: Math.floor(context.height/2-100),
 				        			width: PLATFORM_SIZE*2,
 				        			height: PLATFORM_SIZE,
-									vertical: false,
-                                    exist: true
-                    };
+                                    exist: true,
+                                    isDestructible: true
+                    };  
 				}
 			break;
 			}
@@ -245,17 +314,24 @@
     */
     update = function(delta) {
 
-        // Update ballon.velocity
-        ballon.velocity.x += ballon.gravity.x*delta;
-        ballon.velocity.y += ballon.gravity.y*delta;
+        if(ballon.radius>0){
+            // Update ballon.velocity
+            ballon.velocity.x += ballon.gravity.x*delta;
+            ballon.velocity.y += ballon.gravity.y*delta;
 
-        // Update ballon.center
-        ballon.center.x += ballon.velocity.x * delta * BALLON_SPEED;
-        ballon.center.y += ballon.velocity.y * delta * BALLON_SPEED;
+            // Update ballon.center
+            ballon.center.x += ballon.velocity.x * delta * BALLON_SPEED;
+            ballon.center.y += ballon.velocity.y * delta * BALLON_SPEED; 
+            
+            //No, you will not stick out
+            keepBallonWithinBorders(ballon);
+        }
 
-        //No, you will not stick out
-        keepBallonWithinBorders(ballon);
-
+        //Grapple hook will make a lot of damages
+        if(grappleHook.shooting==true){
+            grappleHook.length += 0.3 * delta ;
+        }
+        ifGrappleHookStopped(grappleHook);
 
         // Move the player
         var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
@@ -276,7 +352,9 @@
 
 
         // Ballon displaying
-        fillCircle(ballon);
+        if(ballon.radius>0){
+            fillCircle(ballon);
+        }
 
         // Drawing of the player
         context.fillStyle = "blue";
@@ -286,8 +364,14 @@
 		// platforms drawing
         context.fillStyle="black";
         for (var i=0; i < platform.length; i++) {
-        	context.fillRect(platform[i].x, platform[i].y, platform[i].width, platform [i].height);
+        	if(platform[i].exist){
+                context.fillRect(platform[i].x, platform[i].y, platform[i].width, platform [i].height);
+            }
         }
+
+        //grappleHook drawing
+        context.fillStyle="red";
+        context.fillRect(grappleHook.startposition.x,grappleHook.startposition.y,5,-grappleHook.length);
     }
 
 
@@ -306,6 +390,11 @@
             // P means pause or unpause
             case 80:
                 pause = !pause;
+            break;
+
+            // Space for fire the grapple hook
+            case 32:
+                shootGrappleHook(player);
             break;
 
         }
