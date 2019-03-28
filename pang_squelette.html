@@ -13,6 +13,9 @@
     // Context
     var context = null;
 
+    // Game state
+    var numLevel = 1;
+
     // Is the game running or not ?
     var isOnFocus = true;
     var pause = false;
@@ -27,7 +30,7 @@
 
     // A beautiful player
     // With his position, his speed, his size and his others variables
-    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3};
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, up: false, livesNumber: 3};
     const PLAYER_SPEED = 500;
 
     // gravity (thanks Newton)
@@ -36,7 +39,10 @@
     // platforms in the game
 	var platform = [];
 	const PLATFORM_SIZE = 40;
-	var numLevel = 1;
+
+    // ladder in the game
+    var ladders = [];
+    const LADDER_WIDTH = 90;
 
     // ------------------------------
     //  Functions
@@ -72,6 +78,39 @@
                 }
                 break;
         }
+    }
+
+    playerUp = function() {
+        var indiceLadder = findLadder();
+        if(indiceLadder != -1) {
+            player.speed.y = -PLAYER_SPEED/2;
+        }
+    }
+
+    playerStopUp = function() {
+        player.speed.y = 0;
+    }
+
+    findLadder = function() {
+        var i=0;
+        var find = false;
+
+        while(i<ladders.length && !find) {
+            if(player.position.y + player.height >= ladders[i].y + ladders[i].height && player.position.y + player.height >= ladders[i].y) {
+                if(player.position.x >= ladders[i].x && player.position.x + player.width <= ladders[i].x + ladders[i].width) {
+                    find = true;
+                } else {
+                    i++;
+                }
+            } else {
+                i++
+            }
+        }
+
+        if(i == ladders.length) {
+            i = -1;
+        }
+        return i;
     }
 
     /**
@@ -143,11 +182,6 @@
     /**
     * Initialization of the game
     */
-
-
-
-
-    // initialisation (appelée au chargement du corps du document <body onload="init">)
     init = function() {
        // Initizalisation of the global var context
         context = document.getElementById("cvs").getContext("2d");
@@ -162,39 +196,32 @@
             isOnFocus = true;
         }
 
-		//Creation des plateformes horizontale
+		// Creation des plateformes horizontale
 		switch(numLevel){
-			case 1 :{
+			case 1 :
 				for (var i=0; i < 4; i++) {
 					platform[i] = {
-									x: Math.floor(context.width-(i+1)*150-75),
-				      				y: Math.floor(context.height/2-100),
-				        			width: PLATFORM_SIZE*2,
-				        			height: PLATFORM_SIZE,
-									vertical: false,
-                                    exist: true
+						x: Math.floor(context.width-(i+1)*150-75),
+				      	y: Math.floor(context.height/2-100),
+				        width: PLATFORM_SIZE*2,
+				        height: PLATFORM_SIZE,
+						vertical: false,
+                        exist: true
                     };
 				}
 			break;
-			}
         }
 
-
-		//Creation des plateformes horizontale
+        // Creation des échelles
 		switch(numLevel){
-			case 1 :{
-				for (var i=0; i < 4; i++) {
-					platform[i] = {
-									x: Math.floor(context.width-(i+1)*150-75),
-				      				y: Math.floor(context.height/2-100),
-				        			width: PLATFORM_SIZE*2,
-				        			height: PLATFORM_SIZE,
-									vertical: false,
-                                    exist: true
-                    };
-				}
+			case 1 :
+				ladders[0] = {
+					x: 10,
+		     		y: context.height - 100,
+		 			width: LADDER_WIDTH,
+		      		height: 100,
+                };
 			break;
-			}
         }
 
         // The ballon is in the middle top
@@ -235,9 +262,7 @@
         }
 
         requestAnimationFrame(gameLoop);
-
     }
-
 
     /**
     *  Game update
@@ -256,7 +281,6 @@
         //No, you will not stick out
         keepBallonWithinBorders(ballon);
 
-
         // Move the player
         var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
         var newSpdXPlayer = player.speed.x + GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + GRAVITY.y*delta/1000;
@@ -265,6 +289,15 @@
         player.speed.x = newSpdXPlayer;
         player.speed.y = newSpdYPlayer;
         keepPlayerWithinBorder();
+
+        // Player up
+        if(player.up) {
+            playerUp();
+            if(findLadder() == -1) {
+                player.up = false;
+                playerStopUp();
+            }
+        }
     }
 
     /**
@@ -274,23 +307,24 @@
         // Wiping the screen
         context.clearRect(0, 0, context.width, context.height);
 
-
         // Ballon displaying
         fillCircle(ballon);
-
-        // Drawing of the player
-        context.fillStyle = "blue";
-        context.fillRect(player.position.x, player.position.y, player.height, player.width);
-
 
 		// platforms drawing
         context.fillStyle="black";
         for (var i=0; i < platform.length; i++) {
         	context.fillRect(platform[i].x, platform[i].y, platform[i].width, platform [i].height);
         }
+
+        // ladders drawing
+        for (var i=0; i < ladders.length; i++) {
+        	context.fillRect(ladders[i].x, ladders[i].y, ladders[i].width, ladders[i].height);
+        }
+
+        // Drawing of the player
+        context.fillStyle = "blue";
+        context.fillRect(player.position.x, player.position.y, player.height, player.width);
     }
-
-
 
     /**
     *  Key down event
@@ -301,13 +335,17 @@
             case 39:
             case 37:
                 playerMove(event.keyCode);
-            break;
+                break;
 
-            // P means pause or unpause
+            // Player1 up or down
+            case 38:
+                player.up = true;
+                break;
+
+            // 'P' means pause or unpause
             case 80:
                 pause = !pause;
-            break;
-
+                break;
         }
     }
 
@@ -320,25 +358,9 @@
             case 39:
             case 37:
                 playerStopMove(event.keyCode);
-            break;
+                break;
         }
     }
-	collision = function(rect1, rect2) {
-        return !(rect1.x+rect1.largeur <= rect2.x ||
-                 rect1.x >= rect2.x+rect2.largeur ||
-                 rect1.y+rect1.hauteur <= rect2.y ||
-                 rect1.y >= rect2.y+rect2.hauteur);
-	}
-
-
-
-
-	collision = function(rect1, rect2) {
-        return !(rect1.x+rect1.largeur <= rect2.x ||
-                 rect1.x >= rect2.x+rect2.largeur ||
-                 rect1.y+rect1.hauteur <= rect2.y ||
-                 rect1.y >= rect2.y+rect2.hauteur);
-	}
     </script>
 </head>
 <body onload="init()">
