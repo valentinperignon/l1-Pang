@@ -38,17 +38,14 @@
 		switch(numLevel){
 			case 1 :{
 				for (var i=0; i < 4; i++) {
-					do {
-						platform[i] = {
-										x: Math.floor(context.width-(i+1)*150),
-					      				y: Math.floor(context.height/2-100),				
-					        			width: PLATFORM_SIZE*2,
-					        			height: PLATFORM_SIZE,
-										vertical: false,
-										exist: true
-		   	         				}; 
-					} while (platform[i].x > context.width - platform[i].width ||
-		   	               platform[i].y > context.height - platform[i].height);
+					platform[i] = {
+									x: Math.floor(context.width-(i+1)*150-75),
+				      				y: Math.floor(context.height/2-100),				
+				        			width: PLATFORM_SIZE*2,
+				        			height: PLATFORM_SIZE,
+									vertical: false,
+                                    exist: true
+                    };  
 				}
 			break;
 			}
