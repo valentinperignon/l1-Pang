@@ -160,6 +160,9 @@
                     if(cvs.height - grappleHook.length < platform[i].y + platform[i].height){
                         deleteGrappleHook(grappleHook);
                         isItHittingPlatform = true;
+                        if(platform[i].isDestructible){
+                            platform[i].exist = false;
+                        }
                     }
                 }
             }
@@ -170,7 +173,7 @@
                 var isItHittingBalloon = false;
                 
                 for(var i=0 ; i<1 ; i++){
-                    if(ballon.radius>0){
+                    if(ballon.radius>0 && platform[i].exist){
                         if(ballon.center.x-grappleHook.startposition.x < ballon.radius && ballon.center.y+ballon.radius > cvs.height-grappleHook.length){
                             deleteGrappleHook(grappleHook);
                             ballon.radius = 0;
@@ -218,8 +221,8 @@
 				      				y: Math.floor(context.height/2-100),				
 				        			width: PLATFORM_SIZE*2,
 				        			height: PLATFORM_SIZE,
-									vertical: false,
-                                    exist: true
+                                    exist: true,
+                                    isDestructible: true
                     };  
 				}
 			break;
@@ -324,7 +327,9 @@
 		// platforms drawing
         context.fillStyle="black";
         for (var i=0; i < platform.length; i++) {
-        	context.fillRect(platform[i].x, platform[i].y, platform[i].width, platform [i].height);
+        	if(platform[i].exist){
+                context.fillRect(platform[i].x, platform[i].y, platform[i].width, platform [i].height);
+            }
         }
 
         //grappleHook drawing
