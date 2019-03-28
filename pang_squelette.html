@@ -20,7 +20,7 @@
     // Is the game running or not ?
     var isOnFocus = true;
     var pause = false;
-
+    var victory = false;
 
     // An array of aaaaall the balloons in the game
     // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
@@ -248,6 +248,19 @@
         context.fill();
     }
 
+    // Detect the victory (= no balloon remaining)
+    function isVictory(){
+        var isOneBalloonRemaining = false;
+        var i=0
+        while(i<balloons.length && !isOneBalloonRemaining){
+            if(balloons[i].radius > 0){
+                isOneBalloonRemaining = true;
+            }
+            i++;
+        }
+        return(!isOneBalloonRemaining);
+    }
+
     // Is the balloonX between the x and x + width of the rectangle ? Return boolean
     // Inputs : balloon with x, rectangle with x and width
     function isBetweenX(balloonPosition,rectangle){
@@ -361,6 +374,9 @@
         return(!(Math.pow(ball1.radius + ball2.radius, 2) <= Math.pow(ball1.center.x - ball2.center.x, 2) + Math.pow(ball1.center.y - ball2.center.y, 2)));
     }
 
+
+
+
     // ------------------------------
     //  Game
     // ------------------------------
@@ -374,6 +390,7 @@
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
 
+
         //Pause if it is not on focus
         document.body.onblur = function() {
             isOnFocus = false;
@@ -382,7 +399,7 @@
             isOnFocus = true;
         }
 
-        // Creation des échelles
+        // Create the ladders
         switch(numLevel){
             case 1 :
                 ladders[0] = {
@@ -418,6 +435,11 @@
         // Run the game if it is not on pause
         if(!isOnFocus || pause){
             document.title = "Pang - en pause";
+        } else if(victory){
+            document.title = "Pang - gagné !";
+            // draw the game
+            render();
+
         } else {
             document.title = "Pang";
 
@@ -493,6 +515,11 @@
                 playerStopUp();
             }
         }
+
+        //Detect the victory
+        if(isVictory()){
+            victory = true;
+        }
     }
 
     /**
@@ -530,6 +557,16 @@
         // Drawing of the player
         context.fillStyle = "blue";
         context.fillRect(player.position.x, player.position.y, player.height, player.width);
+
+        // Victory screen
+        if(victory){
+            context.fillStyle = "green";
+            context.fillRect(cvs.width/5,cvs.height/5,cvs.width/5*3,cvs.height/5*3);
+            context.fillStyle = "black";
+            context.font = '48px serif';
+            context.textAlign = "center";
+            context.fillText("Et c'est gagné !", cvs.width/2, cvs.height/2);
+        }
     }
 
     /**
@@ -541,26 +578,31 @@
             case 39:
             case 37:
                 playerMove(event.keyCode);
-                break;
+            break;
 
             // Player1 up or down
             case 38:
                 player.up = true;
-                break;
+            break;
+            
             case 40:
                 player.down = true;
-                break;
+            break;
 
             // 'P' means pause or unpause
             case 80:
                 pause = !pause;
-                break;
+            break;
 
             // Space for fire the grapple hook
             case 32:
                 shootGrappleHook(player);
-                break;
+            break;
 
+            //Shortcut to victory                                                                       // BETA FUNCTION
+            case 71:
+                victory = true;
+            break;
         }
     }
 
