@@ -20,6 +20,7 @@
     // A ballon
     // With the position, the radius, the velocity and the gravity for this ballon. Plus his color because it is beautiful.
     var ballon = {center: {x: 0, y:0}, radius:50, velocity:{ x: 1, y: 0}, gravity: {x :0, y: 9.81/1000}, color:"red"};
+    const BALLON_SPEED = 0.2;
 
     // when did we update the game last time ?
     var lastUpdate = Date.now();
@@ -32,29 +33,50 @@
     // gravity (thanks Newton)
     const GRAVITY = {x: 0, y: 9.81};
 
+    // platforms in the game
+	var platform = [];
+	const PLATFORM_SIZE = 40;
+	var numLevel = 1;
 
     // ------------------------------
     //  Functions
     // ------------------------------
 
-    // Moving the player horizontally
+    /**
+     * Moving the player (horizontally)
+     */
     playerMove = function(move) {
-        if(move == 39) {
-            player.speed.x = PLAYER_SPEED;
-        } else {
-            if(move == 37) {
+        switch (move) {
+            case 39:
+                player.speed.x = PLAYER_SPEED;
+                break;
+            case 37:
                 player.speed.x = -PLAYER_SPEED;
-            }
+                break;
         }
     }
 
+    /**
+     * Stop the player's movement (horizontally)
+     */
     playerStopMove = function(move) {
-        if(move == 39 || move == 37) {
-            player.speed.x = 0;
+        switch (move) {
+            case 39:
+                if(player.speed.x > 0) {
+                    player.speed.x = 0;
+                }
+                break;
+            case 37:
+                if(player.speed.x < 0) {
+                    player.speed.x = 0;
+                }
+                break;
         }
     }
 
-    // It does exactly what you expect
+    /**
+     * It does exactly what you expect
+     */
     keepPlayerWithinBorder = function() {
         if(player.position.x < 0) {
             player.position.x = 0;
@@ -73,7 +95,9 @@
         }
     }
 
-    // It does exactly what you expect
+    /**
+     * It does exactly what you expect
+     */
     function keepBallonWithinBorders(ballon){
         //Top
         if(ballon.center.y < ballon.radius){
@@ -100,7 +124,9 @@
         return(ballon);
     }
 
-    // like FillRect, but for circles
+    /**
+     * Like FillRect, but for circles
+     */
     function fillCircle(circle){
         var canvas = document.getElementById("cvs");
         var context = canvas.getContext("2d");
@@ -118,7 +144,7 @@
     * Initialization of the game
     */
     init = function() {
-        // Initizalisation of the global var context
+       // Initizalisation of the global var context
         context = document.getElementById("cvs").getContext("2d");
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
@@ -131,6 +157,22 @@
             isOnFocus = true;
         }
 
+		//Creation des plateformes horizontale
+		switch(numLevel){
+			case 1 :{
+				for (var i=0; i < 4; i++) {
+					platform[i] = {
+									x: Math.floor(context.width-(i+1)*150-75),
+				      				y: Math.floor(context.height/2-100),
+				        			width: PLATFORM_SIZE*2,
+				        			height: PLATFORM_SIZE,
+									vertical: false,
+                                    exist: true
+                    };
+				}
+			break;
+			}
+        }
 
         // The ballon is in the middle top
         ballon.center.x = cvs.width/2;
@@ -170,7 +212,9 @@
         }
 
         requestAnimationFrame(gameLoop);
+
     }
+
 
     /**
     *  Game update
@@ -183,8 +227,8 @@
         ballon.velocity.y += ballon.gravity.y*delta;
 
         // Update ballon.center
-        ballon.center.x += ballon.velocity.x * delta;
-        ballon.center.y += ballon.velocity.y * delta;
+        ballon.center.x += ballon.velocity.x * delta * BALLON_SPEED;
+        ballon.center.y += ballon.velocity.y * delta * BALLON_SPEED;
 
         //No, you will not stick out
         keepBallonWithinBorders(ballon);
@@ -207,12 +251,20 @@
         // Wiping the screen
         context.clearRect(0, 0, context.width, context.height);
 
+
         // Ballon displaying
         fillCircle(ballon);
 
         // Drawing of the player
         context.fillStyle = "blue";
         context.fillRect(player.position.x, player.position.y, player.height, player.width);
+
+
+		// platforms drawing
+        context.fillStyle="black";
+        for (var i=0; i < platform.length; i++) {
+        	context.fillRect(platform[i].x, platform[i].y, platform[i].width, platform [i].height);
+        }
     }
 
     /**
@@ -247,13 +299,17 @@
         }
     }
 
+	collision = function(rect1, rect2) {
+        return !(rect1.x+rect1.largeur <= rect2.x ||
+                 rect1.x >= rect2.x+rect2.largeur ||
+                 rect1.y+rect1.hauteur <= rect2.y ||
+                 rect1.y >= rect2.y+rect2.hauteur);
+	}
     </script>
 </head>
-
 <body onload="init()">
 
     <canvas id="cvs" width="800" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
 
 </body>
-
 </html>
