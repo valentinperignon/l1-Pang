@@ -203,6 +203,19 @@
         return i;
     }
 
+    isNotOnPlatformOrGround = function() {
+        isNot = false;
+
+        if(player.position.y + player.height < context.height) { // not on the ground
+            if(findLadder() == -1) { // not on the ladder
+                // TODO ajouter le cas où il n'est pas sur une plateforme
+                isNot = true;
+            }
+        }
+
+        return isNot;
+    }
+
     /**
      * It does exactly what you expect
      */
