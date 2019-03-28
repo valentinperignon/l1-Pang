@@ -46,8 +46,9 @@
 
     // A beautiful player
     // With his position, his speed, his size and his others variables
-    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, up: false, down: false, livesNumber: 3};
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3};
     const PLAYER_SPEED = 500;
+    var isGravity = 0;
 
     // A incredible grappleHook
     var grappleHook = {position:{x:0, y:0}, length:0, shooting:false};
@@ -61,20 +62,20 @@
             {
                 "position":{
                     "x": 575,
-                    "y": 200
+                    "y": 300
                 },
                 "width": 80,
-                "height": 40,
+                "height": 30,
                 "vertical": false,
                 "exist": true
             },
             {
                 "position":{
-                    "x": 425,
+                    "x": 460,
                     "y": 200
                 },
                 "width": 80,
-                "height": 40,
+                "height": 30,
                 "vertical": false,
                 "exist": true
             },
@@ -84,17 +85,17 @@
                     "y": 200
                 },
                 "width": 80,
-                "height": 40,
+                "height": 30,
                 "vertical": false,
                 "exist": true
             },
             {
                 "position":{
                     "x": 125,
-                    "y": 200
+                    "y": 400
                 },
                 "width": 80,
-                "height": 40,
+                "height": 30,
                 "vertical": false,
                 "exist": true
             }
@@ -108,11 +109,11 @@
         "level1": [
             {
                 "position":{
-                    "x": 10,
-                    "y": 500
+                    "x": 35,
+                    "y": 400
                 },
                 "width": LADDER_WIDTH,
-                "height": 100,
+                "height": 200,
             }
         ]
     };
@@ -155,29 +156,25 @@
     }
 
     /**
-     * Moving the player (up)
+     * Moving the player (with ladders)
      */
-    playerUp = function() {
-        var indiceLadder = findLadder();
-        if(indiceLadder != -1) {
-            player.speed.y = -PLAYER_SPEED/2;
+    playerMoveLadder = function(move) {
+        if(findLadder() != -1) {
+            switch(move) {
+                case 38:
+                    player.speed.y = -PLAYER_SPEED;
+                    break;
+                case 40:
+                    player.speed.y = PLAYER_SPEED;
+                    break;
+            }
         }
     }
 
     /**
-     * Moving the player (down)
+     * Stop the player's movement (with ladders)
      */
-    playerDown = function() {
-        var indiceLadder = findLadder();
-        if(indiceLadder != -1) {
-            player.speed.y = PLAYER_SPEED/2;
-        }
-    }
-
-    /**
-     * Stop the player's movement (vertically)
-     */
-    playerStopUp = function() {
+    playerStopMoveLadder = function() {
         player.speed.y = 0;
     }
 
@@ -189,8 +186,8 @@
         var find = false;
 
         while(i<ladders.length && !find) {
-            if(player.position.y + player.height <= ladders[i].position.y + ladders[i].height && player.position.y + player.height >= ladders[i].position.y) {
-                if(player.position.x >= ladders[i].position.x && player.position.x + player.width <= ladders[i].position.x + ladders[i].width) {
+            if(player.position.x >= ladders[i].position.x - 0.33*player.width && player.position.x <= ladders[i].position.x + ladders[i].width - 0.66*player.width) {
+                if(player.position.y >= ladders[i].position.y - 1.1*player.height && player.position.y <= context.height) {
                     find = true;
                 } else {
                     i++;
@@ -574,7 +571,6 @@
     *  @param delta the time between now and the last update
     */
     update = function(delta) {
-
         for(var i=0 ; i<balloons.length ; i++){
             if(balloons[i].radius>0){
                 // Update balloons[i].velocity
@@ -616,31 +612,21 @@
         }
         ifGrappleHookStopped(grappleHook);
 
-        // Move the player
+        // New player's position
         var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
-        var newSpdXPlayer = player.speed.x + GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + GRAVITY.y*delta/1000;
+        var newSpdXPlayer = player.speed.x + isGravity*GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + isGravity*GRAVITY.y*delta/1000;
+        if(findLadder() != -1) {
+            if(newPosYPlayer + player.height < ladders[findLadder()].position.y) {
+                newPosYPlayer = ladders[findLadder()].position.y - player.height;
+            }
+        }
+
+        // Update player
         player.position.x = newPosXPlayer;
         player.position.y = newPosYPlayer;
         player.speed.x = newSpdXPlayer;
         player.speed.y = newSpdYPlayer;
         keepPlayerWithinBorder();
-
-        // Player up
-        if(player.up) {
-            playerUp();
-            if(findLadder() == -1) {
-                player.up = false;
-                playerStopUp();
-            }
-        }
-        // Player down
-        if(player.down) {
-            playerDown();
-            if(findLadder() == -1) {
-                player.down = false;
-                playerStopUp();
-            }
-        }
 
         //Detect the victory
         if(isVictory()){
@@ -704,31 +690,28 @@
             case 39:
             case 37:
                 playerMove(event.keyCode);
-            break;
+                break;
 
             // Player1 up or down
             case 38:
-                player.up = true;
-            break;
-
             case 40:
-                player.down = true;
-            break;
+                playerMoveLadder(event.keyCode);
+                break;
 
             // 'P' means pause or unpause
             case 80:
                 pause = !pause;
-            break;
+                break;
 
             // Space for fire the grapple hook
             case 32:
                 shootGrappleHook(player);
-            break;
+                break;
 
-            //Shortcut to victory                                                                       // BETA FUNCTION
+            // Shortcut to victory                                                                       // BETA FUNCTION
             case 71:
                 victory = true;
-            break;
+                break;
         }
     }
 
@@ -742,6 +725,9 @@
             case 37:
                 playerStopMove(event.keyCode);
                 break;
+            case 38:
+            case 40:
+                playerStopMoveLadder();
         }
     }
     </script>
