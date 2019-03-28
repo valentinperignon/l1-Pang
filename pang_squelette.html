@@ -12,7 +12,7 @@
 
     // Context
     var context = null;
-    
+
     // Is the game running or not ?
     var isOnFocus = true;
     var pause = false;
@@ -24,7 +24,7 @@
 
     // when did we update the game last time ?
     var lastUpdate = Date.now();
-    
+
     // A beautiful player
     // With his position, his speed, his size and his others variables
     var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3};
@@ -33,24 +33,25 @@
     // gravity (thanks Newton)
     const GRAVITY = {x: 0, y: 9.81};
 
-   
+
     // ------------------------------
     //  Functions
     // ------------------------------
 
     // Moving the player horizontally
     playerMove = function(move) {
+
         if(move == 39) {
             player.speed.x = PLAYER_SPEED;
         } else {
-            player.speed.x = -PLAYER_SPEED;
+            if(move == 37) {
+                player.speed.x = -PLAYER_SPEED;
+            }
         }
     }
 
     playerStopMove = function(move) {
-        if(move == 39) {
-            player.speed.x = 0;
-        } else {
+        if(move == 39 || move == 37) {
             player.speed.x = 0;
         }
     }
@@ -124,7 +125,7 @@
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
 
-        //Pause if it is not on focus 
+        //Pause if it is not on focus
         document.body.onblur = function() {
             isOnFocus = false;
         }
@@ -157,31 +158,28 @@
     gameLoop = function() {
         var delta = Date.now()-lastUpdate;
         lastUpdate = Date.now();
-        
+
         // Run the game if it is not on pause
         if(!isOnFocus || pause){
             document.title = "Pang - en pause";
         } else {
             document.title = "Pang";
-            
+
             // update of the game's state
             update(delta);
             // draw the game
             render();
         }
-        
+
         requestAnimationFrame(gameLoop);
     }
 
-    
-
-  
     /**
     *  Game update
     *  @param delta the time between now and the last update
     */
     update = function(delta) {
-        
+
         // Update ballon.velocity
         ballon.velocity.x += ballon.gravity.x*delta;
         ballon.velocity.y += ballon.gravity.y*delta;
@@ -192,18 +190,17 @@
         
         //No, you will not stick out
         keepBallonWithinBorders(ballon);
-   
+
 
         // Move the player
         var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
+        var newSpdXPlayer = player.speed.x + GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + GRAVITY.y*delta/1000;
         player.position.x = newPosXPlayer;
         player.position.y = newPosYPlayer;
+        player.speed.x = newSpdXPlayer;
+        player.speed.y = newSpdYPlayer;
         keepPlayerWithinBorder();
     }
-
-
-
-
 
     /**
     *  Game render
@@ -211,7 +208,7 @@
     render = function() {
         // Wiping the screen
         context.clearRect(0, 0, context.width, context.height);
-         
+
 
         // Ballon displaying
         fillCircle(ballon);
@@ -220,7 +217,6 @@
         context.fillStyle = "blue";
         context.fillRect(player.position.x, player.position.y, player.height, player.width);
     }
-
 
     /**
     *  Key down event
