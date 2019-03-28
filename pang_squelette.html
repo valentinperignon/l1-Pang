@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Pang</title>
-    <script type="text/javascript" src="platforms2.json"></script>
     <script>
 
     // ------------------------------
@@ -104,8 +103,20 @@
     var platform = platforms.level1;
 
     // ladders in the game
-    var ladders = [];
     const LADDER_WIDTH = 90;
+    var laddersList = {
+        "level1": [
+            {
+                "position":{
+                    "x": 10,
+                    "y": 500
+                },
+                "width": LADDER_WIDTH,
+                "height": 100,
+            }
+        ]
+    };
+    var ladders = laddersList.level1;
 
     // ------------------------------
     //  Functions
@@ -170,13 +181,16 @@
         player.speed.y = 0;
     }
 
+    /**
+     * Return the ladder array's index
+     */
     findLadder = function() {
         var i=0;
         var find = false;
 
         while(i<ladders.length && !find) {
-            if(player.position.y + player.height <= ladders[i].y + ladders[i].height && player.position.y + player.height >= ladders[i].y) {
-                if(player.position.x >= ladders[i].x && player.position.x + player.width <= ladders[i].x + ladders[i].width) {
+            if(player.position.y + player.height <= ladders[i].position.y + ladders[i].height && player.position.y + player.height >= ladders[i].position.y) {
+                if(player.position.x >= ladders[i].position.x && player.position.x + player.width <= ladders[i].position.x + ladders[i].width) {
                     find = true;
                 } else {
                     i++;
@@ -283,7 +297,9 @@
         context.fill();
     }
 
-    // Detect the victory (= no balloon remaining)
+    /**
+     * Detect the victory (= no balloon remaining)
+     */
     function isVictory(){
         var isOneBalloonRemaining = false;
         var i=0
@@ -296,13 +312,17 @@
         return(!isOneBalloonRemaining);
     }
 
-    // Is the balloonX between the x and x + width of the rectangle ? Return boolean
-    // Inputs : balloon with x, rectangle with x and width
+    /**
+     * Is the balloonX between the x and x + width of the rectangle ? Return boolean
+     * Inputs : balloon with x, rectangle with x and width
+     */
     function isBetweenX(balloonPosition,rectangle){
         return(balloonPosition.x > rectangle.x && balloonPosition.x < rectangle.x + rectangle.width)
     }
 
-    // Shoot grapple hook
+    /**
+     * Shoot grapple hook
+     */
     function shootGrappleHook(player){
         if(grappleHook.shooting==false){
             grappleHook.shooting = true;
@@ -312,14 +332,18 @@
         }
     }
 
-    // Delete grapple hook
+    /**
+     * Delete grapple hook
+     */
     function deleteGrappleHook(grappleHook){
         grappleHook.shooting = false;
         grappleHook.position = {x:0, y:0};
         grappleHook.length = 0;
     }
 
-    // Checking if the grapple hook should stop
+    /**
+     * Checking if the grapple hook should stop
+     */
     function ifGrappleHookStopped(grappleHook){
 
         // Hit the top of the screen
@@ -360,19 +384,25 @@
         }
     }
 
-    // Is the balloonX between the x and (x + width) of the rectangle ? Return boolean
-    // Inputs : balloon with x, rectangle with x and width
+    /**
+     * Is the balloonX between the x and (x + width) of the rectangle ? Return boolean
+     *Inputs : balloon with x, rectangle with x and width
+     */
     function isBetweenX(balloonCenter,rectangle){
         return(balloonCenter.x > rectangle.x && balloonCenter.x < rectangle.x + rectangle.width)
     }
 
-    // Is the balloonY between the y and (y + width) of the rectangle ? Return boolean
-    // Inputs : balloon with y, rectangle with y and height
+    /**
+     * Is the balloonY between the y and (y + width) of the rectangle ? Return boolean
+     * Inputs : balloon with y, rectangle with y and height
+     */
     function isBetweenY(balloonCenter,rectangle){
         return(balloonCenter.y > rectangle.y && balloonCenter.y < rectangle.y + rectangle.height)
     }
 
-    //Detect a collision between a balloon and a player
+    /**
+     * Detect a collision between a balloon and a player
+     */
     function collisionsWithPlayer(ball, player) {
         var collisionCoin = true;
         var collisionsY = false;
@@ -402,7 +432,9 @@
         return(collisionCoin || collisionX || collisionsY);
     }
 
-    //Detect a collision between 2 ballons
+    /**
+     * Detect a collision between 2 ballons
+     */
     function AreBalloonsCollisionning(ball1, ball2){
         if(ball1.radius <= 0 || ball2.radius <= 0){
             return(false);
@@ -410,18 +442,19 @@
         return(!(Math.pow(ball1.radius + ball2.radius, 2) <= Math.pow(ball1.center.x - ball2.center.x, 2) + Math.pow(ball1.center.y - ball2.center.y, 2)));
     }
 
-
-
-    // manage the collisions between ballons and objects defined by rectangles
-
-    //return 'true' if the balloon touches an angle of a rectangular object
+    /**
+     * Return 'true' if the balloon touches an angle of a rectangular object
+     */
     function collisionsAngles(ball, object){
         return!(object.position.x + object.width <= ball.center.x - ball.radius ||
             object.position.x >= ball.center.x + ball.radius ||
             object.position.y + object.height <= ball.center.y - ball.radius ||
             object.position.y >= ball.center.y + ball.radius);
     }
-    //return 'true' if the balloon touches the bottom or the upside of a rectangular object
+
+    /**
+     * Return 'true' if the balloon touches the bottom or the upside of a rectangular object
+     */
     function collisionsY(ball, object){
         var collision = false;
         if(isBetweenX(ball.center, player.position)){
@@ -432,7 +465,10 @@
         }
         return(collision);
     }
-    //return 'true' if the balloon touches the faces of a rectangular object
+
+    /**
+     * Return 'true' if the balloon touches the faces of a rectangular object
+     */
     function collisionsX(ball, object){
         var collision = false;
         if(isBetweenY(ball.center, player.position)){
@@ -444,7 +480,9 @@
         return(collision);
     }
 
-    //call the other testing functions and return if there's a collision
+    /**
+     * Call the other testing functions and return if there's a collision
+     */
     function collisionsWithRectangle(ball, object){
         var collisionAngles = collisionsAngles(ball, object);
         var collisionY = collisionsY(ball, object);
@@ -452,7 +490,9 @@
         return(collisionAngles || collisionX || collisionY);
     }
 
-    // Make sure the balloons are colliding with rectangle objects like platforms
+    /**
+     * Make sure the balloons are colliding with rectangle objects like platforms
+     */
     function keepBallonOutsideObjects(ball, object){
         if(collisionsAngles(ball, object)){
             ball.velocity.x = -ball.velocity.x;
@@ -480,7 +520,6 @@
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
 
-
         //Pause if it is not on focus
         document.body.onblur = function() {
             isOnFocus = false;
@@ -489,25 +528,13 @@
             isOnFocus = true;
         }
 
-        // Create the ladders
-        switch(numLevel){
-            case 1 :
-                ladders[0] = {
-                    x: 10,
-                    y: context.height - 100,
-                    width: LADDER_WIDTH,
-                    height: 100,
-                };
-                break;
-        }
-
         // 2 listeners on the keyboard (keyup and keydown)
         document.addEventListener("keydown", captureKeyboardPress)
         document.addEventListener("keyup", captureKeyboardReleased)
 
         // initialization of the player
         player.height = 75;
-        player.width = 75;
+        player.width = 70;
         player.position.x = context.width/2 - player.width/2;
         player.position.y = context.height - player.height;
 
@@ -650,12 +677,12 @@
         // ladders drawing
         context.fillStyle="gray";
         for (var i=0; i < ladders.length; i++) {
-        	context.fillRect(ladders[i].x, ladders[i].y, ladders[i].width, ladders[i].height);
+        	context.fillRect(ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
         }
 
         // Drawing of the player
         context.fillStyle = "blue";
-        context.fillRect(player.position.x, player.position.y, player.height, player.width);
+        context.fillRect(player.position.x, player.position.y, player.width, player.height);
 
         // Victory screen
         if(victory){
