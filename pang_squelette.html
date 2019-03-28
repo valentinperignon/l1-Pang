@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Pang</title>
+    <script type="text/javascript" src="platforms2.json"></script>
     <script>
 
     // ------------------------------
@@ -21,7 +22,7 @@
     var pause = false;
     var victory = false;
 
-    // An array of aaaaall the balloons in the game
+    // An array of all the balloons in the game
     // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
     var balloons = [
         {center: {x: 500, y:30},
@@ -55,6 +56,7 @@
     // gravity (thanks Newton)
     const GRAVITY = {x: 0, y: 400};
 
+    // All the platforms
     var platforms = {
         "level1": [
             {
@@ -99,10 +101,9 @@
             }
         ]
     }
-
     var platform = platforms.level1;
 
-    // ladder in the game
+    // ladders in the game
     var ladders = [];
     const LADDER_WIDTH = 90;
 
