@@ -288,13 +288,14 @@
             if(!isItHittingPlatform){
 
                 //Hitting a balloon
-                var isItHittingBalloon = false;
+                var isHittingBalloon = 0;
                 
                 for(var i=0 ; i<balloons.length ; i++){
                     if(balloons[i].radius>0 && platform[i].exist){
                         if(Math.pow(balloons[i].center.x-grappleHook.position.x,2) < Math.pow(balloons[i].radius,2) && balloons[i].center.y+balloons[i].radius > cvs.height-grappleHook.length){
                             deleteGrappleHook(grappleHook);
                             balloons[i].radius = 0;
+                            isHittingBalloon = i;
                         }
                     }
                 }
@@ -343,10 +344,13 @@
         return(collisionCoin || collisionX || collisionsY);
     }
 
-    /*function collisionsWithBalloons(balloons[1], balloons[2]){
-        return(Math.pow(balloons[1].radius + balloons[2].radius, 2) <= Math.pow(balloons[1].position.x - balloons[2].position.x, 2) + Math.pow(balloons[1].position.y - balloons[2].position.y, 2))
-
-    }*/
+    //Detect a collision between 2 ballons
+    function AreBalloonsCollisionning(ball1, ball2){
+        if(ball1.radius <= 0 || ball2.radius <= 0){
+            return(false);
+        }
+        return(!(Math.pow(ball1.radius + ball2.radius, 2) <= Math.pow(ball1.center.x - ball2.center.x, 2) + Math.pow(ball1.center.y - ball2.center.y, 2)));
+    }
 
     // ------------------------------
     //  Game
@@ -440,6 +444,12 @@
                    pause = true;
                 }
             }
+        }
+
+        //Ballons one and two are collisionning
+        if(AreBalloonsCollisionning(balloons[0],balloons[1])){
+            balloons[0].velocity.x = -balloons[0].velocity.x;
+            balloons[1].velocity.x = -balloons[1].velocity.x;
         }
         
 
