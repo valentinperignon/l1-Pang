@@ -80,7 +80,6 @@
 
     var platform = platforms.level1;
 
-
     // ------------------------------
     //  Functions
     // ------------------------------
@@ -294,22 +293,6 @@
         return(ballonCenter.y > rectangle.y && ballonCenter.y < rectangle.y + rectangle.height)
     }
 
-    // manage the collisions between ballons and objects defined by rectangles
-    /*function collisionsWithRectangles(ballon, rectangle) {
-        return !(rectangle.x + rectangle.width =< ballon.center.x - ballon.radius ||
-                rectangle.x >= ballon.center.x + ballon.radius ||
-                rectangle.y + player.height =< ballon.center.y - ballon.radius ||
-                rectangle.y >= ballon.center.y + ballon.radius ||
-                if(isBetweenX(ballon.center, player.position)){
-                    rectangle.y >= ballon.center.y + ballon.radius ||
-                    rectangle.y + rectangle.height <= ballon.center.y - ballon.radius
-                }
-                if(isBetweenY(ballon.center, player.position)){
-                    rectangle.x >= ballon.center.x + ballon.radius ||
-                    rectangle.x + rectangle.width <= ballon.center.x - ballon.radius
-                };)
-    }*/
-
     function collisionsWithPlayer(ballon, player) {
         var collisionCoin = true;
         var collisionsY = false;
@@ -484,7 +467,6 @@
         //grappleHook drawing
         context.fillStyle="red";
         context.fillRect(grappleHook.position.x,grappleHook.position.y,5,-grappleHook.length);
-    }
 
         // ladders drawing
         for (var i=0; i < ladders.length; i++) {
