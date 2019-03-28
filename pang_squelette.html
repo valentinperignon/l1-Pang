@@ -14,6 +14,9 @@
     // Context
     var context = null;
 
+    // Game state
+    var numLevel = 1;
+
     // Is the game running or not ?
     var isOnFocus = true;
     var pause = false;
@@ -28,7 +31,7 @@
 
     // A beautiful player
     // With his position, his speed, his size and his others variables
-    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3};
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, up: false, down: false, livesNumber: 3};
     const PLAYER_SPEED = 500;
 
     // A incredible grappleHook
@@ -74,7 +77,7 @@
             }
         ]
     }
-    
+
     var platform = platforms.level1;
 
 
@@ -112,6 +115,46 @@
                 }
                 break;
         }
+    }
+
+    playerUp = function() {
+        var indiceLadder = findLadder();
+        if(indiceLadder != -1) {
+            player.speed.y = -PLAYER_SPEED/2;
+        }
+    }
+
+    playerDown = function() {
+        var indiceLadder = findLadder();
+        if(indiceLadder != -1) {
+            player.speed.y = PLAYER_SPEED/2;
+        }
+    }
+
+    playerStopUp = function() {
+        player.speed.y = 0;
+    }
+
+    findLadder = function() {
+        var i=0;
+        var find = false;
+
+        while(i<ladders.length && !find) {
+            if(player.position.y + player.height <= ladders[i].y + ladders[i].height && player.position.y + player.height >= ladders[i].y) {
+                if(player.position.x >= ladders[i].x && player.position.x + player.width <= ladders[i].x + ladders[i].width) {
+                    find = true;
+                } else {
+                    i++;
+                }
+            } else {
+                i++
+            }
+        }
+
+        if(i == ladders.length) {
+            i = -1;
+        }
+        return i;
     }
 
     /**
@@ -201,7 +244,7 @@
 
     // Checking if the grapple hook should stop
     function ifGrappleHookStopped(grappleHook){
-        
+
         // Hit the top of the screen
         if(grappleHook.position.y - grappleHook.length < 0){
             deleteGrappleHook(grappleHook);
@@ -223,10 +266,10 @@
             }
 
             if(!isItHittingPlatform){
-                
+
                 //Hitting a balloon
                 var isItHittingBalloon = false;
-                
+
                 for(var i=0 ; i<1 ; i++){
                     if(ballon.radius>0 && platform[i].exist){
                         if(Math.pow(ballon.center.x-grappleHook.position.x,2) < Math.pow(ballon.radius,2) && ballon.center.y+ballon.radius > cvs.height-grappleHook.length){
@@ -263,7 +306,7 @@
                 }
                 if(isBetweenY(ballon.center, player.position)){
                     rectangle.x >= ballon.center.x + ballon.radius ||
-                    rectangle.x + rectangle.width <= ballon.center.x - ballon.radius 
+                    rectangle.x + rectangle.width <= ballon.center.x - ballon.radius
                 };)
     }*/
 
@@ -272,11 +315,11 @@
         var collisionsY = false;
         var collisionX = false;
         if(
-            player.position.x + player.width <= ballon.center.x - ballon.radius || 
-            player.position.x >= ballon.center.x + ballon.radius || 
-            player.position.y + player.height <= ballon.center.y - ballon.radius || 
+            player.position.x + player.width <= ballon.center.x - ballon.radius ||
+            player.position.x >= ballon.center.x + ballon.radius ||
+            player.position.y + player.height <= ballon.center.y - ballon.radius ||
             player.position.y >= ballon.center.y + ballon.radius)
-        { 
+        {
             collisionCoin = false;
         }
         if(isBetweenX(ballon.center, player.position)){
@@ -284,8 +327,8 @@
                 player.position.y + player.height <= ballon.center.y - ballon.radius)
             {
                 collisionsY = true;
-            } 
-        } 
+            }
+        }
         if(isBetweenY(ballon.center, player.position)){
             if(player.position.x >= ballon.center.x + ballon.radius ||
             player.position.x + player.width <= ballon.center.x - ballon.radius )
@@ -293,7 +336,7 @@
                 collisionX = true;
             }
         }
-        return(collisionCoin || collisionX || collisionsY);  
+        return(collisionCoin || collisionX || collisionsY);
     }
 
     /*function collisionsWithBalloons(balloons[1], balloons[2]){
@@ -308,13 +351,6 @@
     /**
     * Initialization of the game
     */
-
-
-
-
-  
-	
-    // initialisation (appelée au chargement du corps du document <body onload="init">)
     init = function() {
        // Initizalisation of the global var context
         context = document.getElementById("cvs").getContext("2d");
@@ -328,7 +364,6 @@
         document.body.onfocus = function() {
             isOnFocus = true;
         }
-
 
         // The ballon is in the middle top
         ballon.center.x = cvs.width/2;
@@ -368,9 +403,7 @@
         }
 
         requestAnimationFrame(gameLoop);
-
     }
-
 
     /**
     *  Game update
@@ -385,8 +418,8 @@
 
             // Update ballon.center
             ballon.center.x += ballon.velocity.x * delta * BALLON_SPEED;
-            ballon.center.y += ballon.velocity.y * delta * BALLON_SPEED; 
-            
+            ballon.center.y += ballon.velocity.y * delta * BALLON_SPEED;
+
             //No, you will not stick out
             keepBallonWithinBorders(ballon);
         }
@@ -409,6 +442,23 @@
         player.speed.x = newSpdXPlayer;
         player.speed.y = newSpdYPlayer;
         keepPlayerWithinBorder();
+
+        // Player up
+        if(player.up) {
+            playerUp();
+            if(findLadder() == -1) {
+                player.up = false;
+                playerStopUp();
+            }
+        }
+        // Player down
+        if(player.down) {
+            playerDown();
+            if(findLadder() == -1) {
+                player.down = false;
+                playerStopUp();
+            }
+        }
     }
 
     /**
@@ -418,16 +468,10 @@
         // Wiping the screen
         context.clearRect(0, 0, context.width, context.height);
 
-
         // Ballon displaying
         if(ballon.radius>0){
             fillCircle(ballon);
         }
-
-        // Drawing of the player
-        context.fillStyle = "blue";
-        context.fillRect(player.position.x, player.position.y, player.height, player.width);
-
 
 		// platforms drawing
         context.fillStyle="black";
@@ -442,7 +486,15 @@
         context.fillRect(grappleHook.position.x,grappleHook.position.y,5,-grappleHook.length);
     }
 
+        // ladders drawing
+        for (var i=0; i < ladders.length; i++) {
+        	context.fillRect(ladders[i].x, ladders[i].y, ladders[i].width, ladders[i].height);
+        }
 
+        // Drawing of the player
+        context.fillStyle = "blue";
+        context.fillRect(player.position.x, player.position.y, player.height, player.width);
+    }
 
     /**
     *  Key down event
@@ -453,17 +505,25 @@
             case 39:
             case 37:
                 playerMove(event.keyCode);
-            break;
+                break;
 
-            // P means pause or unpause
+            // Player1 up or down
+            case 38:
+                player.up = true;
+                break;
+            case 40:
+                player.down = true;
+                break;
+
+            // 'P' means pause or unpause
             case 80:
                 pause = !pause;
-            break;
+                break;
 
             // Space for fire the grapple hook
             case 32:
                 shootGrappleHook(player);
-            break;
+                break;
 
         }
     }
@@ -477,12 +537,9 @@
             case 39:
             case 37:
                 playerStopMove(event.keyCode);
-            break;
+                break;
         }
     }
-
-
-
     </script>
 </head>
 <body onload="init()">
