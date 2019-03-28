@@ -96,7 +96,7 @@
         var find = false;
 
         while(i<ladders.length && !find) {
-            if(player.position.y + player.height >= ladders[i].y + ladders[i].height && player.position.y + player.height >= ladders[i].y) {
+            if(player.position.y + player.height <= ladders[i].y + ladders[i].height && player.position.y + player.height >= ladders[i].y) {
                 if(player.position.x >= ladders[i].x && player.position.x + player.width <= ladders[i].x + ladders[i].width) {
                     find = true;
                 } else {
