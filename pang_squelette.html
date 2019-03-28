@@ -80,6 +80,10 @@
 
     var platform = platforms.level1;
 
+    // ladder in the game
+    var ladders = [];
+    const LADDER_WIDTH = 90;
+
     // ------------------------------
     //  Functions
     // ------------------------------
@@ -348,6 +352,18 @@
             isOnFocus = true;
         }
 
+        // Creation des échelles
+        switch(numLevel){
+            case 1 :
+                ladders[0] = {
+                    x: 10,
+                    y: context.height - 100,
+                    width: LADDER_WIDTH,
+                    height: 100,
+                };
+                break;
+        }
+
         // The ballon is in the middle top
         ballon.center.x = cvs.width/2;
         ballon.center.y =  ballon.radius + 2;
@@ -469,6 +485,7 @@
         context.fillRect(grappleHook.position.x,grappleHook.position.y,5,-grappleHook.length);
 
         // ladders drawing
+        context.fillStyle="gray";
         for (var i=0; i < ladders.length; i++) {
         	context.fillRect(ladders[i].x, ladders[i].y, ladders[i].width, ladders[i].height);
         }
