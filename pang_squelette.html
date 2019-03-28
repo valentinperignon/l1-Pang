@@ -20,7 +20,8 @@
     // A ballon
     // With the position, the radius, the velocity and the gravity for this ballon. Plus his color because it is beautiful.
     var ballon = {center: {x: 0, y:0}, radius:50, velocity:{ x: 1, y: 0}, gravity: {x :0, y: 9.81/1000}, color:"red"};
-    
+    const BALLON_SPEED = 0.2;
+
     // when did we update the game last time ?
     var lastUpdate = Date.now();
     
@@ -186,8 +187,8 @@
         ballon.velocity.y += ballon.gravity.y*delta;
 
         // Update ballon.center
-        ballon.center.x += ballon.velocity.x * delta;
-        ballon.center.y += ballon.velocity.y * delta; 
+        ballon.center.x += ballon.velocity.x * delta * BALLON_SPEED;
+        ballon.center.y += ballon.velocity.y * delta * BALLON_SPEED; 
         
         //No, you will not stick out
         keepBallonWithinBorders(ballon);
