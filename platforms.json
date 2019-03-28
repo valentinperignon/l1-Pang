@@ -1,32 +1,40 @@
 {
     "level1": [
         {
-            "x": 875,
-            "y": 200,
+            "position":{
+                "x": 575,
+                "y": 200
+            },
             "width": 80,
             "height": 40,
             "vertical": false,
             "exist": true
         },
         {
-            "x": 725,
-            "y": 200,
+            "position":{
+                "x": 425,
+                "y": 200
+            },
             "width": 80,
             "height": 40,
             "vertical": false,
             "exist": true
         },
         {
-            "x": 575,
-            "y": 200,
+            "position":{
+                "x": 275,
+                "y": 200
+            },
             "width": 80,
             "height": 40,
             "vertical": false,
             "exist": true
         },
         {
-            "x": 425,
-            "y": 200,
+            "position":{
+                "x": 125,
+                "y": 200
+            },
             "width": 80,
             "height": 40,
             "vertical": false,
@@ -34,4 +42,3 @@
         }
     ]
 }
-

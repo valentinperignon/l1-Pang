@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Pang</title>
-
     <script>
 
     // ------------------------------
@@ -42,7 +41,6 @@
     const BALLOON_SPEED = 0.2;
     const BALLOON_COLOR = "red";
 
-
     // when did we update the game last time ?
     var lastUpdate = Date.now();
 
@@ -57,7 +55,6 @@
     // gravity (thanks Newton)
     const GRAVITY = {x: 0, y: 400};
 
-    // platforms in the game
     var platforms = {
         "level1": [
             {
@@ -348,7 +345,7 @@
 
                 //Hitting a balloon
                 var isHittingBalloon = 0;
-                
+
                 for(var i=0 ; i<balloons.length ; i++){
                     if(balloons[i].radius>0 && platform[i].exist){
                         if(Math.pow(balloons[i].center.x-grappleHook.position.x,2) < Math.pow(balloons[i].radius,2) && balloons[i].center.y+balloons[i].radius > cvs.height-grappleHook.length){
@@ -418,9 +415,9 @@
 
     //return 'true' if the balloon touches an angle of a rectangular object
     function collisionsAngles(ball, object){
-        return!(object.position.x + object.width <= ball.center.x - ball.radius || 
-            object.position.x >= ball.center.x + ball.radius || 
-            object.position.y + object.height <= ball.center.y - ball.radius || 
+        return!(object.position.x + object.width <= ball.center.x - ball.radius ||
+            object.position.x >= ball.center.x + ball.radius ||
+            object.position.y + object.height <= ball.center.y - ball.radius ||
             object.position.y >= ball.center.y + ball.radius);
     }
     //return 'true' if the balloon touches the bottom or the upside of a rectangular object
@@ -431,7 +428,7 @@
             object.position.y + object.height <= ball.center.y - ball.radius){
                 collision = true
             }
-        } 
+        }
         return(collision);
     }
     //return 'true' if the balloon touches the faces of a rectangular object
@@ -449,16 +446,16 @@
     //call the other testing functions and return if there's a collision
     function collisionsWithRectangle(ball, object){
         var collisionAngles = collisionsAngles(ball, object);
-        var collisionY = collisionsY(ball, object); 
+        var collisionY = collisionsY(ball, object);
         var collisionX = collisionsX(ball, object);
-        return(collisionAngles || collisionX || collisionY);  
+        return(collisionAngles || collisionX || collisionY);
     }
 
     // Make sure the balloons are colliding with rectangle objects like platforms
     function keepBallonOutsideObjects(ball, object){
         if(collisionsAngles(ball, object)){
             ball.velocity.x = -ball.velocity.x;
-            ball.velocity.y = -ball.velocity.y;   
+            ball.velocity.y = -ball.velocity.y;
         }
         if(collisionsX(ball, object)){
             ball.velocity.x = -ball.velocity.x;
@@ -583,7 +580,7 @@
             balloons[0].velocity.x = -balloons[0].velocity.x;
             balloons[1].velocity.x = -balloons[1].velocity.x;
         }
-        
+
 
         //Grapple hook will deal a lot of damages
         if(grappleHook.shooting==true){
@@ -685,7 +682,7 @@
             case 38:
                 player.up = true;
             break;
-            
+
             case 40:
                 player.down = true;
             break;
