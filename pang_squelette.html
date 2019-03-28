@@ -20,21 +20,21 @@
     // Is the game running or not ?
     var isOnFocus = true;
     var pause = false;
-    
+
 
     // An array of aaaaall the balloons in the game
     // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
     var balloons = [
-        {center: {x: 500, y:30}, 
-        radius:50, 
-        velocity:{ x: 1, y: 0}, 
-        gravity: {x :0, y: 9.81/1000}, 
+        {center: {x: 500, y:30},
+        radius:50,
+        velocity:{ x: 1, y: 0},
+        gravity: {x :0, y: 9.81/1000},
         },
 
-        {center: {x: 300, y:30}, 
-        radius:50, 
-        velocity:{ x: -1, y: 0}, 
-        gravity: {x :0, y: 9.81/1000}, 
+        {center: {x: 300, y:30},
+        radius:50,
+        velocity:{ x: -1, y: 0},
+        gravity: {x :0, y: 9.81/1000},
         }
     ];
 
@@ -55,7 +55,7 @@
     var grappleHook = {position:{x:0, y:0}, length:0, shooting:false};
 
     // gravity (thanks Newton)
-    const GRAVITY = {x: 0, y: 9.81};
+    const GRAVITY = {x: 0, y: 400};
 
     // platforms in the game
     var platforms = {
@@ -137,6 +137,9 @@
         }
     }
 
+    /**
+     * Moving the player (up)
+     */
     playerUp = function() {
         var indiceLadder = findLadder();
         if(indiceLadder != -1) {
@@ -144,6 +147,9 @@
         }
     }
 
+    /**
+     * Moving the player (down)
+     */
     playerDown = function() {
         var indiceLadder = findLadder();
         if(indiceLadder != -1) {
@@ -151,6 +157,9 @@
         }
     }
 
+    /**
+     * Stop the player's movement (vertically)
+     */
     playerStopUp = function() {
         player.speed.y = 0;
     }
@@ -320,11 +329,11 @@
         var collisionsY = false;
         var collisionX = false;
         if(
-            player.position.x + player.width <= ball.center.x - ball.radius || 
-            player.position.x >= ball.center.x + ball.radius || 
-            player.position.y + player.height <= ball.center.y - ball.radius || 
+            player.position.x + player.width <= ball.center.x - ball.radius ||
+            player.position.x >= ball.center.x + ball.radius ||
+            player.position.y + player.height <= ball.center.y - ball.radius ||
             player.position.y >= ball.center.y + ball.radius)
-        { 
+        {
             collisionCoin = false;
         }
         if(isBetweenX(ball.center, player.position)){
@@ -332,8 +341,8 @@
                 player.position.y + player.height <= ball.center.y - ball.radius)
             {
                 collisionsY = true;
-            } 
-        } 
+            }
+        }
         if(isBetweenY(ball.center, player.position)){
             if(player.position.x >= ball.center.x + ball.radius ||
             player.position.x + player.width <= ball.center.x - ball.radius )
@@ -435,11 +444,11 @@
 
                 // Update balloons[i].center
                 balloons[i].center.x += balloons[i].velocity.x * delta * BALLOON_SPEED;
-                balloons[i].center.y += balloons[i].velocity.y * delta * BALLOON_SPEED; 
-                
+                balloons[i].center.y += balloons[i].velocity.y * delta * BALLOON_SPEED;
+
                 //No, you will not stick out
                 keepBalloonWithinBorders(balloons[i]);
-                
+
                 if(collisionsWithPlayer(balloons[i], player)){
                    pause = true;
                 }
