@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Pang</title>
+
     <script>
 
     // ------------------------------
@@ -37,9 +38,45 @@
     const GRAVITY = {x: 0, y: 9.81};
 
     // platforms in the game
-	var platform = [];
-	const PLATFORM_SIZE = 40;
-	var numLevel = 1;
+    var platforms = {
+        "level1": [
+            {
+                "x": 575,
+                "y": 200,
+                "width": 80,
+                "height": 40,
+                "vertical": false,
+                "exist": true
+            },
+            {
+                "x": 425,
+                "y": 200,
+                "width": 80,
+                "height": 40,
+                "vertical": false,
+                "exist": true
+            },
+            {
+                "x": 275,
+                "y": 200,
+                "width": 80,
+                "height": 40,
+                "vertical": false,
+                "exist": true
+            },
+            {
+                "x": 125,
+                "y": 200,
+                "width": 80,
+                "height": 40,
+                "vertical": false,
+                "exist": true
+            }
+        ]
+    }
+    
+    var platform = platforms.level1;
+
 
     // ------------------------------
     //  Functions
@@ -231,40 +268,6 @@
             isOnFocus = true;
         }
 
-		//Creation des plateformes horizontale
-		switch(numLevel){
-			case 1 :{
-				for (var i=0; i < 4; i++) {
-					platform[i] = {
-									x: Math.floor(context.width-(i+1)*150-75),
-				      				y: Math.floor(context.height/2-100),
-				        			width: PLATFORM_SIZE*2,
-				        			height: PLATFORM_SIZE,
-									vertical: false,
-                                    exist: true
-                    };
-				}
-			break;
-			}
-        }
-
-
-		//Creation des plateformes horizontale
-		switch(numLevel){
-			case 1 :{
-				for (var i=0; i < 4; i++) {
-					platform[i] = {
-									x: Math.floor(context.width-(i+1)*150-75),
-				      				y: Math.floor(context.height/2-100),
-				        			width: PLATFORM_SIZE*2,
-				        			height: PLATFORM_SIZE,
-                                    exist: true,
-                                    isDestructible: true
-                    };  
-				}
-			break;
-			}
-        }
 
         // The ballon is in the middle top
         ballon.center.x = cvs.width/2;
