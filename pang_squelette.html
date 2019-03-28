@@ -41,32 +41,40 @@
     var platforms = {
         "level1": [
             {
-                "x": 575,
-                "y": 200,
+                "position":{
+                    "x": 575,
+                    "y": 200
+                },
                 "width": 80,
                 "height": 40,
                 "vertical": false,
                 "exist": true
             },
             {
-                "x": 425,
-                "y": 200,
+                "position":{
+                    "x": 425,
+                    "y": 200
+                },
                 "width": 80,
                 "height": 40,
                 "vertical": false,
                 "exist": true
             },
             {
-                "x": 275,
-                "y": 200,
+                "position":{
+                    "x": 275,
+                    "y": 200
+                },
                 "width": 80,
                 "height": 40,
                 "vertical": false,
                 "exist": true
             },
             {
-                "x": 125,
-                "y": 200,
+                "position":{
+                    "x": 125,
+                    "y": 200
+                },
                 "width": 80,
                 "height": 40,
                 "vertical": false,
@@ -165,6 +173,35 @@
     }
 
     /**
+     * It does exactly what you expect
+     */
+    function keepBallonOutsideBorders(ballon){
+        //Top
+        if(ballon.center.y < ballon.radius){
+            ballon.center.y = ballon.radius;
+            ballon.velocity.y = -ballon.velocity.y;
+        } else {
+            //Bottom
+            if(ballon.center.y > cvs.height - ballon.radius){
+                ballon.center.y = cvs.height - ballon.radius;
+                ballon.velocity.y = -ballon.velocity.y;
+            }
+        }
+        //Left
+        if(ballon.center.x < ballon.radius){
+            ballon.center.x = ballon.radius;
+            ballon.velocity.x = -ballon.velocity.x;
+        } else {
+            //Right
+            if(ballon.center.x > cvs.width-ballon.radius){
+                ballon.center.x = cvs.width - ballon.radius;
+                ballon.velocity.x = -ballon.velocity.x;
+            }
+        }
+        return(ballon);
+    }
+
+    /**
      * Like FillRect, but for circles
      */
     function fillCircle(circle){
@@ -212,7 +249,7 @@
 
             for(var i=0 ; i<platform.length ; i++){
                 if(platform[i].exist && isBetweenX(grappleHook.position,platform[i])){
-                    if(cvs.height - grappleHook.length < platform[i].y + platform[i].height){
+                    if(cvs.height - grappleHook.length < platform[i].position.y + platform[i].height){
                         deleteGrappleHook(grappleHook);
                         isItHittingPlatform = true;
                         if(platform[i].isDestructible){
@@ -252,54 +289,59 @@
     }
 
     // manage the collisions between ballons and objects defined by rectangles
-    /*function collisionsWithRectangles(ballon, rectangle) {
-        return !(rectangle.x + rectangle.width =< ballon.center.x - ballon.radius ||
-                rectangle.x >= ballon.center.x + ballon.radius ||
-                rectangle.y + player.height =< ballon.center.y - ballon.radius ||
-                rectangle.y >= ballon.center.y + ballon.radius ||
-                if(isBetweenX(ballon.center, player.position)){
-                    rectangle.y >= ballon.center.y + ballon.radius ||
-                    rectangle.y + rectangle.height <= ballon.center.y - ballon.radius
-                }
-                if(isBetweenY(ballon.center, player.position)){
-                    rectangle.x >= ballon.center.x + ballon.radius ||
-                    rectangle.x + rectangle.width <= ballon.center.x - ballon.radius 
-                };)
-    }*/
 
-    function collisionsWithPlayer(ballon, player) {
-        var collisionCoin = true;
-        var collisionsY = false;
-        var collisionX = false;
-        if(
-            player.position.x + player.width <= ballon.center.x - ballon.radius || 
-            player.position.x >= ballon.center.x + ballon.radius || 
-            player.position.y + player.height <= ballon.center.y - ballon.radius || 
-            player.position.y >= ballon.center.y + ballon.radius)
-        { 
-            collisionCoin = false;
-        }
+    //return 'true' if the balloon touches an angle of a rectangular object
+    function collisionsAngles(ballon, object){
+        return!(object.position.x + object.width <= ballon.center.x - ballon.radius || 
+            object.position.x >= ballon.center.x + ballon.radius || 
+            object.position.y + object.height <= ballon.center.y - ballon.radius || 
+            object.position.y >= ballon.center.y + ballon.radius);
+    }
+    //return 'true' if the balloon touches the bottom or the upside of a rectangular object
+    function collisionsY(ballon, object){
+        var collision = false;
         if(isBetweenX(ballon.center, player.position)){
-            if(player.position.y >= ballon.center.y + ballon.radius ||
-                player.position.y + player.height <= ballon.center.y - ballon.radius)
-            {
-                collisionsY = true;
-            } 
+            if(object.position.y >= ballon.center.y + ballon.radius ||
+            object.position.y + object.height <= ballon.center.y - ballon.radius){
+                collision = true
+            }
         } 
+        return(collision);
+    }
+    //return 'true' if the balloon touches the faces of a rectangular object
+    function collisionsX(ballon, object){
+        var collision = false;
         if(isBetweenY(ballon.center, player.position)){
-            if(player.position.x >= ballon.center.x + ballon.radius ||
-            player.position.x + player.width <= ballon.center.x - ballon.radius )
-            {
-                collisionX = true;
+            if(object.position.x >= ballon.center.x + ballon.radius ||
+            object.position.x + object.width <= ballon.center.x - ballon.radius){
+                collision = true;
             }
         }
-        return(collisionCoin || collisionX || collisionsY);  
+        return(collision);
     }
 
-    /*function collisionsWithBalloons(balloons[1], balloons[2]){
-        return(Math.pow(balloons[1].radius + balloons[2].radius, 2) <= Math.pow(balloons[1].position.x - balloons[2].position.x, 2) + Math.pow(balloons[1].position.y - balloons[2].position.y, 2))
+    //call the other testing functions and return if there's a collision
+    function collisionsWithRectangle(ballon, object){
+        var collisionAngles = collisionsAngles(ballon, object);
+        var collisionY = collisionsY(ballon, object); 
+        var collisionX = collisionsX(ballon, object);
+        return(collisionAngles || collisionX || collisionY);  
+    }
 
-    }*/
+    // Make sure the balloons are colliding with rectangle objects like platforms
+    function keepBallonOutsideObjects(ballon, object){
+        if(collisionsAngles(ballon, object)){
+            ballon.velocity.x = -ballon.velocity.x;
+            ballon.velocity.y = -ballon.velocity.y;   
+        }
+        if(collisionsX(ballon, object)){
+            ballon.velocity.x = -ballon.velocity.x;
+        }
+        if(collisionsY(ballon, object)){
+            ballon.velocity.y = -ballon.velocity.y;
+        }
+        return(ballon);
+    }
 
     // ------------------------------
     //  Game
@@ -389,13 +431,16 @@
             
             //No, you will not stick out
             keepBallonWithinBorders(ballon);
+            for (var i = platform.length - 1; i >= 0; i--) {
+                keepBallonOutsideObjects(ballon, platform[i]);
+            }
         }
 
-        if(collisionsWithPlayer(ballon, player)){
+        if(collisionsWithRectangle(ballon, player)){
             pause = true;
         }
 
-        //Grapple hook will make a lot of damages
+        //Grapple hook will deal a lot of damages
         if(grappleHook.shooting==true){
             grappleHook.length += 0.3 * delta ;
         }
@@ -433,7 +478,7 @@
         context.fillStyle="black";
         for (var i=0; i < platform.length; i++) {
         	if(platform[i].exist){
-                context.fillRect(platform[i].x, platform[i].y, platform[i].width, platform [i].height);
+                context.fillRect(platform[i].position.x, platform[i].position.y, platform[i].width, platform [i].height);
             }
         }
 
