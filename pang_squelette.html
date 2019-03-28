@@ -31,7 +31,7 @@
     const PLAYER_SPEED = 500;
 
     // A incredible grappleHook
-    var grappleHook = {startposition:{x:0, y:0}, length:0, shooting:false};
+    var grappleHook = {position:{x:0, y:0}, length:0, shooting:false};
 
     // gravity (thanks Newton)
     const GRAVITY = {x: 0, y: 9.81};
@@ -149,8 +149,8 @@
     function shootGrappleHook(player){
         if(grappleHook.shooting==false){
             grappleHook.shooting = true;
-            grappleHook.startposition.x = player.position.x+player.width/2;
-            grappleHook.startposition.y = player.position.y+player.height;
+            grappleHook.position.x = player.position.x+player.width/2;
+            grappleHook.position.y = player.position.y+player.height;
             grappleHook.length = 0;
         }
     }
@@ -158,7 +158,7 @@
     // Delete grapple hook
     function deleteGrappleHook(grappleHook){
         grappleHook.shooting = false;
-        grappleHook.startposition = {x:0, y:0};
+        grappleHook.position = {x:0, y:0};
         grappleHook.length = 0;
     }
 
@@ -166,7 +166,7 @@
     function ifGrappleHookStopped(grappleHook){
         
         // Hit the top of the screen
-        if(grappleHook.startposition.y - grappleHook.length < 0){
+        if(grappleHook.position.y - grappleHook.length < 0){
             deleteGrappleHook(grappleHook);
         } else {
 
@@ -174,7 +174,7 @@
             var isItHittingPlatform = false;
 
             for(var i=0 ; i<platform.length ; i++){
-                if(platform[i].exist && isBetweenX(grappleHook.startposition,platform[i])){
+                if(platform[i].exist && isBetweenX(grappleHook.position,platform[i])){
                     if(cvs.height - grappleHook.length < platform[i].y + platform[i].height){
                         deleteGrappleHook(grappleHook);
                         isItHittingPlatform = true;
@@ -192,7 +192,7 @@
                 
                 for(var i=0 ; i<1 ; i++){
                     if(ballon.radius>0 && platform[i].exist){
-                        if(ballon.center.x-grappleHook.startposition.x < ballon.radius && ballon.center.y+ballon.radius > cvs.height-grappleHook.length){
+                        if(Math.pow(ballon.center.x-grappleHook.position.x,2) < Math.pow(ballon.radius,2) && ballon.center.y+ballon.radius > cvs.height-grappleHook.length){
                             deleteGrappleHook(grappleHook);
                             ballon.radius = 0;
                         }
@@ -371,7 +371,7 @@
 
         //grappleHook drawing
         context.fillStyle="red";
-        context.fillRect(grappleHook.startposition.x,grappleHook.startposition.y,5,-grappleHook.length);
+        context.fillRect(grappleHook.position.x,grappleHook.position.y,5,-grappleHook.length);
     }
 
 
