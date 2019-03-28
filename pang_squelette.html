@@ -33,6 +33,12 @@
     // gravity (thanks Newton)
     const GRAVITY = {x: 0, y: 9.81};
 
+    // platforms in the game
+	var platform = [];
+	const PLATFORM_SIZE = 40;
+	var numLevel = 1;
+
+
 
     // ------------------------------
     //  Functions
@@ -119,8 +125,14 @@
     /**
     * Initialization of the game
     */
+  
+
+	
+	
+    // initialisation (appelée au chargement du corps du document <body onload="init">)
     init = function() {
-        // Initizalisation of the global var context
+       
+       // Initizalisation of the global var context
         context = document.getElementById("cvs").getContext("2d");
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
@@ -133,6 +145,24 @@
             isOnFocus = true;
         }
 
+
+
+		//Creation des plateformes horizontale
+		switch(numLevel){
+			case 1 :{
+				for (var i=0; i < 4; i++) {
+					platform[i] = {
+									x: Math.floor(context.width-(i+1)*150-75),
+				      				y: Math.floor(context.height/2-100),				
+				        			width: PLATFORM_SIZE*2,
+				        			height: PLATFORM_SIZE,
+									vertical: false,
+                                    exist: true
+                    };  
+				}
+			break;
+			}
+        }
 
         // The ballon is in the middle top
         ballon.center.x = cvs.width/2;
@@ -172,7 +202,9 @@
         }
 
         requestAnimationFrame(gameLoop);
+
     }
+
 
     /**
     *  Game update
@@ -216,7 +248,16 @@
         // Drawing of the player
         context.fillStyle = "blue";
         context.fillRect(player.position.x, player.position.y, player.height, player.width);
+    
+	
+		// platforms drawing
+        context.fillStyle="black";
+        for (var i=0; i < platform.length; i++) {
+        	context.fillRect(platform[i].x, platform[i].y, platform[i].width, platform [i].height);
+        }
     }
+
+
 
     /**
     *  Key down event
@@ -249,6 +290,15 @@
             break;
         }
     }
+	collision = function(rect1, rect2) {
+        return !(rect1.x+rect1.largeur <= rect2.x ||
+                 rect1.x >= rect2.x+rect2.largeur ||
+                 rect1.y+rect1.hauteur <= rect2.y ||
+                 rect1.y >= rect2.y+rect2.hauteur);
+	}
+	
+
+	
 
     </script>
 </head>
