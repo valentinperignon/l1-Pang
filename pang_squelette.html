@@ -7,10 +7,18 @@
     <script>
 
     var context = null;
+    
+    // Pause
+    var playing = true;
 
     // rectangle dans le jeu :
     var rectangle = { x: 0, y: 0, hauteur: 0, largeur: 0, couleur: "" };
-
+    
+    // Ballon
+    var ballon = {center: {x: 0, y:0}, radius:100, velocity:{ x: 1, y: 0}, gravity: {x :0, y: 9.81/1000}, color:"red"};
+    
+    //LastUpdate
+    var lastUpdate = Date.now();
 
     // initialisation (appelée au chargement du corps du document <body onload="init">)
     init = function() {
@@ -18,6 +26,19 @@
         context = document.getElementById("cvs").getContext("2d");
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
+
+        //Pause if 
+        document.body.onblur = function() {
+            playing = false;
+        }
+        document.body.onfocus = function() {
+            playing = true;
+        }
+
+
+        // The ballon is in the middle top
+        ballon.center.x = cvs.width/2;
+        ballon.center.y =  ballon.radius + 2;
 
         // on associe au document des écouteurs d'événements
         // --> voir http://www.w3schools.com/js/js_events.asp
@@ -32,23 +53,65 @@
 
 
     boucleDeJeu = function() {
-        // mise à jour de l'état du jeu
-        update(Date.now());
-        // affichage de l'état du jeu
-        render();
+        var delta = Date.now()-lastUpdate;
+        lastUpdate = Date.now();
+
+        if(playing){
+            // mise à jour de l'état du jeu
+            update(delta);
+            // affichage de l'état du jeu
+            render();
+        }
         // rappel de la boucle de jeu
         // requestAnimationFrame est une fonction JS servant à pré-calculer le prochain affichage
         //  http://www.html5canvastutorials.com/advanced/html5-canvas-animation-stage/
         requestAnimationFrame(boucleDeJeu);
     }
 
+    // KeepBallonWithinBorders()
+    function KeepBallonWithinBorders(ballon){
+        //Top
+        if(ballon.center.y < ballon.radius){
+            ballon.center.y = ballon.radius;
+            ballon.velocity.y = -ballon.velocity.y;
+        } else {
+            //Bottom
+            if(ballon.center.y > cvs.height - ballon.radius){
+                ballon.center.y = cvs.height - ballon.radius;
+                ballon.velocity.y = -ballon.velocity.y;
+            }
+        }
+        //Left
+        if(ballon.center.x < ballon.radius){
+            ballon.center.x = ballon.radius;
+            ballon.velocity.x = -ballon.velocity.x;
+        } else {
+            //Right
+            if(ballon.center.x > cvs.width-ballon.radius){
+                ballon.center.x = cvs.width - ballon.radius;
+                ballon.velocity.x = -ballon.velocity.x;
+            }
+        }
+        return(ballon);
+    }
 
+  
     /**
      *  Mise à jour de l'état du jeu
      *  @param  d   date courante
      */
-    update = function(d) {
+    update = function(delta) {
+        
+        // Update ballon.velocity
+        ballon.velocity.x += ballon.gravity.x*delta;
+        ballon.velocity.y += ballon.gravity.y*delta;
 
+        // Update ballon.center
+        ballon.center.x += ballon.velocity.x * delta;
+        ballon.center.y += ballon.velocity.y * delta; 
+        
+        //KeepBallonWithinBorders()
+        KeepBallonWithinBorders(ballon);
     }
 
 
@@ -58,6 +121,20 @@
     render = function() {
         // effacement de l'écran
         context.clearRect(0, 0, context.width, context.height);
+        
+        // like FillRect, but for circles
+        function fillCircle(circle)        {
+        var canvas = document.getElementById("cvs");
+        var context = canvas.getContext("2d");
+        context.beginPath();
+        context.fillStyle=circle.color
+        context.arc(circle.center.x, circle.center.y, circle.radius, 0, 2 * Math.PI);
+        context.fill();
+        }
+         
+
+        // Ballon displaying
+        fillCircle(ballon);
     }
 
 
@@ -83,7 +160,7 @@
 
 <body onload="init()">
 
-    <canvas id="cvs" width="800" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
+    <canvas id="cvs" width="1920" height="1080" style="margin: 10px auto; border: solid 1px #000;"></canvas>
 
 </body>
 
