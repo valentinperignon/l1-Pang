@@ -37,9 +37,6 @@
     //  Functions
     // ------------------------------
 
-    // TODO modifier le cas quand: 2 touches appuyées
-    // TODO déplacement vertical
-
     // Moving the player horizontally
     playerMove = function(move) {
 
@@ -53,7 +50,7 @@
     }
 
     playerStopMove = function(move) {
-        if(move == 39 ^ move == 37) {
+        if(move == 39 || move == 37) {
             player.speed.x = 0;
         }
     }
@@ -196,8 +193,11 @@
 
         // Move the player
         var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
+        var newSpdXPlayer = player.speed.x + GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + GRAVITY.y*delta/1000;
         player.position.x = newPosXPlayer;
         player.position.y = newPosYPlayer;
+        player.speed.x = newSpdXPlayer;
+        player.speed.y = newSpdYPlayer;
         keepPlayerWithinBorder();
     }
 
