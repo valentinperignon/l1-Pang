@@ -239,6 +239,67 @@
         }
     }
 
+    // Is the ballonX between the x and (x + width) of the rectangle ? Return boolean
+    // Inputs : ballon with x, rectangle with x and width
+    function isBetweenX(ballonCenter,rectangle){
+        return(ballonCenter.x > rectangle.x && ballonCenter.x < rectangle.x + rectangle.width)
+    }
+
+    // Is the ballonY between the y and (y + width) of the rectangle ? Return boolean
+    // Inputs : ballon with y, rectangle with y and height
+    function isBetweenY(ballonCenter,rectangle){
+        return(ballonCenter.y > rectangle.y && ballonCenter.y < rectangle.y + rectangle.height)
+    }
+
+    // manage the collisions between ballons and objects defined by rectangles
+    /*function collisionsWithRectangles(ballon, rectangle) {
+        return !(rectangle.x + rectangle.width =< ballon.center.x - ballon.radius ||
+                rectangle.x >= ballon.center.x + ballon.radius ||
+                rectangle.y + player.height =< ballon.center.y - ballon.radius ||
+                rectangle.y >= ballon.center.y + ballon.radius ||
+                if(isBetweenX(ballon.center, player.position)){
+                    rectangle.y >= ballon.center.y + ballon.radius ||
+                    rectangle.y + rectangle.height <= ballon.center.y - ballon.radius
+                }
+                if(isBetweenY(ballon.center, player.position)){
+                    rectangle.x >= ballon.center.x + ballon.radius ||
+                    rectangle.x + rectangle.width <= ballon.center.x - ballon.radius 
+                };)
+    }*/
+
+    function collisionsWithPlayer(ballon, player) {
+        var collisionCoin = true;
+        var collisionsY = false;
+        var collisionX = false;
+        if(
+            player.position.x + player.width <= ballon.center.x - ballon.radius || 
+            player.position.x >= ballon.center.x + ballon.radius || 
+            player.position.y + player.height <= ballon.center.y - ballon.radius || 
+            player.position.y >= ballon.center.y + ballon.radius)
+        { 
+            collisionCoin = false;
+        }
+        if(isBetweenX(ballon.center, player.position)){
+            if(player.position.y >= ballon.center.y + ballon.radius ||
+                player.position.y + player.height <= ballon.center.y - ballon.radius)
+            {
+                collisionsY = true;
+            } 
+        } 
+        if(isBetweenY(ballon.center, player.position)){
+            if(player.position.x >= ballon.center.x + ballon.radius ||
+            player.position.x + player.width <= ballon.center.x - ballon.radius )
+            {
+                collisionX = true;
+            }
+        }
+        return(collisionCoin || collisionX || collisionsY);  
+    }
+
+    /*function collisionsWithBalloons(balloons[1], balloons[2]){
+        return(Math.pow(balloons[1].radius + balloons[2].radius, 2) <= Math.pow(balloons[1].position.x - balloons[2].position.x, 2) + Math.pow(balloons[1].position.y - balloons[2].position.y, 2))
+
+    }*/
 
     // ------------------------------
     //  Game
@@ -330,6 +391,10 @@
             keepBallonWithinBorders(ballon);
         }
 
+        if(collisionsWithPlayer(ballon, player)){
+            pause = true;
+        }
+
         //Grapple hook will make a lot of damages
         if(grappleHook.shooting==true){
             grappleHook.length += 0.3 * delta ;
@@ -415,22 +480,9 @@
             break;
         }
     }
-	collision = function(rect1, rect2) {
-        return !(rect1.x+rect1.largeur <= rect2.x ||
-                 rect1.x >= rect2.x+rect2.largeur ||
-                 rect1.y+rect1.hauteur <= rect2.y ||
-                 rect1.y >= rect2.y+rect2.hauteur);
-	}
 
 
 
-
-	collision = function(rect1, rect2) {
-        return !(rect1.x+rect1.largeur <= rect2.x ||
-                 rect1.x >= rect2.x+rect2.largeur ||
-                 rect1.y+rect1.hauteur <= rect2.y ||
-                 rect1.y >= rect2.y+rect2.hauteur);
-	}
     </script>
 </head>
 <body onload="init()">
