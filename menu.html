@@ -53,7 +53,12 @@
         context.fillRect(0, 0, context.width, context.height);
 
         // affichage du logo Pang
-        context.drawImage(logo, (context.width-300)/2, 80, 300, 142);
+        context.drawImage(logo, (context.width-400)/2, 80, 400, 189);
+
+        // affichage du texte
+        context.fillStyle = "white";
+        context.font = "30px Georgia";
+        context.fillText("COMMENCER A JOUER ...", 210, context.height-80-30);
     }
 
     /**
