@@ -45,13 +45,11 @@
 
     // A beautiful player
     // With his position, his speed, his size and his others variables
-    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 1, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
     const PLAYER_SPEED = 500;
     var isGravity = 0;
 
     // All the weapons and types of weapons (0= the weapon is not active)
-    const GRAPPLE_HOOK_NUMBER = 1 ;
-    const TRIDENT_NUMBER = 2 ;
 
     var weapons = [
         {
@@ -60,18 +58,24 @@
             length: 0,
             shooting: false,
         }
-
     ]
 
     // Weapons related variables
-    const WEAPON_WIDTH = 5;
+        // - Hooks
+    const GRAPPLE_HOOK_NUMBER = 1 ;
+    const TRIDENT_NUMBER = 2 ;
+    const HOOK_SPEED = 0.3 ;
+    const HOOK_WITDH = 5;
+
+        // - Others weapons
+
 
     // gravity (thanks Newton)
     const GRAVITY = {x: 0, y: 700};
 
     // All the platforms
     var platformsList = {
-        "level1": [
+        level1 : [
             {
                 "position":{
                     "x": 575,
@@ -112,9 +116,33 @@
                 "exist": true,
                 "isDestructible": true
             }
+        ],
+
+        level2 : [
+            {
+                "position":{
+                    "x": 275,
+                    "y": 200
+                },
+                "width": 80,
+                "height": 40,
+                "exist": false,
+                "isDestructible": false
+            },
+            {
+                "position":{
+                    "x": 125,
+                    "y": 200
+                },
+                "width": 80,
+                "height": 40,
+                "exist": false,
+                "isDestructible": true
+            }
         ]
     }
     var platforms = platformsList.level1;
+
 
     // ladders in the game
     const LADDER_WIDTH = 90;
@@ -232,7 +260,11 @@
         var isOn = true;
 
         for(var i=0; i<platforms.length; i++) {
-            if(player.position.x + player.width < platforms[i].position.x || player.position.x > platforms[i].position.x + platforms[i].width || player.position.y > platforms[i].position.y + platforms[i].height || player.position.y + player.height < platforms[i].position.y) {
+            if(!platforms[i].exist
+            || player.position.x + player.width < platforms[i].position.x
+            || player.position.x > platforms[i].position.x + platforms[i].width
+            || player.position.y > platforms[i].position.y + platforms[i].height
+            || player.position.y + player.height < platforms[i].position.y) {
                 isOn = false;
             } else {
                 isOn = true;
@@ -374,7 +406,7 @@
     *
     */
     function isWeaponBetweenX(weapon,rectangle){
-        return(weapon.position.x > rectangle.position.x && weapon.position.x + WEAPON_WIDTH < rectangle.position.x + rectangle.width);
+        return(weapon.position.x > rectangle.position.x && weapon.position.x + HOOK_WITDH < rectangle.position.x + rectangle.width);
     }
 
     /**
@@ -397,7 +429,7 @@
      * Shoot a grapple hook
      */
     function shootGrappleHook(grappleHook){
-        if(grappleHook.shooting==false){
+        if(grappleHook.type ==0) {
             grappleHook.type = player.powerOn;
             grappleHook.shooting = true;
             grappleHook.position = {x: player.position.x+player.width/2 , y: player.position.y+player.height};
@@ -419,7 +451,6 @@
      * Checking if the grapple hook should stop
      */
     function stopHooks(hook){
-
         // Hit the top of the screen
         if(hook.position.y - hook.length < 0){
             switch(hook.type){
@@ -456,23 +487,22 @@
                     }
                 }
             }
+        }
 
-            //Hitting a balloon
-            for(var i=0 ; i<balloons.length ; i++){
+        //Hitting a balloon
+        for(var i=0 ; i<balloons.length ; i++){
+            if(balloons[i].radius>0){
 
-                if(balloons[i].radius>0 && platforms[i].exist){
+                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].radius, 2)
+                && balloons[i].center.y + balloons[i].radius > cvs.height - hook.length){
 
-                    if(Math.pow(balloons[i].center.x-hook.position.x,2) < Math.pow(balloons[i].radius,2)
-                    && balloons[i].center.y+balloons[i].radius > cvs.height-hook.length){
-
-                        deleteWeapon(hook);
-
-                        player.score += balloons[i].radius*10 ;
-                        balloons[i].radius = 0;
-                    }
+                    deleteWeapon(hook);
+                    player.score += balloons[i].radius*10 ;
+                    balloons    [i].radius = 0;
                 }
             }
         }
+
     }
 
     /**
@@ -553,15 +583,17 @@
      * Make sure the balloons are colliding with rectangle objects like platforms
      */
     function keepBallonOutsideObjects(ball, object){
-        if(collisionsAngles(ball, object)){
-            ball.velocity.x = -ball.velocity.x - 0,7;
-            ball.velocity.y = -ball.velocity.y;
-        }
-        if(collisionsX(ball, object)){
-            ball.velocity.x = -ball.velocity.x;
-        }
-        if(collisionsY(ball, object)){
-            ball.velocity.y = -ball.velocity.y;
+        if(object.exist){
+            if(collisionsAngles(ball, object)){
+                ball.velocity.x = -ball.velocity.x;
+                ball.velocity.y = -ball.velocity.y;
+            }
+            if(collisionsX(ball, object)){
+                ball.velocity.x = -ball.velocity.x;
+            }
+            if(collisionsY(ball, object)){
+                ball.velocity.y = -ball.velocity.y;
+            }
         }
         return(ball);
     }
@@ -655,14 +687,18 @@
                 for(var j=0 ; j<platforms.length ; j++){
                     balloons[i] = keepBallonOutsideObjects(balloons[i], platforms[j]);
                 }
+
+                //Ballons are collisionning
+                for(var j= i+1 ; j<balloons.length ; j++){
+                    if(AreBalloonsCollisionning(balloons[i],balloons[j])){
+                        balloons[0].velocity.x = -balloons[0].velocity.x;
+                        balloons[1].velocity.x = -balloons[1].velocity.x;
+                    }
+                }
             }
         }
 
-        //Ballons one and two are collisionning
-        if(AreBalloonsCollisionning(balloons[0],balloons[1])){
-            balloons[0].velocity.x = -balloons[0].velocity.x;
-            balloons[1].velocity.x = -balloons[1].velocity.x;
-        }
+
 
         // Weapons will deal a lot of damages
         for(var i=0 ; i<weapons.length ; i++){
@@ -673,10 +709,11 @@
 
                     case GRAPPLE_HOOK_NUMBER:
                     case TRIDENT_NUMBER:
-                        weapons[i].length += 0.3 * delta ;
+                        weapons[i].length += HOOK_SPEED * delta ;
                     break;
                 }
             }
+
             stopHooks(weapons[i]);
         }
 
@@ -747,12 +784,12 @@
             switch(weapons[i].type){
                 case GRAPPLE_HOOK_NUMBER :
                     weaponColor = GRAPPLE_HOOK_COLOR;
-                    weaponWidth = WEAPON_WIDTH;
+                    weaponWidth = HOOK_WITDH;
                 break;
 
                 case TRIDENT_NUMBER :
                     weaponColor = TRIDENT_COLOR ;
-                    weaponWidth = WEAPON_WIDTH;
+                    weaponWidth = HOOK_WITDH;
                 break;
             }
             context.fillStyle = weaponColor;
@@ -803,7 +840,7 @@
 
             // Shortcut to victory                                                                       // BETA FUNCTION
             case 71:
-              victory = true;
+              victory = !victory;
             break;
 
             //Activate the default weapon : the grapple hook                                            // BETA FUNCTION
