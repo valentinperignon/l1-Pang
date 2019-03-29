@@ -45,8 +45,9 @@
 
     // A beautiful player
     // With his position, his speed, his size and his others variables
-    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 1, shieldOn: 0, score: 0, up: false, down: false, livesNumber: 3, color:"blue"};
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
     const PLAYER_SPEED = 500;
+    var isGravity = 0;
 
     // All the weapons and types of weapons (0= the weapon is not active)
     const GRAPPLE_HOOK_NUMBER = 1 ;
@@ -65,9 +66,8 @@
     // Weapons related variables
     const WEAPON_WIDTH = 5;
 
-
     // gravity (thanks Newton)
-    const GRAVITY = {x: 0, y: 400};
+    const GRAVITY = {x: 0, y: 700};
 
     // All the platforms
     var platformsList = {
@@ -75,7 +75,7 @@
             {
                 "position":{
                     "x": 575,
-                    "y": 200
+                    "y": 300
                 },
                 "width": 80,
                 "height": 40,
@@ -84,7 +84,7 @@
             },
             {
                 "position":{
-                    "x": 425,
+                    "x": 460,
                     "y": 200
                 },
                 "width": 80,
@@ -105,7 +105,7 @@
             {
                 "position":{
                     "x": 125,
-                    "y": 200
+                    "y": 400
                 },
                 "width": 80,
                 "height": 40,
@@ -122,16 +122,15 @@
         "level1": [
             {
                 "position":{
-                    "x": 10,
-                    "y": 500
+                    "x": 35,
+                    "y": 400
                 },
                 "width": LADDER_WIDTH,
-                "height": 100,
+                "height": 200,
             }
         ]
     };
     var ladders = laddersList.level1;
-
 
     // ### GRAPHICS VARIABLES ###
     // Colors
@@ -141,8 +140,6 @@
     const BALLOON_COLOR = "red";
     const GRAPPLE_HOOK_COLOR = "red";
     const TRIDENT_COLOR = "orange"
-
-
 
     // ------------------------------
     //  Functions
@@ -181,29 +178,25 @@
     }
 
     /**
-     * Moving the player (up)
+     * Moving the player (with ladders)
      */
-    playerUp = function() {
-        var indiceLadder = findLadder();
-        if(indiceLadder != -1) {
-            player.speed.y = -PLAYER_SPEED/2;
+    playerMoveLadder = function(move) {
+        if(findLadder() != -1) {
+            switch(move) {
+                case 38:
+                    player.speed.y = -PLAYER_SPEED;
+                    break;
+                case 40:
+                    player.speed.y = PLAYER_SPEED;
+                    break;
+            }
         }
     }
 
     /**
-     * Moving the player (down)
+     * Stop the player's movement (with ladders)
      */
-    playerDown = function() {
-        var indiceLadder = findLadder();
-        if(indiceLadder != -1) {
-            player.speed.y = PLAYER_SPEED/2;
-        }
-    }
-
-    /**
-     * Stop the player's movement (vertically)
-     */
-    playerStopUp = function() {
+    playerStopMoveLadder = function() {
         player.speed.y = 0;
     }
 
@@ -215,8 +208,8 @@
         var find = false;
 
         while(i<ladders.length && !find) {
-            if(player.position.y + player.height <= ladders[i].position.y + ladders[i].height && player.position.y + player.height >= ladders[i].position.y) {
-                if(player.position.x >= ladders[i].position.x && player.position.x + player.width <= ladders[i].position.x + ladders[i].width) {
+            if(player.position.x >= ladders[i].position.x - 0.33*player.width && player.position.x <= ladders[i].position.x + ladders[i].width - 0.66*player.width) {
+                if(player.position.y >= ladders[i].position.y - 1.1*player.height && player.position.y <= context.height) {
                     find = true;
                 } else {
                     i++;
@@ -230,6 +223,36 @@
             i = -1;
         }
         return i;
+    }
+
+    /**
+     * Detect if the player is on a platform
+     */
+    detectPlatform = function() {
+        var isOn = true;
+
+        for(var i=0; i<platform.length; i++) {
+            if(player.position.x + player.width < platform[i].position.x || player.position.x > platform[i].position.x + platform[i].width || player.position.y > platform[i].position.y + platform[i].height || player.position.y + player.height < platform[i].position.y) {
+                isOn = false;
+            } else {
+                isOn = true;
+            }
+        }
+
+        return isOn;
+    }
+
+    /**
+     * Return true if the player is not on the ground, a platform, or a ladder
+     */
+    isNotOnPlatformOrGround = function() {
+        isNot = false;
+
+        if(player.position.y + player.height < context.height && findLadder() == -1 && !detectPlatform()) { // not on the ground
+            isNot = true;
+        }
+
+        return isNot;
     }
 
     /**
@@ -354,8 +377,6 @@
         return(weapon.position.x > rectangle.position.x && weapon.position.x + WEAPON_WIDTH < rectangle.position.x + rectangle.width);
     }
 
-
-
     /**
     *
     *
@@ -372,7 +393,6 @@
         }
     }
 
-
     /**
      * Shoot a grapple hook
      */
@@ -384,7 +404,6 @@
             grappleHook.length = 0;
         }
     }
-    
 
     /**
      * Delete grapple hook
@@ -410,7 +429,7 @@
 
                 case TRIDENT_NUMBER :
                     hook.shooting = false;
-                break; 
+                break;
             }
         } else {
 
@@ -421,7 +440,7 @@
                 if(platforms[i].exist && isWeaponBetweenX(hook,platforms[i])){
                     if(cvs.height - hook.length < platforms[i].position.y + platforms[i].height){
                         isItHittingPlatform = true;
-                        
+
                         switch(hook.type){
                             case GRAPPLE_HOOK_NUMBER :
                                 deleteWeapon(hook);
@@ -432,20 +451,18 @@
 
                             case TRIDENT_NUMBER :
                                 hook.shooting = false;
-                            break; 
-                        }    
+                            break;
+                        }
                     }
                 }
             }
-
-        
 
             //Hitting a balloon
             for(var i=0 ; i<balloons.length ; i++){
 
                 if(balloons[i].radius>0 && platforms[i].exist){
 
-                    if(Math.pow(balloons[i].center.x-hook.position.x,2) < Math.pow(balloons[i].radius,2) 
+                    if(Math.pow(balloons[i].center.x-hook.position.x,2) < Math.pow(balloons[i].radius,2)
                     && balloons[i].center.y+balloons[i].radius > cvs.height-hook.length){
 
                         deleteWeapon(hook);
@@ -455,7 +472,6 @@
                     }
                 }
             }
-        
         }
     }
 
@@ -474,8 +490,6 @@
     function isBetweenY(balloonCenter,rectangle){
         return(balloonCenter.y > rectangle.y && balloonCenter.y < rectangle.y + rectangle.height)
     }
-
-  
 
     /**
      * Detect a collision between 2 ballons
@@ -540,7 +554,7 @@
      */
     function keepBallonOutsideObjects(ball, object){
         if(collisionsAngles(ball, object)){
-            ball.velocity.x = -ball.velocity.x;
+            ball.velocity.x = -ball.velocity.x - 0,7;
             ball.velocity.y = -ball.velocity.y;
         }
         if(collisionsX(ball, object)){
@@ -551,10 +565,6 @@
         }
         return(ball);
     }
-
-
-
-
 
     // ------------------------------
     //  Game
@@ -623,9 +633,6 @@
     *  @param delta the time between now and the last update
     */
     update = function(delta) {
-
-
-        // Move balloons
         for(var i=0 ; i<balloons.length ; i++){
             if(balloons[i].radius>0){
                 // Update balloons[i].velocity
@@ -657,12 +664,11 @@
             balloons[1].velocity.x = -balloons[1].velocity.x;
         }
 
-
         // Weapons will deal a lot of damages
         for(var i=0 ; i<weapons.length ; i++){
 
             if(weapons[i].shooting==true){
-            
+
                 switch(weapons[i].type){
 
                     case GRAPPLE_HOOK_NUMBER:
@@ -674,31 +680,26 @@
             stopHooks(weapons[i]);
         }
 
-        // Move the player
+        // New player's position
         var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
-        var newSpdXPlayer = player.speed.x + GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + GRAVITY.y*delta/1000;
+        var newSpdXPlayer = player.speed.x + isGravity*GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + isGravity*GRAVITY.y*delta/1000;
+        if(findLadder() != -1) {
+            if(newPosYPlayer + player.height < ladders[findLadder()].position.y) {
+                newPosYPlayer = ladders[findLadder()].position.y - player.height;
+            }
+        }
+        if(isNotOnPlatformOrGround()) {
+            isGravity = 1;
+        } else {
+            isGravity = 0;
+        }
+
+        // Update player
         player.position.x = newPosXPlayer;
         player.position.y = newPosYPlayer;
         player.speed.x = newSpdXPlayer;
         player.speed.y = newSpdYPlayer;
         keepPlayerWithinBorder();
-
-        // Player up
-        if(player.up) {
-            playerUp();
-            if(findLadder() == -1) {
-                player.up = false;
-                playerStopUp();
-            }
-        }
-        // Player down
-        if(player.down) {
-            playerDown();
-            if(findLadder() == -1) {
-                player.down = false;
-                playerStopUp();
-            }
-        }
 
         //Detect the victory
         if(isVictory()){
@@ -721,7 +722,7 @@
                 } else {
                     context.fillStyle = PLATFORM_COLOR ;
                 }
-                
+
                 context.fillRect(platforms[i].position.x, platforms[i].position.y, platforms[i].width, platforms [i].height);
             }
         }
@@ -731,7 +732,7 @@
         for (var i=0; i < ladders.length; i++) {
         	context.fillRect(ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
         }
-        
+
         // balloons displaying
         for(var i=0 ; i<balloons.length ;i++){
             if(balloons[i].radius>0){
@@ -781,28 +782,25 @@
             case 39:
             case 37:
                 playerMove(event.keyCode);
-            break;
+                break;
 
             // Player1 up or down
             case 38:
-                player.up = true;
-            break;
-
             case 40:
-                player.down = true;
-            break;
+                playerMoveLadder(event.keyCode);
+                break;
 
             // 'P' means pause or unpause
             case 80:
                 pause = !pause;
-            break;
+                break;
 
             // Space for fire the weapon
             case 32:
                 shootWeapon(player);
             break;
 
-            //Shortcut to victory                                                                       // BETA FUNCTION
+            // Shortcut to victory                                                                       // BETA FUNCTION
             case 71:
               victory = true;
             break;
@@ -831,16 +829,17 @@
             case 37:
                 playerStopMove(event.keyCode);
                 break;
+            case 38:
+            case 40:
+                playerStopMoveLadder();
         }
     }
-
 
     </script>
 </head>
 <body onload="init()">
 
     <canvas id="cvs" width="800" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
-
 
     <p> Commandes : 
         <ul>
