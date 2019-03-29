@@ -231,8 +231,8 @@
     detectPlatform = function() {
         var isOn = true;
 
-        for(var i=0; i<platform.length; i++) {
-            if(player.position.x + player.width < platform[i].position.x || player.position.x > platform[i].position.x + platform[i].width || player.position.y > platform[i].position.y + platform[i].height || player.position.y + player.height < platform[i].position.y) {
+        for(var i=0; i<platforms.length; i++) {
+            if(player.position.x + player.width < platforms[i].position.x || player.position.x > platforms[i].position.x + platforms[i].width || player.position.y > platforms[i].position.y + platforms[i].height || player.position.y + player.height < platforms[i].position.y) {
                 isOn = false;
             } else {
                 isOn = true;
@@ -713,6 +713,7 @@
     render = function() {
         // Wiping the screen
         context.clearRect(0, 0, context.width, context.height);
+        //context.drawImage(bg_paris, 0, 0, 800, 600);
 
 		// platforms drawing
         for (var i=0; i < platforms.length; i++) {
@@ -839,9 +840,11 @@
 </head>
 <body onload="init()">
 
+    <!-- Canvas -->
     <canvas id="cvs" width="800" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
 
-    <p> Commandes : 
+    <!-- About -->
+    <p> Commandes :
         <ul>
             <li>R : Arme par défaut</li>
             <li>T : Trident </li>
@@ -849,5 +852,10 @@
             <li>P : pause</li>
         </ul>
     </p>
+
+    <!-- Pictures -->
+    <div style="display: none">
+        <img src="bg_paris.jpg" alt="bg_paris" id="bg_paris">
+    </div>
 </body>
 </html>
