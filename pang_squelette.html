@@ -25,13 +25,19 @@
     // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
     var balloons = [
         {center: {x: 500, y:30},
-        radius:50,
+        radius:30,
         velocity:{ x: 1, y: 0},
         gravity: {x :0, y: 9.81/1000},
         },
 
+        {center: {x: 400, y:30},
+        radius:30,
+        velocity:{ x: 0.5, y: 0},
+        gravity: {x :0, y: 9.81/1000},
+        },
+
         {center: {x: 300, y:30},
-        radius:50,
+        radius:30,
         velocity:{ x: -1, y: 0},
         gravity: {x :0, y: 9.81/1000},
         }
@@ -312,29 +318,34 @@
      * It does exactly what you expect
      */
     function keepBalloonWithinBorders(ball){
+        var changement = false;
         //Top
         if(ball.center.y < ball.radius){
             ball.center.y = ball.radius;
             ball.velocity.y = -ball.velocity.y;
+            changement = true;
         } else {
             //Bottom
             if(ball.center.y > cvs.height - ball.radius){
                 ball.center.y = cvs.height - ball.radius;
                 ball.velocity.y = -ball.velocity.y;
+                changement = true;
             }
         }
         //Left
         if(ball.center.x < ball.radius){
             ball.center.x = ball.radius;
             ball.velocity.x = -ball.velocity.x;
+            changement = true;
         } else {
             //Right
             if(ball.center.x > cvs.width-ball.radius){
                 ball.center.x = cvs.width - ball.radius;
                 ball.velocity.x = -ball.velocity.x;
+                changement = true;
             }
         }
-        return(ball);
+        return(changement);
     }
 
     /**
@@ -393,13 +404,6 @@
         return(!isOneBalloonRemaining);
     }
 
-    /**
-     * Is the balloonX between the x and x + width of the rectangle ? Return boolean
-     * Inputs : balloon with x, rectangle with x and width
-     */
-    function isBetweenX(balloonPosition,rectangle){
-        return(balloonPosition.x > rectangle.x && balloonPosition.x < rectangle.x + rectangle.width)
-    }
 
     /**
     *
@@ -410,8 +414,7 @@
     }
 
     /**
-    *
-    *
+    * Fire a weapon
     */
     function shootWeapon(player){
         switch(player.powerOn){
@@ -426,10 +429,10 @@
     }
 
     /**
-     * Shoot a grapple hook
+     * Shoot a hook
      */
     function shootGrappleHook(grappleHook){
-        if(grappleHook.type ==0) {
+        if(grappleHook.type == 0) {
             grappleHook.type = player.powerOn;
             grappleHook.shooting = true;
             grappleHook.position = {x: player.position.x+player.width/2 , y: player.position.y+player.height};
@@ -438,7 +441,7 @@
     }
 
     /**
-     * Delete grapple hook
+     * Delete a weapon
      */
     function deleteWeapon(weapon){
         weapon.type = 0;
@@ -447,8 +450,9 @@
         weapon.length = 0;
     }
 
+
     /**
-     * Checking if the grapple hook should stop
+     * Checking if the hook should stop
      */
     function stopHooks(hook){
         // Hit the top of the screen
@@ -469,9 +473,9 @@
 
             for(var i=0 ; i<platforms.length ; i++){
                 if(platforms[i].exist && isWeaponBetweenX(hook,platforms[i])){
-                    if(cvs.height - hook.length < platforms[i].position.y + platforms[i].height){
-                        isItHittingPlatform = true;
-
+                    console.log(hook.position.y)
+                    if(hook.position.y - hook.length  < platforms[i].position.y + platforms[i].height){
+                        
                         switch(hook.type){
                             case GRAPPLE_HOOK_NUMBER :
                                 deleteWeapon(hook);
@@ -494,7 +498,7 @@
             if(balloons[i].radius>0){
 
                 if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].radius, 2) 
-                && balloons[i].center.y + balloons[i].radius > cvs.height - hook.length){
+                && balloons[i].center.y + balloons[i].radius > hook.position.y - hook.length){
 
                     deleteWeapon(hook);
                     player.score += balloons[i].radius*10 ;
@@ -521,16 +525,7 @@
         return(balloonCenter.y > rectangle.y && balloonCenter.y < rectangle.y + rectangle.height)
     }
 
-    /**
-     * Detect a collision between 2 ballons
-     */
-    function AreBalloonsCollisionning(ball1, ball2){
-        if(ball1.radius <= 0 || ball2.radius <= 0){
-            return(false);
-        }
-        return(!(Math.pow(ball1.radius + ball2.radius, 2) <= Math.pow(ball1.center.x - ball2.center.x, 2) + Math.pow(ball1.center.y - ball2.center.y, 2)));
-    }
-
+   
     /**
      * Return 'true' if the balloon touches an angle of a rectangular object
      */
@@ -579,24 +574,30 @@
         return(collisionAngles || collisionX || collisionY);
     }
 
+
     /**
-     * Make sure the balloons are colliding with rectangle objects like platforms
+     * Make sure the balloons are out of colliding with rectangle objects like platforms
      */
     function keepBallonOutsideObjects(ball, object){
         if(object.exist){
             if(collisionsAngles(ball, object)){
                 ball.velocity.x = -ball.velocity.x;
                 ball.velocity.y = -ball.velocity.y;
-            }
-            if(collisionsX(ball, object)){
-                ball.velocity.x = -ball.velocity.x;
-            }
-            if(collisionsY(ball, object)){
-                ball.velocity.y = -ball.velocity.y;
+                correction = true;
+            } else {
+                if(collisionsX(ball, object)){
+                    ball.velocity.x = -ball.velocity.x;
+                    correction = true;
+                }
+                if(collisionsY(ball, object)){
+                    ball.velocity.y = -ball.velocity.y;
+                    correction = true;
+                }
             }
         }
-        return(ball);
     }
+
+    
 
     // ------------------------------
     //  Game
@@ -665,6 +666,7 @@
     *  @param delta the time between now and the last update
     */
     update = function(delta) {
+        // Update balloons position 
         for(var i=0 ; i<balloons.length ; i++){
             if(balloons[i].radius>0){
                 // Update balloons[i].velocity
@@ -674,31 +676,34 @@
                 // Update balloons[i].center
                 balloons[i].center.x += balloons[i].velocity.x * delta * BALLOON_SPEED;
                 balloons[i].center.y += balloons[i].velocity.y * delta * BALLOON_SPEED;
+            }
+        }
 
-                //No, you will not stick out
-                keepBalloonWithinBorders(balloons[i]);
+        //Verifying that balloons do not crash into something
+        for(var i=0 ; i < balloons.length ; i++){
+
+            if(balloons[i].radius>0){    
 
                 //Collisions with player
                 if(collisionsWithPlayer(balloons[i], player)){
                     pause = true;
-                }
+                } else {
 
-                //Don't go into platforms !
-                for(var j=0 ; j<platforms.length ; j++){
-                    balloons[i] = keepBallonOutsideObjects(balloons[i], platforms[j]);
-                }
+                    //No, you will not stick out
+                    var bordersCorrection = keepBalloonWithinBorders(balloons[i]);
 
-                //Ballons are collisionning
-                for(var j= i+1 ; j<balloons.length ; j++){
-                    if(AreBalloonsCollisionning(balloons[i],balloons[j])){
-                        balloons[0].velocity.x = -balloons[0].velocity.x;
-                        balloons[1].velocity.x = -balloons[1].velocity.x;
+                    if(!bordersCorrection){
+                    
+                        //Don't go into platforms !
+                        for(var j=0 ; j<platforms.length ; j++){
+                            keepBallonOutsideObjects(balloons[i], platforms[j]);
+                        }
                     }
                 }
             }
         }
 
-       
+
 
         // Weapons will deal a lot of damages
         for(var i=0 ; i<weapons.length ; i++){
