@@ -39,24 +39,37 @@
 
     //Balloons related variables
     const BALLOON_SPEED = 0.2;
-    const BALLOON_COLOR = "red";
 
     // when did we update the game last time ?
     var lastUpdate = Date.now();
 
     // A beautiful player
     // With his position, his speed, his size and his others variables
-    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, up: false, down: false, livesNumber: 3};
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, up: false, down: false, livesNumber: 3, color:"blue"};
     const PLAYER_SPEED = 500;
 
-    // A incredible grappleHook
-    var grappleHook = {position:{x:0, y:0}, length:0, shooting:false};
+    // All the weapons and types of weapons (0= the weapon is not active)
+    const GRAPPLE_HOOK = 1;
+
+    var weapons = [
+        {
+            type:0,
+            position: {x: 0, y: 0},
+            length: 0,
+            shooting: false,
+        }
+
+    ]
+
+    // Weapons related variables
+    const GRAPPLE_HOOK_WIDTH = 5;
+
 
     // gravity (thanks Newton)
     const GRAVITY = {x: 0, y: 400};
 
     // All the platforms
-    var platforms = {
+    var platformsList = {
         "level1": [
             {
                 "position":{
@@ -100,7 +113,7 @@
             }
         ]
     }
-    var platform = platforms.level1;
+    var platforms = platformsList.level1;
 
     // ladders in the game
     const LADDER_WIDTH = 90;
@@ -117,6 +130,18 @@
         ]
     };
     var ladders = laddersList.level1;
+
+
+    // ### GRAPHICS VARIABLES ###
+    // Colors
+    const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
+    const PLATFORM_COLOR = "black";
+    const LADDER_COLOR = "gray";
+    const BALLOON_COLOR = "red";
+    const GRAPPLE_HOOK_COLOR = "red";
+
+
+
 
     // ------------------------------
     //  Functions
@@ -209,7 +234,7 @@
     /**
      * It does exactly what you expect
      */
-    keepPlayerWithinBorder = function() {
+    function keepPlayerWithinBorder() {
         if(player.position.x < 0) {
             player.position.x = 0;
         } else {
@@ -331,11 +356,11 @@
     /**
      * Shoot grapple hook
      */
-    function shootGrappleHook(player){
+    function shootGrappleHook(grappleHook){
         if(grappleHook.shooting==false){
+            grappleHook.type = 1;
             grappleHook.shooting = true;
-            grappleHook.position.x = player.position.x+player.width/2;
-            grappleHook.position.y = player.position.y+player.height;
+            grappleHook.position = {x: player.position.x+player.width/2 , y: player.position.y+player.height};
             grappleHook.length = 0;
         }
     }
@@ -343,32 +368,33 @@
     /**
      * Delete grapple hook
      */
-    function deleteGrappleHook(grappleHook){
-        grappleHook.shooting = false;
-        grappleHook.position = {x:0, y:0};
-        grappleHook.length = 0;
+    function deleteWeapon(weapon){
+        weapon.type = 0;
+        weapon.shooting = false;
+        weapon.position = {x:0, y:0};
+        weapon.length = 0;
     }
 
     /**
      * Checking if the grapple hook should stop
      */
-    function isGrappleHookStopped(grappleHook){
+    function stopGrappleHook(grappleHook){
 
         // Hit the top of the screen
         if(grappleHook.position.y - grappleHook.length < 0){
-            deleteGrappleHook(grappleHook);
+            deleteWeapon(grappleHook);
         } else {
 
             //Hit a platform
             var isItHittingPlatform = false;
 
-            for(var i=0 ; i<platform.length ; i++){
-                if(platform[i].exist && isWeaponBetweenX(grappleHook,platform[i])){
-                    if(cvs.height - grappleHook.length < platform[i].position.y + platform[i].height){
-                        deleteGrappleHook(grappleHook);
+            for(var i=0 ; i<platforms.length ; i++){
+                if(platforms[i].exist && isWeaponBetweenX(grappleHook,platforms[i])){
+                    if(cvs.height - grappleHook.length < platforms[i].position.y + platforms[i].height){
+                        deleteWeapon(grappleHook);
                         isItHittingPlatform = true;
-                        if(platform[i].isDestructible){
-                            platform[i].exist = false;
+                        if(platforms[i].isDestructible){
+                            platforms[i].exist = false;
                         }
                     }
                 }
@@ -380,10 +406,10 @@
                 var isHittingBalloon = 0;
 
                 for(var i=0 ; i<balloons.length ; i++){
-                    if(balloons[i].radius>0 && platform[i].exist){
+                    if(balloons[i].radius>0 && platforms[i].exist){
                         if(Math.pow(balloons[i].center.x-grappleHook.position.x,2) < Math.pow(balloons[i].radius,2) 
                         && balloons[i].center.y+balloons[i].radius > cvs.height-grappleHook.length){
-                            deleteGrappleHook(grappleHook);
+                            deleteWeapon(grappleHook);
                             balloons[i].radius = 0;
                             isHittingBalloon = i;
                         }
@@ -409,37 +435,7 @@
         return(balloonCenter.y > rectangle.y && balloonCenter.y < rectangle.y + rectangle.height)
     }
 
-    /**
-     * Detect a collision between a balloon and a player
-     */
-    function collisionsWithPlayer(ball, player) {
-        var collisionCoin = true;
-        var collisionsY = false;
-        var collisionX = false;
-        if(
-            player.position.x + player.width <= ball.center.x - ball.radius ||
-            player.position.x >= ball.center.x + ball.radius ||
-            player.position.y + player.height <= ball.center.y - ball.radius ||
-            player.position.y >= ball.center.y + ball.radius)
-        {
-            collisionCoin = false;
-        }
-        if(isBetweenX(ball.center, player.position)){
-            if(player.position.y >= ball.center.y + ball.radius ||
-                player.position.y + player.height <= ball.center.y - ball.radius)
-            {
-                collisionsY = true;
-            }
-        }
-        if(isBetweenY(ball.center, player.position)){
-            if(player.position.x >= ball.center.x + ball.radius ||
-            player.position.x + player.width <= ball.center.x - ball.radius )
-            {
-                collisionX = true;
-            }
-        }
-        return(collisionCoin || collisionX || collisionsY);
-    }
+  
 
     /**
      * Detect a collision between 2 ballons
@@ -492,7 +488,7 @@
     /**
      * Call the other testing functions and return if there's a collision
      */
-    function collisionsWithRectangle(ball, object){
+    function collisionsWithPlayer(ball, object){
         var collisionAngles = collisionsAngles(ball, object);
         var collisionY = collisionsY(ball, object);
         var collisionX = collisionsX(ball, object);
@@ -584,6 +580,8 @@
     */
     update = function(delta) {
 
+
+        // Move balloons
         for(var i=0 ; i<balloons.length ; i++){
             if(balloons[i].radius>0){
                 // Update balloons[i].velocity
@@ -597,17 +595,14 @@
                 //No, you will not stick out
                 keepBalloonWithinBorders(balloons[i]);
 
+                //Collisions with player
                 if(collisionsWithPlayer(balloons[i], player)){
-                   pause = true;
-                }
-
-                if(collisionsWithRectangle(balloons[i], player)){
                     pause = true;
                 }
 
                 //Don't go into platforms !
-                for(var j=0 ; j<platform.length ; j++){
-                    balloons[i] = keepBallonOutsideObjects(balloons[i], platform[j]);
+                for(var j=0 ; j<platforms.length ; j++){
+                    balloons[i] = keepBallonOutsideObjects(balloons[i], platforms[j]);
                 }
             }
         }
@@ -619,11 +614,21 @@
         }
 
 
-        //Grapple hook will deal a lot of damages
-        if(grappleHook.shooting==true){
-            grappleHook.length += 0.3 * delta ;
+        // Weapons will deal a lot of damages
+        for(var i=0 ; i<weapons.length ; i++){
+
+            if(weapons[i].shooting==true){
+            
+                switch(weapons[i].type){
+                    
+                    case GRAPPLE_HOOK:
+                        weapons[i].length += 0.3 * delta ;
+                        console.log("fjae")
+                    break;
+                }
+            }
+            stopGrappleHook(weapons[i]);
         }
-        isGrappleHookStopped(grappleHook);
 
         // Move the player
         var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
@@ -664,6 +669,25 @@
         // Wiping the screen
         context.clearRect(0, 0, context.width, context.height);
 
+		// platforms drawing
+        for (var i=0; i < platforms.length; i++) {
+        	if(platforms[i].exist){
+                if(platforms[i].isDestructible){
+                    context.fillStyle = DESTRUCTIBLE_PLATFORM_COLOR;
+                } else {
+                    context.fillStyle = PLATFORM_COLOR ;
+                }
+                
+                context.fillRect(platforms[i].position.x, platforms[i].position.y, platforms[i].width, platforms [i].height);
+            }
+        }
+
+        // ladders drawing
+        context.fillStyle= LADDER_COLOR ;
+        for (var i=0; i < ladders.length; i++) {
+        	context.fillRect(ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
+        }
+        
         // balloons displaying
         for(var i=0 ; i<balloons.length ;i++){
             if(balloons[i].radius>0){
@@ -671,26 +695,21 @@
             }
         }
 
-		// platforms drawing
-        context.fillStyle="black";
-        for (var i=0; i < platform.length; i++) {
-        	if(platform[i].exist){
-                context.fillRect(platform[i].position.x, platform[i].position.y, platform[i].width, platform [i].height);
+        // weapons drawing
+        for(var i=0 ; i < weapons.length ; i++){
+            var weaponWidth = 0, weaponColor;
+            switch(weapons[i].type){
+                case GRAPPLE_HOOK:
+                    weaponColor = GRAPPLE_HOOK_COLOR;
+                    weaponWidth = GRAPPLE_HOOK_WIDTH;
+                break;
             }
-        }
-
-        //grappleHook drawing
-        context.fillStyle="red";
-        context.fillRect(grappleHook.position.x,grappleHook.position.y,5,-grappleHook.length);
-
-        // ladders drawing
-        context.fillStyle="gray";
-        for (var i=0; i < ladders.length; i++) {
-        	context.fillRect(ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
+            context.fillStyle = weaponColor;
+            context.fillRect(weapons[i].position.x,weapons[i].position.y,weaponWidth,-weapons[i].length);
         }
 
         // Drawing of the player
-        context.fillStyle = "blue";
+        context.fillStyle = player.color;
         context.fillRect(player.position.x, player.position.y, player.width, player.height);
 
         // Victory screen
@@ -731,7 +750,7 @@
 
             // Space for fire the grapple hook
             case 32:
-                shootGrappleHook(player);
+                shootGrappleHook(weapons[0]);
             break;
 
             //Shortcut to victory                                                                       // BETA FUNCTION
