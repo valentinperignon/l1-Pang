@@ -54,7 +54,7 @@
     var grappleHook = {position:{x:0, y:0}, length:0, shooting:false};
 
     // gravity (thanks Newton)
-    const GRAVITY = {x: 0, y: 400};
+    const GRAVITY = {x: 0, y: 700};
 
     // All the platforms
     var platforms = {
@@ -66,7 +66,6 @@
                 },
                 "width": 80,
                 "height": 30,
-                "vertical": false,
                 "exist": true
             },
             {
@@ -76,7 +75,6 @@
                 },
                 "width": 80,
                 "height": 30,
-                "vertical": false,
                 "exist": true
             },
             {
@@ -86,7 +84,6 @@
                 },
                 "width": 80,
                 "height": 30,
-                "vertical": false,
                 "exist": true
             },
             {
@@ -96,7 +93,6 @@
                 },
                 "width": 80,
                 "height": 30,
-                "vertical": false,
                 "exist": true
             }
         ]
@@ -203,14 +199,31 @@
         return i;
     }
 
+    /**
+     * Detect if the player is on a platform
+     */
+    detectPlatform = function() {
+        var isOn = true;
+
+        for(var i=0; i<platform.length; i++) {
+            if(player.position.x + player.width < platform[i].position.x || player.position.x > platform[i].position.x + platform[i].width || player.position.y > platform[i].position.y + platform[i].height || player.position.y + player.height < platform[i].position.y) {
+                isOn = false;
+            } else {
+                isOn = true;
+            }
+        }
+
+        return isOn;
+    }
+
+    /**
+     * Return true if the player is not on the ground, a platform, or a ladder
+     */
     isNotOnPlatformOrGround = function() {
         isNot = false;
 
-        if(player.position.y + player.height < context.height) { // not on the ground
-            if(findLadder() == -1) { // not on the ladder
-                // TODO ajouter le cas où il n'est pas sur une plateforme
-                isNot = true;
-            }
+        if(player.position.y + player.height < context.height && findLadder() == -1 && !detectPlatform()) { // not on the ground
+            isNot = true;
         }
 
         return isNot;
@@ -505,7 +518,7 @@
      */
     function keepBallonOutsideObjects(ball, object){
         if(collisionsAngles(ball, object)){
-            ball.velocity.x = -ball.velocity.x;
+            ball.velocity.x = -ball.velocity.x - 0,7;
             ball.velocity.y = -ball.velocity.y;
         }
         if(collisionsX(ball, object)){
@@ -632,6 +645,11 @@
             if(newPosYPlayer + player.height < ladders[findLadder()].position.y) {
                 newPosYPlayer = ladders[findLadder()].position.y - player.height;
             }
+        }
+        if(isNotOnPlatformOrGround()) {
+            isGravity = 1;
+        } else {
+            isGravity = 0;
         }
 
         // Update player
