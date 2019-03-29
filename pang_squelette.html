@@ -71,7 +71,7 @@
 
 
     // gravity (thanks Newton)
-    const GRAVITY = {x: 0, y: 700};
+    const GRAVITY = {x: 0, y: 1500};
 
     // All the platforms
     var platformsList = {
@@ -716,11 +716,15 @@
         }
 
         // New player's position
-        var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
+        var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000
         var newSpdXPlayer = player.speed.x + isGravity*GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + isGravity*GRAVITY.y*delta/1000;
         if(findLadder() != -1) {
             if(newPosYPlayer + player.height < ladders[findLadder()].position.y) {
                 newPosYPlayer = ladders[findLadder()].position.y - player.height;
+            }
+        } else {
+            if(newPosYPlayer < player.position.y) {
+                newPosYPlayer = player.position.y;
             }
         }
         if(isNotOnPlatformOrGround()) {
