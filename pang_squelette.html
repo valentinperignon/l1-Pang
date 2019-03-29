@@ -231,8 +231,11 @@
     detectPlatform = function() {
         var isOn = true;
 
-        for(var i=0; i<platform.length; i++) {
-            if(player.position.x + player.width < platform[i].position.x || player.position.x > platform[i].position.x + platform[i].width || player.position.y > platform[i].position.y + platform[i].height || player.position.y + player.height < platform[i].position.y) {
+        for(var i=0; i<platforms.length; i++) {
+            if(player.position.x + player.width < platforms[i].position.x
+            || player.position.x > platforms[i].position.x + platforms[i].width
+            || player.position.y > platforms[i].position.y + platforms[i].height 
+            || player.position.y + player.height < platforms[i].position.y) {
                 isOn = false;
             } else {
                 isOn = true;
