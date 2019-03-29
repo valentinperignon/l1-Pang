@@ -65,8 +65,8 @@
                 },
                 "width": 80,
                 "height": 40,
-                "vertical": false,
-                "exist": true
+                "exist": true,
+                "isDestructible": false
             },
             {
                 "position":{
@@ -75,8 +75,8 @@
                 },
                 "width": 80,
                 "height": 40,
-                "vertical": false,
-                "exist": true
+                "exist": true,
+                "isDestructible": false
             },
             {
                 "position":{
@@ -85,8 +85,8 @@
                 },
                 "width": 80,
                 "height": 40,
-                "vertical": false,
-                "exist": true
+                "exist": true,
+                "isDestructible": false
             },
             {
                 "position":{
@@ -95,8 +95,8 @@
                 },
                 "width": 80,
                 "height": 40,
-                "vertical": false,
-                "exist": true
+                "exist": true,
+                "isDestructible": true
             }
         ]
     }
@@ -321,6 +321,14 @@
     }
 
     /**
+    *
+    *
+    */
+    function isWeaponBetweenX(weapon,rectangle){
+        return(weapon.position.x > rectangle.position.x && weapon.position.x < rectangle.position.x + rectangle.width);
+    }
+
+    /**
      * Shoot grapple hook
      */
     function shootGrappleHook(player){
@@ -344,7 +352,7 @@
     /**
      * Checking if the grapple hook should stop
      */
-    function ifGrappleHookStopped(grappleHook){
+    function isGrappleHookStopped(grappleHook){
 
         // Hit the top of the screen
         if(grappleHook.position.y - grappleHook.length < 0){
@@ -355,7 +363,7 @@
             var isItHittingPlatform = false;
 
             for(var i=0 ; i<platform.length ; i++){
-                if(platform[i].exist && isBetweenX(grappleHook.position,platform[i])){
+                if(platform[i].exist && isWeaponBetweenX(grappleHook,platform[i])){
                     if(cvs.height - grappleHook.length < platform[i].position.y + platform[i].height){
                         deleteGrappleHook(grappleHook);
                         isItHittingPlatform = true;
@@ -373,7 +381,8 @@
 
                 for(var i=0 ; i<balloons.length ; i++){
                     if(balloons[i].radius>0 && platform[i].exist){
-                        if(Math.pow(balloons[i].center.x-grappleHook.position.x,2) < Math.pow(balloons[i].radius,2) && balloons[i].center.y+balloons[i].radius > cvs.height-grappleHook.length){
+                        if(Math.pow(balloons[i].center.x-grappleHook.position.x,2) < Math.pow(balloons[i].radius,2) 
+                        && balloons[i].center.y+balloons[i].radius > cvs.height-grappleHook.length){
                             deleteGrappleHook(grappleHook);
                             balloons[i].radius = 0;
                             isHittingBalloon = i;
@@ -614,7 +623,7 @@
         if(grappleHook.shooting==true){
             grappleHook.length += 0.3 * delta ;
         }
-        ifGrappleHookStopped(grappleHook);
+        isGrappleHookStopped(grappleHook);
 
         // Move the player
         var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000;
