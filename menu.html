@@ -55,10 +55,15 @@
         // affichage du logo Pang
         context.drawImage(logo, (context.width-400)/2, 80, 400, 189);
 
-        // affichage du texte
+        // affichage du texte "copyright"
         context.fillStyle = "white";
-        context.font = "30px Georgia";
-        context.fillText("COMMENCER A JOUER ...", 210, context.height-80-30);
+        context.font = "17px Georgia";
+        context.fillText("© Fabian D., Nathanaël H. Valentin P.", 245, 189+80+20);
+
+        // affichage du texte "Commencer à jouer..."
+        context.fillStyle = "white";
+        context.font = "35px Georgia";
+        context.fillText("COMMENCER A JOUER ...", 190, context.height-80-50);
     }
 
     /**
