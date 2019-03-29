@@ -417,11 +417,11 @@
         switch(player.powerOn){
             case GRAPPLE_HOOK_NUMBER:
                 shootGrappleHook(weapons[0]);
-            break;
+                break;
 
             case TRIDENT_NUMBER:
                 shootGrappleHook(weapons[0]);
-            break;
+                break;
         }
     }
 
@@ -456,11 +456,11 @@
             switch(hook.type){
                 case GRAPPLE_HOOK_NUMBER :
                     deleteWeapon(hook);
-                break;
+                    break;
 
                 case TRIDENT_NUMBER :
                     hook.shooting = false;
-                break;
+                    break;
             }
         } else {
 
@@ -478,11 +478,11 @@
                                 if(platforms[i].isDestructible){
                                     platforms[i].exist = false;
                                 }
-                            break;
+                                break;
 
                             case TRIDENT_NUMBER :
                                 hook.shooting = false;
-                            break;
+                                break;
                         }
                     }
                 }
@@ -698,8 +698,6 @@
             }
         }
 
-
-
         // Weapons will deal a lot of damages
         for(var i=0 ; i<weapons.length ; i++){
 
@@ -785,12 +783,12 @@
                 case GRAPPLE_HOOK_NUMBER :
                     weaponColor = GRAPPLE_HOOK_COLOR;
                     weaponWidth = HOOK_WITDH;
-                break;
+                    break;
 
                 case TRIDENT_NUMBER :
                     weaponColor = TRIDENT_COLOR ;
                     weaponWidth = HOOK_WITDH;
-                break;
+                    break;
             }
             context.fillStyle = weaponColor;
             context.fillRect(weapons[i].position.x,weapons[i].position.y,weaponWidth,-weapons[i].length);
@@ -870,6 +868,7 @@
             case 38:
             case 40:
                 playerStopMoveLadder();
+                break;
         }
     }
 
