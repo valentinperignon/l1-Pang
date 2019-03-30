@@ -403,7 +403,8 @@
     isDefeat = function() {
         var defeat = false;
 
-        if(timer <= 1) {
+        // check
+        if(timer <= 1 && !isVictory()) {
             defeat = true;
         }
 
@@ -841,11 +842,20 @@
         // Victory screen
         if(victory){
             context.fillStyle = "green";
-            context.fillRect(cvs.width/5,cvs.height/5,cvs.width/5*3,cvs.height/5*3);
+            context.fillRect(context.width/5,context.height/5,context.width/5*3,context.height/5*3);
             context.fillStyle = "black";
             context.font = '48px serif';
             context.textAlign = "center";
             context.fillText("Et c'est gagné !", cvs.width/2, cvs.height/2);
+        } else {
+            if(defeat) {
+                context.fillStyle = "green";
+                context.fillRect(cvs.width/5,cvs.height/5,cvs.width/5*3,cvs.height/5*3);
+                context.fillStyle = "black";
+                context.font = '48px serif';
+                context.textAlign = "center";
+                context.fillText("Et c'est perdu...", cvs.width/2, cvs.height/2);
+            }
         }
     }
 
@@ -874,24 +884,29 @@
             // Space for fire the weapon
             case 32:
                 shootWeapon(player);
-            break;
+                break;
 
             // Shortcut to victory                                                                       // BETA FUNCTION
             case 71:
               victory = !victory;
-            break;
+                break;
+
+            // Shortcut to defeat                                                                       // BETA FUNCTION
+            case 72:
+              defeat = !defeat;
+                break;
 
             //Activate the default weapon : the grapple hook                                            // BETA FUNCTION
             case 82:
                 player.powerOn = GRAPPLE_HOOK_NUMBER ;
                 console.log("Grappin activé");
-            break;
+                break;
 
             //Activate the powerOn Trident                                                              // BETA FUNCTION
             case 84:
                 player.powerOn = TRIDENT_NUMBER ;
                 console.log("Trident activé");
-            break;
+                break;
         }
     }
 
@@ -917,7 +932,7 @@
 <body onload="init()">
 
     <!-- Canvas -->
-    <canvas id="cvs" width="800" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
+    <canvas id="cvs" width="800" height="600" style="margin: 0 auto; border: solid 1px #000;"></canvas>
 
     <!-- About -->
     <p> Commandes :
@@ -925,6 +940,7 @@
             <li>R : Arme par défaut</li>
             <li>T : Trident </li>
             <li>G : victoire immédiate</li>
+            <li>H : défaite immédiate</li>
             <li>P : pause</li>
         </ul>
     </p>
