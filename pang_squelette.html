@@ -20,6 +20,7 @@
     var isOnFocus = true;
     var pause = false;
     var victory = false;
+    var defeat = false;
 
     // Timer
     var timer = 100;
@@ -397,6 +398,19 @@
     }
 
     /**
+     * Detect the defeat (= no time remaining)
+     */
+    isDefeat = function() {
+        var defeat = false;
+
+        if(timer <= 1) {
+            defeat = true;
+        }
+
+        return defeat;
+    }
+
+    /**
      * Is the balloonX between the x and x + width of the rectangle ? Return boolean
      * Inputs : balloon with x, rectangle with x and width
      */
@@ -646,18 +660,23 @@
         // Run the game if it is not on pause
         if(!isOnFocus || pause){
             document.title = "Pang - en pause";
-        } else if(victory){
-            document.title = "Pang - gagné !";
-            // draw the game
-            render();
-
         } else {
-            document.title = "Pang";
+            if(victory || defeat) {
+                if(victory) {
+                    document.title = "Pang - gagné !";
+                } else {
+                    document.title = "Pang - perdu...";
+                }
+                // draw the game
+                render();
+            } else {
+                document.title = "Pang";
 
-            // update of the game's state
-            update(delta);
-            // draw the game
-            render();
+                // update of the game's state
+                update(delta);
+                // draw the game
+                render();
+            }
         }
 
         requestAnimationFrame(gameLoop);
@@ -750,6 +769,10 @@
         //Detect the victory
         if(isVictory()){
             victory = true;
+        }
+        //Detect the defeat
+        if(isDefeat()){
+            defeat = true;
         }
     }
 
