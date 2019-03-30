@@ -322,7 +322,7 @@ isNotOnPlatformOrGround = function() {
 }
 
 /**
- * It does exactly what you expect
+ * Keep the player inside of the canvas
  */
 function keepPlayerWithinBorder() {
     if(player.position.x < 0) {
@@ -343,7 +343,7 @@ function keepPlayerWithinBorder() {
 }
 
 /**
- * It does exactly what you expect
+ * Keep balloons inside of the canvas
  */
 function keepBalloonWithinBorders(ball){
     var changement = false;
@@ -378,7 +378,8 @@ function keepBalloonWithinBorders(ball){
 
 
 /**
- * Like FillRect, but for circles
+ * Draw a circle
+ * @param {object balloon} cirlce - Balloon which will be draw
  */
 function fillCircle(circle){
     var canvas = document.getElementById("cvs");
@@ -391,7 +392,10 @@ function fillCircle(circle){
 
 
 /**
- * Detect the victory (= no balloon remaining)
+ * Detect the victory
+ * (i.e. detect if no balloon remaining)
+ * 
+ * @returns {boolean} True if the player won
  */
 function isVictory(){
     var isOneBalloonRemaining = false;
@@ -406,7 +410,8 @@ function isVictory(){
 }
 
 /**
- * Detect the defeat (= no time remaining)
+ * Detect the defeat 
+ * (i.e. if there is no time and no ballon remaining)
  */
 isDefeat = function() {
     var defeat = false;
@@ -419,21 +424,19 @@ isDefeat = function() {
     return defeat;
 }
 
-
-
-// #####################################
-// #### Shoot, manage and delete Weapons
-
 /**
-*
-*/
+ * Detect if the weapon is on a rectangle (for x axis)
+ * @param {object weapon} weapon - Player's weapon
+ * @param {object rectangle} rectangle - An obstacle
+ */
 function isWeaponBetweenX(weapon,rectangle){
     return(weapon.position.x > rectangle.position.x && weapon.position.x + HOOK_WITDH < rectangle.position.x + rectangle.width);
 }
 
 /**
-* Fire a weapon
-*/
+ * Fire a weapon
+ * @param {object player} player - The player
+ */
 function shootWeapon(player){
     switch(player.powerOn){
         case GRAPPLE_HOOK_NUMBER:
@@ -448,6 +451,7 @@ function shootWeapon(player){
 
 /**
  * Shoot a hook
+ * @param {object weapon} grappleHook - The player's weapon (which is currently in use)
  */
 function shootGrappleHook(grappleHook){
     if(grappleHook.type == 0) {
@@ -459,7 +463,8 @@ function shootGrappleHook(grappleHook){
 }
 
 /**
- * Delete a weapon
+ * Delete the drawing of the weapon
+ * @param {object weapon} weapon - The weapon which was fire
  */
 function deleteWeapon(weapon){
     weapon.type = 0;
@@ -467,7 +472,6 @@ function deleteWeapon(weapon){
     weapon.position = {x:0, y:0};
     weapon.length = 0;
 }
-
 
 /**
  * Checking if the hook should stop
