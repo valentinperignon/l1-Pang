@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Pang</title>
     <script>
-    
+
     // ------------------------------
     //  Variables
     // ------------------------------
@@ -787,9 +787,21 @@
         //context.drawImage(bg_paris, 0, 0, 800, 600);
 
         // Timer text
-        context.fillStyle = "black";
-        context.font = "25px Arial";
-        context.fillText("Time: " + Math.floor(timer), 700 - 20, 40);
+        var textTime = "TIME : ";
+        if(Math.floor(timer) > 10 && Math.floor(timer) < 100) {
+            textTime += "0";
+        } else {
+            if(Math.floor(timer) < 10) {
+                textTime += "00";
+            }
+        }
+        textTime += Math.floor(timer);
+        context.fillStyle = "white";
+        context.strokeStyle = "black";
+        context.lineWidth = 1.6;
+        context.font = "bolder 30px Arial";
+        context.fillText(textTime, 700 - 65, 40);
+        context.strokeText(textTime, 700 - 65, 40);
 
 		// platforms drawing
         for (var i=0; i < platforms.length; i++) {
