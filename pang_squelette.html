@@ -21,6 +21,7 @@
     var pause = false;
     var victory = false;
     var defeat = false;
+    var isInvincible = false;
 
     // Timer
     var timer = 100;
@@ -177,7 +178,7 @@
             }
         ]
     }
-    var platforms = platformsList.level2;
+    var platforms = platformsList.level1;
 
 
     // ladders in the game
@@ -198,9 +199,9 @@
 
     // ### GRAPHICS VARIABLES ###
     // Colors
-    const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
+    const DESTRUCTIBLE_PLATFORM_COLOR = "grey";
     const PLATFORM_COLOR = "black";
-    const LADDER_COLOR = "gray";
+    const LADDER_COLOR = "darkgray";
     const BALLOON_COLOR = "red";
     const GRAPPLE_HOOK_COLOR = "red";
     const TRIDENT_COLOR = "orange"
@@ -513,15 +514,41 @@
         }
 
         //Hitting a balloon
-        for(var i=0 ; i<balloons.length ; i++){
-            if(balloons[i].size.radius>0){
+        for(var i=0 ; i < balloons.length ; i++){
+            
+            if(balloons[i].size.radius > 0){
 
                 if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
                 && balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length){
 
                     deleteWeapon(hook);
+                    //Points
                     player.score += balloons[i].size.radius*10 ;
-                    balloons[i].size = BALLON_SIZE[balloons[i].size.number - 1];
+                    
+                    
+                    //Two new balloons if the balloons is not of the minimal size
+                    if(balloons[i].size.number > 1){
+                        var oldBall = balloons[i];
+
+                        balloons[balloons.length] =  {
+                            center: {x: oldBall.center.x, y: oldBall.center.y},
+                            size: BALLON_SIZE[oldBall.size.number - 1],
+                            velocity:{ x: -1, y: -2},
+                            gravity: {x :0, y: 9.81/1000}
+                        };
+                        
+                    
+                        balloons[balloons.length] =  {
+                            center: {x: oldBall.center.x, y: oldBall.center.y},
+                            size: BALLON_SIZE[oldBall.size.number - 1],
+                            velocity:{ x: 1, y: -2},
+                            gravity: {x :0, y: 9.81/1000}
+                        };
+                    }
+                    
+
+                    //Delete the balloon
+                    balloons[i].size = BALLON_SIZE[0];
                 }
             }
         }
@@ -859,7 +886,7 @@
             if(balloons[i].size.radius>0){    
 
                 //Collisions with player
-                if(collisionsWithPlayer(balloons[i], player)){
+                if(collisionsWithPlayer(balloons[i], player) && !isInvincible){
                     pause = true;
                 } else {
                     //No, you will not stick out
@@ -979,8 +1006,8 @@
         }
 
         // balloons displaying
-        for(var i=0 ; i<balloons.length ;i++){
-            if(balloons[i].size.radius>0){
+        for(var i=0 ; i < balloons.length ;i++){
+            if(balloons[i].size.radius > 0){
                 fillCircle(balloons[i]);
             }
         }
@@ -1075,6 +1102,12 @@
                 player.powerOn = TRIDENT_NUMBER ;
                 console.log("Trident activé");
                 break;
+
+            //Make the player invincible                                                                // BETA FUNCTION
+            case 73:
+                console.log("Joueur invincible");
+                isInvincible = !isInvincible;
+            break;        
         }
     }
 
@@ -1108,6 +1141,7 @@
             <li>T : Trident </li>
             <li>G : victoire immédiate</li>
             <li>H : défaite immédiate</li>
+            <li>I : invincibilité</li>
             <li>P : pause</li>
         </ul>
     </p>
