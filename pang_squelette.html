@@ -25,23 +25,41 @@
     // Timer
     var timer = 100;
 
+    //Balloons related variables
+    const BALLOON_SPEED = 0.1;
+    const BALLON_SIZE = [
+        {number: 0,
+        radius: 0
+        },
+        {number: 1,
+        radius: 15
+        },
+        {number: 2,
+        radius: 30
+        },
+        {number: 3,
+        radius: 40
+        },
+        {number: 4,
+        radius: 50
+        }
+    ]
+
     // An array of all the balloons in the game
     // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
     var balloons = [
         {center: {x: 400, y:30},
-        radius:30,
+        size: BALLON_SIZE[4],
         velocity:{ x: -1, y: 0},
         gravity: {x :0, y: 9.81/1000},
         },
         {center: {x: 500, y:30},
-        radius:30,
+        size: BALLON_SIZE[4],
         velocity:{ x: 1, y: 0},
         gravity: {x :0, y: 9.81/1000},
         }
     ];
 
-    //Balloons related variables
-    const BALLOON_SPEED = 0.1;
 
     // when did we update the game last time ?
     var lastUpdate = Date.now();
@@ -317,27 +335,27 @@
     function keepBalloonWithinBorders(ball){
         var changement = false;
         //Top
-        if(ball.center.y < ball.radius){
-            ball.center.y = ball.radius;
+        if(ball.center.y < ball.size.radius){
+            ball.center.y = ball.size.radius;
             ball.velocity.y = -ball.velocity.y;
             changement = true;
         } else {
             //Bottom
-            if(ball.center.y > cvs.height - ball.radius){
-                ball.center.y = cvs.height - ball.radius;
+            if(ball.center.y > cvs.height - ball.size.radius){
+                ball.center.y = cvs.height - ball.size.radius;
                 ball.velocity.y = -ball.velocity.y;
                 changement = true;
             }
         }
         //Left
-        if(ball.center.x < ball.radius){
-            ball.center.x = ball.radius;
+        if(ball.center.x < ball.size.radius){
+            ball.center.x = ball.size.radius;
             ball.velocity.x = -ball.velocity.x;
             changement = true;
         } else {
             //Right
-            if(ball.center.x > cvs.width-ball.radius){
-                ball.center.x = cvs.width - ball.radius;
+            if(ball.center.x > cvs.width-ball.size.radius){
+                ball.center.x = cvs.width - ball.size.radius;
                 ball.velocity.x = -ball.velocity.x;
                 changement = true;
             }
@@ -354,7 +372,7 @@
         var context = canvas.getContext("2d");
         context.beginPath();
         context.fillStyle=BALLOON_COLOR;
-        context.arc(circle.center.x, circle.center.y, circle.radius, 0, 2 * Math.PI);
+        context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
         context.fill();
     }
 
@@ -366,7 +384,7 @@
         var isOneBalloonRemaining = false;
         var i=0
         while(i<balloons.length && !isOneBalloonRemaining){
-            if(balloons[i].radius > 0){
+            if(balloons[i].size.radius > 0){
                 isOneBalloonRemaining = true;
             }
             i++;
@@ -447,11 +465,11 @@
             switch(hook.type){
                 case GRAPPLE_HOOK_NUMBER :
                     deleteWeapon(hook);
-                    break;
+                break;
 
                 case TRIDENT_NUMBER :
                     hook.shooting = false;
-                    break;
+                break;
             }
         } else {
 
@@ -481,14 +499,14 @@
 
         //Hitting a balloon
         for(var i=0 ; i<balloons.length ; i++){
-            if(balloons[i].radius>0){
+            if(balloons[i].size.radius>0){
 
-                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].radius, 2) 
-                && balloons[i].center.y + balloons[i].radius > hook.position.y - hook.length){
+                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
+                && balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length){
 
                     deleteWeapon(hook);
-                    player.score += balloons[i].radius*10 ;
-                    balloons    [i].radius = 0;
+                    player.score += balloons[i].size.radius*10 ;
+                    balloons[i].size = BALLON_SIZE[balloons[i].size.number - 1];
                 }
             }
         }
@@ -528,10 +546,10 @@
     * @return true or false
     */
     function isBalloonNearObject(ball,object){
-        return(!(ball.center.x < object.position.x - ball.radius
-        || ball.center.x > object.position.x + object.width + ball.radius
-        || ball.center.y < object.position.y - ball.radius
-        || ball.center.y > object.position.y + object.height + ball.radius))
+        return(!(ball.center.x < object.position.x - ball.size.radius
+        || ball.center.x > object.position.x + object.width + ball.size.radius
+        || ball.center.y < object.position.y - ball.size.radius
+        || ball.center.y > object.position.y + object.height + ball.size.radius))
     }
 
     /**
@@ -540,8 +558,8 @@
     function isInHorizontalCollision(ball, object){
         var collision = false;
         if(isBalloonBetweenRectangleX(ball, object)){
-            if(ball.center.y >= object.position.y - ball.radius 
-            && ball.center.y <= object.position.y + object.height + ball.radius){
+            if(ball.center.y >= object.position.y - ball.size.radius 
+            && ball.center.y <= object.position.y + object.height + ball.size.radius){
                 collision = true;
             }
         }
@@ -554,8 +572,8 @@
     function isInVerticalCollision(ball, object){
         var collision = false;
         if(isBalloonBetweenRectangleY(ball, object)){
-            if(ball.center.x >= object.position.x - ball.radius
-            && ball.center.x <= object.position.x + object.width + ball.radius){
+            if(ball.center.x >= object.position.x - ball.size.radius
+            && ball.center.x <= object.position.x + object.width + ball.size.radius){
                 collision = true;
             }
         }
@@ -570,7 +588,7 @@
     */
     function isBalloonCollidingBottomRightCorner(ball,object){
         let bottomRightCorner = {x: object.position.x + object.width, y: object.position.y + object.height} ;
-        return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.size.radius * ball.size.radius);
     }
 
     /**
@@ -579,7 +597,7 @@
     */
     function isBalloonCollidingTopRightCorner(ball,object){
         let topRightCorner = {x: object.position.x + object.width, y: object.position.y} ;
-        return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.size.radius * ball.size.radius);
     }
 
     /**
@@ -588,7 +606,7 @@
     */
     function isBalloonCollidingTopLeftCorner(ball,object){
         let topLeftCorner = {x: object.position.x, y: object.position.y} ;
-        return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.size.radius * ball.size.radius);
     }
 
 
@@ -598,7 +616,7 @@
     */
     function isBalloonCollidingBottomLeftCorner(ball,object){
         let bottomLeftCorner = {x: object.position.x, y: object.position.y + object.height} ;
-        return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.size.radius * ball.size.radius);
     }
 
  
@@ -809,7 +827,7 @@
 
         // Update balloons position 
         for(var i=0 ; i<balloons.length ; i++){
-            if(balloons[i].radius>0){
+            if(balloons[i].size.radius>0){
                 // Update balloons[i].velocity
                 balloons[i].velocity.x += balloons[i].gravity.x*delta;
                 balloons[i].velocity.y += balloons[i].gravity.y*delta;
@@ -823,7 +841,7 @@
         //Verifying that balloons do not crash into something
         for(var i=0 ; i < balloons.length ; i++){
 
-            if(balloons[i].radius>0){    
+            if(balloons[i].size.radius>0){    
 
                 //Collisions with player
                 if(collisionsWithPlayer(balloons[i], player)){
@@ -947,7 +965,7 @@
 
         // balloons displaying
         for(var i=0 ; i<balloons.length ;i++){
-            if(balloons[i].radius>0){
+            if(balloons[i].size.radius>0){
                 fillCircle(balloons[i]);
             }
         }
