@@ -28,21 +28,15 @@
     // An array of all the balloons in the game
     // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
     var balloons = [
-        {center: {x: 500, y:30},
-        radius:50,
-        velocity:{ x: 1, y: 0},
-        gravity: {x :0, y: 9.81/1000},
-        },
-
-        {center: {x: 300, y:30},
-        radius:50,
-        velocity:{ x: -1, y: 0},
+        {center: {x: 400, y:30},
+        radius:30,
+        velocity:{ x: .8, y: 0},
         gravity: {x :0, y: 9.81/1000},
         }
     ];
 
     //Balloons related variables
-    const BALLOON_SPEED = 0.2;
+    const BALLOON_SPEED = 0.1;
 
     // when did we update the game last time ?
     var lastUpdate = Date.now();
@@ -83,10 +77,10 @@
             {
                 "position":{
                     "x": 575,
-                    "y": 300
+                    "y": 200
                 },
-                "width": 80,
-                "height": 40,
+                "width": 120,
+                "height": 400,
                 "exist": true,
                 "isDestructible": false
             },
@@ -316,59 +310,36 @@
      * It does exactly what you expect
      */
     function keepBalloonWithinBorders(ball){
+        var changement = false;
         //Top
         if(ball.center.y < ball.radius){
             ball.center.y = ball.radius;
             ball.velocity.y = -ball.velocity.y;
+            changement = true;
         } else {
             //Bottom
             if(ball.center.y > cvs.height - ball.radius){
                 ball.center.y = cvs.height - ball.radius;
                 ball.velocity.y = -ball.velocity.y;
+                changement = true;
             }
         }
         //Left
         if(ball.center.x < ball.radius){
             ball.center.x = ball.radius;
             ball.velocity.x = -ball.velocity.x;
+            changement = true;
         } else {
             //Right
             if(ball.center.x > cvs.width-ball.radius){
                 ball.center.x = cvs.width - ball.radius;
                 ball.velocity.x = -ball.velocity.x;
+                changement = true;
             }
         }
-        return(ball);
+        return(changement);
     }
 
-    /**
-     * It does exactly what you expect
-     */
-    function keepBallonOutsideBorders(ballon){
-        //Top
-        if(ballon.center.y < ballon.radius){
-            ballon.center.y = ballon.radius;
-            ballon.velocity.y = -ballon.velocity.y;
-        } else {
-            //Bottom
-            if(ballon.center.y > cvs.height - ballon.radius){
-                ballon.center.y = cvs.height - ballon.radius;
-                ballon.velocity.y = -ballon.velocity.y;
-            }
-        }
-        //Left
-        if(ballon.center.x < ballon.radius){
-            ballon.center.x = ballon.radius;
-            ballon.velocity.x = -ballon.velocity.x;
-        } else {
-            //Right
-            if(ballon.center.x > cvs.width-ballon.radius){
-                ballon.center.x = cvs.width - ballon.radius;
-                ballon.velocity.x = -ballon.velocity.x;
-            }
-        }
-        return(ballon);
-    }
 
     /**
      * Like FillRect, but for circles
@@ -381,6 +352,7 @@
         context.arc(circle.center.x, circle.center.y, circle.radius, 0, 2 * Math.PI);
         context.fill();
     }
+
 
     /**
      * Detect the victory (= no balloon remaining)
@@ -411,16 +383,12 @@
         return defeat;
     }
 
-    /**
-     * Is the balloonX between the x and x + width of the rectangle ? Return boolean
-     * Inputs : balloon with x, rectangle with x and width
-     */
-    function isBetweenX(balloonPosition,rectangle){
-        return(balloonPosition.x > rectangle.x && balloonPosition.x < rectangle.x + rectangle.width)
-    }
+
+
+    // #####################################
+    // #### Shoot, manage and delete Weapons
 
     /**
-    *
     *
     */
     function isWeaponBetweenX(weapon,rectangle){
@@ -428,8 +396,7 @@
     }
 
     /**
-    *
-    *
+    * Fire a weapon
     */
     function shootWeapon(player){
         switch(player.powerOn){
@@ -444,10 +411,10 @@
     }
 
     /**
-     * Shoot a grapple hook
+     * Shoot a hook
      */
     function shootGrappleHook(grappleHook){
-        if(grappleHook.type ==0) {
+        if(grappleHook.type == 0) {
             grappleHook.type = player.powerOn;
             grappleHook.shooting = true;
             grappleHook.position = {x: player.position.x+player.width/2 , y: player.position.y+player.height};
@@ -456,7 +423,7 @@
     }
 
     /**
-     * Delete grapple hook
+     * Delete a weapon
      */
     function deleteWeapon(weapon){
         weapon.type = 0;
@@ -465,8 +432,9 @@
         weapon.length = 0;
     }
 
+
     /**
-     * Checking if the grapple hook should stop
+     * Checking if the hook should stop
      */
     function stopHooks(hook){
         // Hit the top of the screen
@@ -487,9 +455,8 @@
 
             for(var i=0 ; i<platforms.length ; i++){
                 if(platforms[i].exist && isWeaponBetweenX(hook,platforms[i])){
-                    if(cvs.height - hook.length < platforms[i].position.y + platforms[i].height){
-                        isItHittingPlatform = true;
-
+                    if(hook.position.y - hook.length  < platforms[i].position.y + platforms[i].height){
+                        
                         switch(hook.type){
                             case GRAPPLE_HOOK_NUMBER :
                                 deleteWeapon(hook);
@@ -511,8 +478,8 @@
         for(var i=0 ; i<balloons.length ; i++){
             if(balloons[i].radius>0){
 
-                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].radius, 2)
-                && balloons[i].center.y + balloons[i].radius > cvs.height - hook.length){
+                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].radius, 2) 
+                && balloons[i].center.y + balloons[i].radius > hook.position.y - hook.length){
 
                     deleteWeapon(hook);
                     player.score += balloons[i].radius*10 ;
@@ -522,65 +489,54 @@
         }
 
     }
+ 
+    
+    // ######################################
+    // #### Balloons and platforms collisions
 
     /**
-     * Is the balloonX between the x and (x + width) of the rectangle ? Return boolean
-     *Inputs : balloon with x, rectangle with x and width
-     */
-    function isBetweenX(balloonCenter,rectangle){
-        return(balloonCenter.x > rectangle.x && balloonCenter.x < rectangle.x + rectangle.width)
+    *
+    */
+    function squareDistanceBetweenPoints(pointA,pointB){
+        return((pointA.x - pointB.x)*(pointA.x - pointB.x) + (pointA.y - pointB.y)*(pointA.y - pointB.y));
+    }
+
+
+    /**
+    * Is the balloonX between the x and (x + width) of the rectangle ? Return boolean
+    * Inputs : balloon with x, rectangle with x and width
+    */
+    function isBalloonBetweenRectangleX(ball,rectangle){
+        return(ball.center.x > rectangle.position.x && ball.center.x < rectangle.position.x + rectangle.width);
     }
 
     /**
-     * Is the balloonY between the y and (y + width) of the rectangle ? Return boolean
-     * Inputs : balloon with y, rectangle with y and height
-     */
-    function isBetweenY(balloonCenter,rectangle){
-        return(balloonCenter.y > rectangle.y && balloonCenter.y < rectangle.y + rectangle.height)
+    * Is the ballon Y between the y and (y + width) of the rectangle ? Return boolean
+    * Inputs : balloon with y, rectangle with y and height
+    */
+    function isBalloonBetweenRectangleY(ball,rectangle){
+        return(ball.center.y >= rectangle.position.y && ball.center.y <= rectangle.position.y + rectangle.height);
     }
 
     /**
-     * Detect a collision between 2 ballons
-     */
-    function AreBalloonsCollisionning(ball1, ball2){
-        if(ball1.radius <= 0 || ball2.radius <= 0){
-            return(false);
-        }
-        return(!(Math.pow(ball1.radius + ball2.radius, 2) <= Math.pow(ball1.center.x - ball2.center.x, 2) + Math.pow(ball1.center.y - ball2.center.y, 2)));
+    * Is the balloon near a plateform ? (= near to collide but we don't know if it does)
+    * @return true or false
+    */
+    function isBalloonNearObject(ball,object){
+        return(!(ball.center.x < object.position.x - ball.radius
+        || ball.center.x > object.position.x + object.width + ball.radius
+        || ball.center.y < object.position.y - ball.radius
+        || ball.center.y > object.position.y + object.height + ball.radius))
     }
 
     /**
-     * Return 'true' if the balloon touches an angle of a rectangular object
-     */
-    function collisionsAngles(ball, object){
-        return!(object.position.x + object.width <= ball.center.x - ball.radius ||
-            object.position.x >= ball.center.x + ball.radius ||
-            object.position.y + object.height <= ball.center.y - ball.radius ||
-            object.position.y >= ball.center.y + ball.radius);
-    }
-
-    /**
-     * Return 'true' if the balloon touches the bottom or the upside of a rectangular object
-     */
-    function collisionsY(ball, object){
+    * @return 'true' if the balloon touches the bottom or the upside of a rectangular object
+    */
+    function isInHorizontalCollision(ball, object){
         var collision = false;
-        if(isBetweenX(ball.center, player.position)){
-            if(object.position.y >= ball.center.y + ball.radius ||
-            object.position.y + object.height <= ball.center.y - ball.radius){
-                collision = true
-            }
-        }
-        return(collision);
-    }
-
-    /**
-     * Return 'true' if the balloon touches the faces of a rectangular object
-     */
-    function collisionsX(ball, object){
-        var collision = false;
-        if(isBetweenY(ball.center, player.position)){
-            if(object.position.x >= ball.center.x + ball.radius ||
-            object.position.x + object.width <= ball.center.x - ball.radius){
+        if(isBalloonBetweenRectangleX(ball, object)){
+            if(ball.center.y >= object.position.y - ball.radius 
+            && ball.center.y <= object.position.y + object.height + ball.radius){
                 collision = true;
             }
         }
@@ -588,33 +544,188 @@
     }
 
     /**
-     * Call the other testing functions and return if there's a collision
-     */
-    function collisionsWithPlayer(ball, object){
-        var collisionAngles = collisionsAngles(ball, object);
-        var collisionY = collisionsY(ball, object);
-        var collisionX = collisionsX(ball, object);
-        return(collisionAngles || collisionX || collisionY);
+    *@return 'true' if the balloon touches the left or the right of a rectangular object
+    */
+    function isInVerticalCollision(ball, object){
+        var collision = false;
+        if(isBalloonBetweenRectangleY(ball, object)){
+            if(ball.center.x >= object.position.x - ball.radius
+            && ball.center.x <= object.position.x + object.width + ball.radius){
+                collision = true;
+            }
+        }
+        return(collision);
+    }
+
+
+    
+    /**
+    * Is the balloon colliding with the bottom right corner ?
+    * @return true is yes, else false
+    */
+    function isBalloonCollidingBottomRightCorner(ball,object){
+        let bottomRightCorner = {x: object.position.x + object.width, y: object.position.y + object.height} ;
+        return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.radius * ball.radius);
     }
 
     /**
-     * Make sure the balloons are colliding with rectangle objects like platforms
+    * Is the balloon colliding with the top right corner ?
+    * @return true is yes, else false
+    */
+    function isBalloonCollidingTopRightCorner(ball,object){
+        let topRightCorner = {x: object.position.x + object.width, y: object.position.y} ;
+        return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.radius * ball.radius);
+    }
+
+    /**
+    * Is the balloon colliding with the top left corner ?
+    * @return true is yes, else false
+    */
+    function isBalloonCollidingTopLeftCorner(ball,object){
+        let topLeftCorner = {x: object.position.x, y: object.position.y} ;
+        return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.radius * ball.radius);
+    }
+
+
+    /**
+    * Is the balloon colliding with the top right corner ?
+    * @return true is yes, else false
+    */
+    function isBalloonCollidingBottomLeftCorner(ball,object){
+        let bottomLeftCorner = {x: object.position.x, y: object.position.y + object.height} ;
+        return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.radius * ball.radius);
+    }
+
+ 
+    /**
+     * Make sure the balloons are not colliding with rectangle objects like platforms
+     * @return true if a correction is applied
      */
     function keepBallonOutsideObjects(ball, object){
         if(object.exist){
-            if(collisionsAngles(ball, object)){
-                ball.velocity.x = -ball.velocity.x;
-                ball.velocity.y = -ball.velocity.y;
-            }
-            if(collisionsX(ball, object)){
-                ball.velocity.x = -ball.velocity.x;
-            }
-            if(collisionsY(ball, object)){
-                ball.velocity.y = -ball.velocity.y;
+            var correction = false;
+
+            // Is the balloon near the object ? Simple and quick verification (optimize)
+            if(isBalloonNearObject(ball,object)){
+                
+                // Collision with horizontal surfaces
+                if(isInHorizontalCollision(ball,object)){
+                    ball.velocity.y *= -1;
+                    correction = true;
+
+                // or collision with vertical surfaces
+                } else if(isInVerticalCollision(ball,object)){
+                    ball.velocity.x *= -1;
+                    correction = true;
+
+                // or in collision with angles
+                } else {
+                    
+                    //Top left corner
+                    if(isBalloonCollidingTopLeftCorner(ball,object)){
+                        correction = true;
+                        // Equation of the angle straith line (@return y)
+                        function equation(x){
+                            return(-(x-object.position.x) + object.position.y);
+                        }
+
+                        // The balloon is in the vertical area
+                        if(ball.center.y > equation(ball.center.x)){
+                            ball.velocity.x *= -1;
+
+                        // The balloon is in the horizontal area
+                        } else {
+                            ball.velocity.y *= -1;
+                        }
+
+
+                    //Top right corner
+                    } else if(isBalloonCollidingTopRightCorner(ball,object)){
+                        correction = true;
+                        // Equation of the angle straith line (@return y)
+                        function equation(x){
+                            return((x-object.position.x-object.width) + object.position.y);
+                        }
+
+                        // The balloon is in the vertical area
+                        if(ball.center.y > equation(ball.center.x)){
+                            ball.velocity.x *= -1;
+
+                        // The balloon is in the horizontal area
+                        } else {
+                            ball.velocity.y *= -1;
+                        }
+
+                    // Bottom left corner
+                    } else if(isBalloonCollidingBottomLeftCorner(ball,object)){
+                        correction = true;
+                        // Equation of the angle straith line (@return y)
+                        function equation(x){
+                            return((x-object.position.x) + object.position.y + object.height);
+                        }
+
+                        // The balloon is in the vertical area
+                        if(ball.center.y < equation(ball.center.x)){
+                            ball.velocity.x *= -1;
+
+                        // The balloon is in the horizontal area
+                        } else {
+                            ball.velocity.y *= -1;
+                        }
+
+                    // Bottom right corner
+                    } else if(isBalloonCollidingBottomRightCorner(ball,object)){
+                        correction = true;
+                        // Equation of the angle straith line (@return y)
+                        function equation(x){
+                            return((x - object.position.x - object.width ) + object.position.y + object.height);
+                        }
+
+                        // The balloon is in the vertical area
+                        if(ball.center.y < equation(ball.center.x)){
+                            ball.velocity.x *= -1;
+
+                        // The balloon is in the horizontal area
+                        } else {
+                            ball.velocity.y *= -1;
+                        }
+                    }
+                }
             }
         }
-        return(ball);
+        return(correction);
     }
+
+    /**
+    * Collision with any angles with the others functions
+    */ 
+    function collisionsAngles(ball,object){
+        return(isBalloonCollidingBottomLeftCorner(ball,object)
+        || isBalloonCollidingBottomRightCorner(ball,object)
+        || isBalloonCollidingTopLeftCorner(ball,object)
+        || isBalloonCollidingTopRightCorner(ball,object));
+
+    }
+
+    /**
+    * Call the other testing functions and return if there's a collision
+    */
+    function collisionsWithPlayer(ball, object){
+        var collisionAngles = collisionsAngles(ball, object).collision;
+        var collisionY = isInVerticalCollision(ball, object);
+        var collisionX = isInHorizontalCollision(ball, object);
+        return(collisionAngles || collisionX || collisionY);
+    }
+
+    
+    /**
+    *
+    */
+    function outputSpeed(ball){
+        var speed = Math.sqrt(Math.pow(ball.velocity.x, 2) + Math.pow(ball.velocity.y, 2));
+        console.log(speed);
+    }
+    
 
     // ------------------------------
     //  Game
@@ -691,7 +802,7 @@
         // update timer
         timer = timer - delta/1000;
 
-        // balloons
+        // Update balloons position 
         for(var i=0 ; i<balloons.length ; i++){
             if(balloons[i].radius>0){
                 // Update balloons[i].velocity
@@ -701,29 +812,36 @@
                 // Update balloons[i].center
                 balloons[i].center.x += balloons[i].velocity.x * delta * BALLOON_SPEED;
                 balloons[i].center.y += balloons[i].velocity.y * delta * BALLOON_SPEED;
+            }
+        }
 
-                //No, you will not stick out
-                keepBalloonWithinBorders(balloons[i]);
+        //Verifying that balloons do not crash into something
+        for(var i=0 ; i < balloons.length ; i++){
+
+            if(balloons[i].radius>0){    
 
                 //Collisions with player
                 if(collisionsWithPlayer(balloons[i], player)){
                     pause = true;
-                }
+                } else {
+                    //No, you will not stick out
+                    var bordersCorrection = keepBalloonWithinBorders(balloons[i]);
 
-                //Don't go into platforms !
-                for(var j=0 ; j<platforms.length ; j++){
-                    balloons[i] = keepBallonOutsideObjects(balloons[i], platforms[j]);
-                }
-
-                //Ballons are collisionning
-                for(var j= i+1 ; j<balloons.length ; j++){
-                    if(AreBalloonsCollisionning(balloons[i],balloons[j])){
-                        balloons[0].velocity.x = -balloons[0].velocity.x;
-                        balloons[1].velocity.x = -balloons[1].velocity.x;
+                    if(!bordersCorrection){
+                    
+                        //Don't go into platforms !
+                        var correction = false;
+                        var j=0 ;
+                        while(j < platforms.length && !correction){
+                            correction = keepBallonOutsideObjects(balloons[i], platforms[j]);
+                            j++;
+                        }
                     }
                 }
             }
         }
+
+
 
         // Weapons will deal a lot of damages
         for(var i=0 ; i<weapons.length ; i++){
