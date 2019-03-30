@@ -586,7 +586,14 @@
             }
         }
     }
-
+    
+    /**
+    *
+    */
+    function outputSpeed(ball){
+        var speed = Math.sqrt(Math.pow(ball.velocity.x, 2) + Math.pow(ball.velocity.y, 2));
+        console.log(speed);
+    }
     
 
     // ------------------------------
@@ -668,6 +675,8 @@
                 balloons[i].center.y += balloons[i].velocity.y * delta * BALLOON_SPEED;
             }
         }
+
+        outputSpeed(balloons[0]);
 
         //Verifying that balloons do not crash into something
         for(var i=0 ; i < balloons.length ; i++){
