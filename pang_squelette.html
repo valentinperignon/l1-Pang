@@ -6,103 +6,14 @@
     <title>Pang</title>
     <script>
 
-    // ------------------------------
-    //  Variables
-    // ------------------------------
-
-    // Context
-    var context = null;
-
-    // Game state
-    var numLevel = 1;
-
-    // Is the game running or not ?
-    var isOnFocus = true;
-    var pause = false;
-    var victory = false;
-    var defeat = false;
-    var isInvincible = false;
-
-    // Timer
-    var timer = 100;
-
-    //Balloons related variables
-    const BALLOON_SPEED = 0.1;
-    const BALLON_SIZE = [
-        {number: 0,
-        radius: 0,
-        Yvelocity:0
-        },
-        {number: 1,
-        radius: 15,
-        Yvelocity: -6
-        },
-        {number: 2,
-        radius: 30,
-        Yvelocity: -7.1
-        },
-        {number: 3,
-        radius: 40,
-        Yvelocity: -8.4
-        },
-        {number: 4,
-        radius: 50,
-        Yvelocity: -9.5
-        }
-    ]
-
-    // An array of all the balloons in the game
-    // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
-    var balloons = [
-        {center: {x: 400, y:30},
-        size: BALLON_SIZE[4],
-        velocity:{ x: -1, y: 0},
-        gravity: {x :0, y: 9.81/1000},
-        } ,
-        {center: {x: 500, y:30},
-        size: BALLON_SIZE[4],
-        velocity:{ x: 1, y: 0},
-        gravity: {x :0, y: 9.81/1000},
-        }
-    ];
-
-
-    // when did we update the game last time ?
-    var lastUpdate = Date.now();
-
-    // A beautiful player
-    // With his position, his speed, his size and his others variables
-    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 1, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
-    const PLAYER_SPEED = 500;
-    var isGravity = 0;
-
-    // All the weapons and types of weapons (0= the weapon is not active)
-
-    var weapons = [
-        {
-            type:0,
-            position: {x: 0, y: 0},
-            length: 0,
-            shooting: false,
-        }
-    ]
-
-    // Weapons related variables
-        // - Hooks
-    const GRAPPLE_HOOK_NUMBER = 1 ;
-    const TRIDENT_NUMBER = 2 ;
-    const HOOK_SPEED = 0.3 ;
-    const HOOK_WITDH = 5;
-
-        // - Others weapons
-
-
-    // gravity (thanks Newton)
-    const GRAVITY = {x: 0, y: 1500};
-
+    // -------------------------------------------------
+    // Future JSON
+    // -------------------------------------------------
+    
     // All the platforms
-    var platformsList = {
-        level1 : [
+    const PLATFORMS_LIST = {
+        level1 : [],
+        level2 : [
             {
                 "position":{
                     "x": 575,
@@ -145,7 +56,7 @@
             }
         ],
 
-        level2 : [
+        level3 : [
             {
                 "position":{
                     "x": 275,
@@ -153,7 +64,7 @@
                 },
                 "width": 80,
                 "height": 40,
-                "exist": false,
+                "exist": true,
                 "isDestructible": false
             },
             {
@@ -163,7 +74,7 @@
                 },
                 "width": 80,
                 "height": 40,
-                "exist": false,
+                "exist": true,
                 "isDestructible": true
             },
             {
@@ -178,13 +89,14 @@
             }
         ]
     }
-    var platforms = platformsList.level1;
+    
 
 
-    // ladders in the game
+    // All the ladders
     const LADDER_WIDTH = 90;
-    var laddersList = {
-        "level1": [
+    const LADDERS_LIST = {
+        "level1": [],
+        "level2": [
             {
                 "position":{
                     "x": 35,
@@ -193,22 +105,213 @@
                 "width": LADDER_WIDTH,
                 "height": 200,
             }
+        ],
+        "level3": [
+            {
+                "position":{
+                    "x": 35,
+                    "y": 400
+                },
+                "width": LADDER_WIDTH,
+                "height": 200,
+            },
+            {
+                "position":{
+                    "x": 600,
+                    "y": 400
+                },
+                "width": LADDER_WIDTH,
+                "height": 200,
+            }
         ]
     };
-    var ladders = laddersList.level1;
 
+    // Balloons sizes
+    const BALLOON_SIZE = [
+        {number: 0,
+        radius: 0,
+        Yvelocity:0
+        },
+        {number: 1,
+        radius: 15,
+        Yvelocity: -6
+        },
+        {number: 2,
+        radius: 30,
+        Yvelocity: -7.1
+        },
+        {number: 3,
+        radius: 40,
+        Yvelocity: -8.4
+        },
+        {number: 4,
+        radius: 50,
+        Yvelocity: -9.5
+        }
+    ]
+
+    // Balloons
+    const BALLOONS_LIST = {
+        "level1": [
+            {
+                center: {x: 400, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: -1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            }
+        ],
+
+        "level2": [
+            {
+                center: {x: 400, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: -1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            },
+            {
+                center: {x: 500, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: 1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            }
+        ],
+
+        "level3": [
+            {
+                center: {x: 400, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: -1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            },
+            {
+                center: {x: 500, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: 1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            },
+            {
+                center: {x: 600, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: 1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            }
+        ]
+    }
+
+    
+
+
+
+    // ------------------------------
+    //  Variables
+    // ------------------------------
+    
+    // Context
+    var context = null;
+
+    // Game state
+    var numLevel = 1;
+
+    // Is the game running or not ?
+    var isOnFocus = true;
+    var pause = false;
+    var victory = false;
+    var defeat = false;
+    var isInvincible = false;       //BETA
+
+    // Timer
+    var timer = 100;
+
+    //Balloons related variables
+    const BALLOON_SPEED = 0.1;
+    
+
+    // An array of all the balloons in the game
+    // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
+    var balloons = null;
+
+    
+    // plaforms, ladders and balloons in the level
+    var ladders = null;
+    var platforms = null;
+
+
+    // when did we update the game last time ?
+    var lastUpdate = Date.now();
+
+    // A beautiful player
+    // With his position, his speed, his size and his others variables
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 1, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
+    const PLAYER_SPEED = 500;
+    var isGravity = 0;
+
+    // All the weapons and types of weapons (0= the weapon is not active)
+
+    var weapons = [
+        {
+            type:0,
+            position: {x: 0, y: 0},
+            length: 0,
+            shooting: false,
+        }
+    ]
+
+    // Weapons related variables
+        // - Hooks
+    const GRAPPLE_HOOK_NUMBER = 1 ;
+    const TRIDENT_NUMBER = 2 ;
+    const HOOK_SPEED = 0.3 ;
+    const HOOK_WITDH = 5;
+
+        // - Others weapons
+
+
+    // gravity (thanks Newton)
+    const GRAVITY = {x: 0, y: 1500};
+
+    
+    
     // ### GRAPHICS VARIABLES ###
     // Colors
     const DESTRUCTIBLE_PLATFORM_COLOR = "grey";
     const PLATFORM_COLOR = "black";
     const LADDER_COLOR = "darkgray";
-    const BALLOON_COLOR = "red";
+    var BALLOON_COLOR;
     const GRAPPLE_HOOK_COLOR = "red";
     const TRIDENT_COLOR = "orange"
 
-    // ------------------------------
-    //  Functions
-    // ------------------------------
+
+    // ----------------------------------------------------------------------
+    //                          Functions
+    // ----------------------------------------------------------------------
+
+
+    /**
+    * Level selection : initialize all the variables
+    */
+    function levelInitialization(numLevel){
+        switch(numLevel){
+            case 2:
+                ladders = LADDERS_LIST.level2;
+                platforms = PLATFORMS_LIST.level2;
+                balloons = BALLOONS_LIST.level2;
+                BALLOON_COLOR = "blue";
+            break;
+
+            case 3:
+                ladders = LADDERS_LIST.level3;
+                platforms = PLATFORMS_LIST.level3;
+                balloons = BALLOONS_LIST.level3;
+                BALLOON_COLOR = "green";
+            break;
+                
+            default:
+                ladders = LADDERS_LIST.level1;
+                platforms = PLATFORMS_LIST.level1;
+                balloons = BALLOONS_LIST.level1;
+                BALLOON_COLOR = "red";
+        }
+    }
 
     /**
      * Moving the player (horizontally)
@@ -532,7 +635,7 @@
 
                         balloons[balloons.length] =  {
                             center: {x: oldBall.center.x, y: oldBall.center.y},
-                            size: BALLON_SIZE[oldBall.size.number - 1],
+                            size: BALLOON_SIZE[oldBall.size.number - 1],
                             velocity:{ x: -1, y: -2},
                             gravity: {x :0, y: 9.81/1000}
                         };
@@ -540,7 +643,7 @@
                     
                         balloons[balloons.length] =  {
                             center: {x: oldBall.center.x, y: oldBall.center.y},
-                            size: BALLON_SIZE[oldBall.size.number - 1],
+                            size: BALLOON_SIZE[oldBall.size.number - 1],
                             velocity:{ x: 1, y: -2},
                             gravity: {x :0, y: 9.81/1000}
                         };
@@ -548,7 +651,7 @@
                     
 
                     //Delete the balloon
-                    balloons[i].size = BALLON_SIZE[0];
+                    balloons[i].size = BALLOON_SIZE[0];
                 }
             }
         }
@@ -816,6 +919,10 @@
         // 2 listeners on the keyboard (keyup and keydown)
         document.addEventListener("keydown", captureKeyboardPress)
         document.addEventListener("keyup", captureKeyboardReleased)
+
+
+        //Initialization of the platforms, balloons, ladders
+        levelInitialization(3);
 
         // initialization of the player
         player.height = 75;
@@ -1089,6 +1196,12 @@
             // Shortcut to defeat                                                                       // BETA FUNCTION
             case 72:
               defeat = !defeat;
+                break;
+
+            //delete the weapon                                                                         // BETA FUNCTION
+            case 69:
+                deleteWeapon(weapons[0]) ;
+                console.log("Arme détruite");
                 break;
 
             //Activate the default weapon : the grapple hook                                            // BETA FUNCTION
