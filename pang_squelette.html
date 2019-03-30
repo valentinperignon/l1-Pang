@@ -21,6 +21,9 @@
     var pause = false;
     var victory = false;
 
+    // Timer
+    var timer = 100;
+
     // An array of all the balloons in the game
     // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
     var balloons = [
@@ -665,6 +668,10 @@
     *  @param delta the time between now and the last update
     */
     update = function(delta) {
+        // update timer
+        timer = timer - delta/1000;
+
+        // balloons
         for(var i=0 ; i<balloons.length ; i++){
             if(balloons[i].radius>0){
                 // Update balloons[i].velocity
@@ -750,9 +757,15 @@
     *  Game render
     */
     render = function() {
+
         // Wiping the screen
         context.clearRect(0, 0, context.width, context.height);
         //context.drawImage(bg_paris, 0, 0, 800, 600);
+
+        // Timer text
+        context.fillStyle = "black";
+        context.font = "25px Arial";
+        context.fillText("Time: " + Math.floor(timer), 700 - 20, 40);
 
 		// platforms drawing
         for (var i=0; i < platforms.length; i++) {
