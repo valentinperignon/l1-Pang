@@ -20,6 +20,10 @@
     var isOnFocus = true;
     var pause = false;
     var victory = false;
+    var defeat = false;
+
+    // Timer
+    var timer = 100;
 
     // An array of all the balloons in the game
     // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
@@ -394,6 +398,20 @@
     }
 
     /**
+     * Detect the defeat (= no time remaining)
+     */
+    isDefeat = function() {
+        var defeat = false;
+
+        // check
+        if(timer <= 1 && !isVictory()) {
+            defeat = true;
+        }
+
+        return defeat;
+    }
+
+    /**
      * Is the balloonX between the x and x + width of the rectangle ? Return boolean
      * Inputs : balloon with x, rectangle with x and width
      */
@@ -643,18 +661,23 @@
         // Run the game if it is not on pause
         if(!isOnFocus || pause){
             document.title = "Pang - en pause";
-        } else if(victory){
-            document.title = "Pang - gagné !";
-            // draw the game
-            render();
-
         } else {
-            document.title = "Pang";
+            if(victory || defeat) {
+                if(victory) {
+                    document.title = "Pang - gagné !";
+                } else {
+                    document.title = "Pang - perdu...";
+                }
+                // draw the game
+                render();
+            } else {
+                document.title = "Pang";
 
-            // update of the game's state
-            update(delta);
-            // draw the game
-            render();
+                // update of the game's state
+                update(delta);
+                // draw the game
+                render();
+            }
         }
 
         requestAnimationFrame(gameLoop);
@@ -665,6 +688,10 @@
     *  @param delta the time between now and the last update
     */
     update = function(delta) {
+        // update timer
+        timer = timer - delta/1000;
+
+        // balloons
         for(var i=0 ; i<balloons.length ; i++){
             if(balloons[i].radius>0){
                 // Update balloons[i].velocity
@@ -744,15 +771,25 @@
         if(isVictory()){
             victory = true;
         }
+        //Detect the defeat
+        if(isDefeat()){
+            defeat = true;
+        }
     }
 
     /**
     *  Game render
     */
     render = function() {
+
         // Wiping the screen
         context.clearRect(0, 0, context.width, context.height);
         //context.drawImage(bg_paris, 0, 0, 800, 600);
+
+        // Timer text
+        context.fillStyle = "black";
+        context.font = "25px Arial";
+        context.fillText("Time: " + Math.floor(timer), 700 - 20, 40);
 
 		// platforms drawing
         for (var i=0; i < platforms.length; i++) {
@@ -805,11 +842,20 @@
         // Victory screen
         if(victory){
             context.fillStyle = "green";
-            context.fillRect(cvs.width/5,cvs.height/5,cvs.width/5*3,cvs.height/5*3);
+            context.fillRect(context.width/5,context.height/5,context.width/5*3,context.height/5*3);
             context.fillStyle = "black";
             context.font = '48px serif';
             context.textAlign = "center";
             context.fillText("Et c'est gagné !", cvs.width/2, cvs.height/2);
+        } else {
+            if(defeat) {
+                context.fillStyle = "green";
+                context.fillRect(cvs.width/5,cvs.height/5,cvs.width/5*3,cvs.height/5*3);
+                context.fillStyle = "black";
+                context.font = '48px serif';
+                context.textAlign = "center";
+                context.fillText("Et c'est perdu...", cvs.width/2, cvs.height/2);
+            }
         }
     }
 
@@ -838,24 +884,29 @@
             // Space for fire the weapon
             case 32:
                 shootWeapon(player);
-            break;
+                break;
 
             // Shortcut to victory                                                                       // BETA FUNCTION
             case 71:
               victory = !victory;
-            break;
+                break;
+
+            // Shortcut to defeat                                                                       // BETA FUNCTION
+            case 72:
+              defeat = !defeat;
+                break;
 
             //Activate the default weapon : the grapple hook                                            // BETA FUNCTION
             case 82:
                 player.powerOn = GRAPPLE_HOOK_NUMBER ;
                 console.log("Grappin activé");
-            break;
+                break;
 
             //Activate the powerOn Trident                                                              // BETA FUNCTION
             case 84:
                 player.powerOn = TRIDENT_NUMBER ;
                 console.log("Trident activé");
-            break;
+                break;
         }
     }
 
@@ -881,7 +932,7 @@
 <body onload="init()">
 
     <!-- Canvas -->
-    <canvas id="cvs" width="800" height="600" style="margin: 10px auto; border: solid 1px #000;"></canvas>
+    <canvas id="cvs" width="800" height="600" style="margin: 0 auto; border: solid 1px #000;"></canvas>
 
     <!-- About -->
     <p> Commandes :
@@ -889,6 +940,7 @@
             <li>R : Arme par défaut</li>
             <li>T : Trident </li>
             <li>G : victoire immédiate</li>
+            <li>H : défaite immédiate</li>
             <li>P : pause</li>
         </ul>
     </p>
