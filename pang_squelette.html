@@ -386,7 +386,7 @@
 
     /**
      * Draw a circle
-     * @param {object balloon} cirlce - Balloon which will be draw
+     * @param {*} cirlce - Balloon which will be draw
      */
     function fillCircle(circle){
         var canvas = document.getElementById("cvs");
@@ -433,8 +433,8 @@
 
     /**
      * Detect if the weapon is on a rectangle (for x axis)
-     * @param {object weapon} weapon - Player's weapon
-     * @param {object rectangle} rectangle - An obstacle
+     * @param {*} weapon - Player's weapon
+     * @param {*} rectangle - An obstacle
      */
     function isWeaponBetweenX(weapon,rectangle){
         return(weapon.position.x > rectangle.position.x && weapon.position.x + HOOK_WITDH < rectangle.position.x + rectangle.width);
@@ -442,7 +442,7 @@
 
     /**
      * Fire a weapon
-     * @param {object player} player - The player
+     * @param {*} player - The player
      */
     function shootWeapon(player){
         switch(player.powerOn){
@@ -458,7 +458,7 @@
 
     /**
      * Shoot a hook
-     * @param {object weapon} grappleHook - The player's weapon (which is currently in use)
+     * @param {*} grappleHook - The player's weapon (which is currently in use)
      */
     function shootGrappleHook(grappleHook){
         if(grappleHook.type == 0) {
@@ -471,7 +471,7 @@
 
     /**
      * Delete the drawing of the weapon
-     * @param {object weapon} weapon - The weapon which was fire
+     * @param {*} weapon - The weapon which was fire
      */
     function deleteWeapon(weapon){
         weapon.type = 0;
@@ -482,7 +482,7 @@
 
     /**
      * Check if the hook should stop
-     * @param {object weapon} hook - The player's weapon
+     * @param {*} hook - The player's weapon
      */
     function stopHooks(hook){
         // Hit the top of the screen
@@ -540,8 +540,8 @@
 
     /**
      * Square disatnce bewteen two points
-     * @param {object point} pointA - First point
-     * @param {object point} pointB - Second point
+     * @param {*} pointA - First point
+     * @param {*} pointB - Second point
      * 
      * @returns {float} The distance between A and B
      */
@@ -551,8 +551,8 @@
 
     /**
      * Detect if the balloon is between the x and (x + width) of the rectangle
-     * @param {object balloon} ball - The balloon
-     * @param {object rectangle} rectangle - The rectangle
+     * @param {*} ball - The balloon
+     * @param {*} rectangle - The rectangle
      * 
      * @returns {boolean} True if the balloon is between the x and (x + width) of the rectangle
      */
@@ -562,8 +562,8 @@
 
     /**
      * Detect if the balloon is between the y and (y + height) of the rectangle
-     * @param {object balloon} ball - The balloon
-     * @param {object rectangle} rectangle - The rectangle
+     * @param {*} ball - The balloon
+     * @param {*} rectangle - The rectangle
      * 
      * @returns {boolean} True if the balloon is between the y and (y + height) of the rectangle
      */
@@ -587,8 +587,8 @@
     /**
      * Detect  if the balloon touched the bottom or the upside of a rectangular object
      * (only for horizontal collisions)
-     * @param {object balloon} ball - The balloon
-     * @param {object *} object - A rectangular object
+     * @param {*} ball - The balloon
+     * @param {*} object - A rectangular object
      * 
      * @returns {boolean} True if the balloon touched the bottom or the upside of a rectangular object
      */
@@ -606,8 +606,8 @@
     /**
      * Detect  if the balloon touched the bottom or the upside of a rectangular object
      * (only for vertical collisions)
-     * @param {object balloon} ball - The balloon
-     * @param {object *} object - A rectangular object
+     * @param {*} ball - The balloon
+     * @param {*} object - A rectangular object
      * 
      * @returns {boolean} True if the balloon touched the bottom or the upside of a rectangular object
      */
@@ -624,8 +624,8 @@
 
     /**
      * Detect if the balloon is colliding with the bottom right corner 
-     * @param {object balloon} ball - The balloon 
-     * @param {object *} object - Any object
+     * @param {*} ball - The balloon 
+     * @param {*} object - Any object
      * 
      * @returns {boolean} True if the balloon is colliding with the bottom right corner
      */
@@ -636,8 +636,8 @@
 
     /**
      * Detect if the balloon is colliding with the top right corner 
-     * @param {object balloon} ball - The balloon 
-     * @param {object *} object - Any object
+     * @param {*} ball - The balloon 
+     * @param {*} object - Any object
      * 
      * @returns {boolean} True if the balloon is colliding with the top right corner
      */
@@ -648,8 +648,8 @@
 
     /**
      * Detect if the balloon is colliding with the bottom left corner 
-     * @param {object balloon} ball - The balloon 
-     * @param {object *} object - Any object
+     * @param {*} ball - The balloon 
+     * @param {*} object - Any object
      * 
      * @returns {boolean} True if the balloon is colliding with the bottom left corner
      */
@@ -660,8 +660,8 @@
 
     /**
      * Detect if the balloon is colliding with the top left corner 
-     * @param {object balloon} ball - The balloon 
-     * @param {object *} object - Any object
+     * @param {*} ball - The balloon 
+     * @param {*} object - Any object
      * 
      * @returns {boolean} True if the balloon is colliding with the top left corner
      */
@@ -672,8 +672,8 @@
 
     /**
      * Make sure the balloons are not colliding with rectangle objects like platforms
-     * @param {object balloon} ball - The balloon
-     * @param {object *} object - A rectangular object
+     * @param {*} ball - The balloon
+     * @param {*} object - A rectangular object
      * 
      * @returns {float} The correction
      */
@@ -774,8 +774,8 @@
 
     /**
      * Detect collision with any angles with the others functions
-     * @param {object balloon} ball - The balloon
-     * @param {object *} object - Any object
+     * @param {*} ball - The balloon
+     * @param {*} object - Any object
      * 
      * @returns {boolean} True if there is a collision
      */ 
@@ -789,8 +789,8 @@
 
     /**
      * Detect collision between ball and object
-     * @param {object balloon} ball - The balloon
-     * @param {object *} object - Any object
+     * @param {*} ball - The balloon
+     * @param {*} object - Any object
      * 
      * @returns {boolean} True if there is a collision
      */ 
@@ -804,7 +804,7 @@
 
     /**
      * Change the balloon's velocity
-     * @param {object balloon} ball 
+     * @param {*} ball 
      */
     function outputSpeed(ball){
         var speed = Math.sqrt(Math.pow(ball.velocity.x, 2) + Math.pow(ball.velocity.y, 2));
