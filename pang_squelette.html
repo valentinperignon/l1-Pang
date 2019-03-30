@@ -19,71 +19,65 @@
     /** Context */
     var context = null;
 
-    /** Game state */
+    /** Current level */
     var numLevel = 1;
 
-    /** Is the game running or not ? */
+    /**
+     * Variables about game sate.
+     * With focus, pause, victory and defeat
+     */
     var isOnFocus = true;
     var pause = false;
     var victory = false;
     var defeat = false;
-    var isInvincible = false;
 
-    // Timer
+    /** Timer (default value: 100sec) */
     var timer = 100;
 
-    //Balloons related variables
-    const BALLOON_SPEED = 0.1;
-    const BALLON_SIZE = [
-        {number: 0,
-        radius: 0,
-        Yvelocity:0
-        },
-        {number: 1,
-        radius: 15,
-        Yvelocity: -6
-        },
-        {number: 2,
-        radius: 30,
-        Yvelocity: -7.1
-        },
-        {number: 3,
-        radius: 40,
-        Yvelocity: -8.4
-        },
-        {number: 4,
-        radius: 50,
-        Yvelocity: -9.5
-        }
-    ]
-
-    // An array of all the balloons in the game
-    // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
+    /** 
+     * Array of all the balloons.
+     * With center position (x and y), radius, velocity (x and y), and ballons gravity
+     */
     var balloons = [
         {center: {x: 400, y:30},
-        size: BALLON_SIZE[4],
+        radius:30,
         velocity:{ x: -1, y: 0},
         gravity: {x :0, y: 9.81/1000},
-        } ,
+        },
         {center: {x: 500, y:30},
-        size: BALLON_SIZE[4],
+        radius:30,
         velocity:{ x: 1, y: 0},
         gravity: {x :0, y: 9.81/1000},
         }
     ];
 
+    /**
+     * Balloons related variables.
+     * With the speed
+     */
+    const BALLOON_SPEED = 0.1;
 
-    // when did we update the game last time ?
+    /** Date of the last game update */
     var lastUpdate = Date.now();
 
-    // A beautiful player
-    // With his position, his speed, his size and his others variables
+    /**
+     * The player.
+     * With position (x and y), speed (x and y), height, width, power, shiel, score, lives number and color
+     */
     var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 1, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
     const PLAYER_SPEED = 500;
     var isGravity = 0;
 
-    // All the weapons and types of weapons (0= the weapon is not active)
+    /**
+     * Player related variables.
+     * With gravity
+     */
+    const GRAVITY = {x: 0, y: 1500};
 
+    /** 
+     * Array of weapons.
+     * With type (0: is not active), position, length and shooting
+     */
     var weapons = [
         {
             type:0,
@@ -93,7 +87,10 @@
         }
     ]
 
-    // Weapons related variables
+    /**
+     * Weapons related variables.
+     * With speed, width, and weapon number
+     */
         // - Hooks
     const GRAPPLE_HOOK_NUMBER = 1 ;
     const TRIDENT_NUMBER = 2 ;
@@ -101,12 +98,12 @@
     const HOOK_WITDH = 5;
 
         // - Others weapons
+    // HERE.
 
-
-    // gravity (thanks Newton)
-    const GRAVITY = {x: 0, y: 1500};
-
-    // All the platforms
+    /** 
+     * Array of all the platforms.
+     * With position (x and y), width, height, height, exist and detructibility
+     */
     var platformsList = {
         level1 : [
             {
@@ -171,23 +168,16 @@
                 "height": 40,
                 "exist": false,
                 "isDestructible": true
-            },
-            {
-                "position":{
-                    "x": 700,
-                    "y": 500
-                },
-                "width": 100,
-                "height": 100,
-                "exist": true,
-                "isDestructible": true
             }
         ]
     }
     var platforms = platformsList.level1;
 
 
-    // ladders in the game
+    /** 
+     * Array of all the ladders.
+     * With position (x and y), width and height
+     */
     const LADDER_WIDTH = 90;
     var laddersList = {
         "level1": [
@@ -203,11 +193,10 @@
     };
     var ladders = laddersList.level1;
 
-    // ### GRAPHICS VARIABLES ###
-    // Colors
-    const DESTRUCTIBLE_PLATFORM_COLOR = "grey";
+    /** Constants related graphics */
+    const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
     const PLATFORM_COLOR = "black";
-    const LADDER_COLOR = "darkgray";
+    const LADDER_COLOR = "gray";
     const BALLOON_COLOR = "red";
     const GRAPPLE_HOOK_COLOR = "red";
     const TRIDENT_COLOR = "orange"
@@ -217,7 +206,8 @@
     // ------------------------------
 
     /**
-     * Moving the player (horizontally)
+     * Move the player (horizontally).
+     * @param {int} move - Key code
      */
     playerMove = function(move) {
         switch (move) {
@@ -232,6 +222,7 @@
 
     /**
      * Stop the player's movement (horizontally)
+     * @param {int} move - Key code
      */
     playerStopMove = function(move) {
         switch (move) {
@@ -249,7 +240,8 @@
     }
 
     /**
-     * Moving the player (with ladders)
+     * Move the player (with ladders)
+     * @param {int} move - Key code
      */
     playerMoveLadder = function(move) {
         if(findLadder() != -1) {
@@ -272,7 +264,9 @@
     }
 
     /**
-     * Return the ladder array's index
+     * Get the ladder array's index which is at the same player position
+     * 
+     * @returns {int} Array's index if the player is on a ladder, -1 if it's not the case
      */
     findLadder = function() {
         var i=0;
@@ -298,6 +292,8 @@
 
     /**
      * Detect if the player is on a platform
+     * 
+     * @returns {boolean} True if the player is on a platform
      */
     detectPlatform = function() {
         var isOn = true;
@@ -318,7 +314,9 @@
     }
 
     /**
-     * Return true if the player is not on the ground, a platform, or a ladder
+     * Detect if the player is neither on the ground, nor on a platform, nor on a ladder
+     * 
+     * @returns {boolean} True if the player is neither on the ground, nor on a platform, nor on a ladder 
      */
     isNotOnPlatformOrGround = function() {
         isNot = false;
@@ -357,27 +355,27 @@
     function keepBalloonWithinBorders(ball){
         var changement = false;
         //Top
-        if(ball.center.y < ball.size.radius){
-            ball.center.y = ball.size.radius;
+        if(ball.center.y < ball.radius){
+            ball.center.y = ball.radius;
             ball.velocity.y = -ball.velocity.y;
             changement = true;
         } else {
             //Bottom
-            if(ball.center.y > cvs.height - ball.size.radius){
-                ball.center.y = cvs.height - ball.size.radius;
-                ball.velocity.y = ball.size.Yvelocity;
+            if(ball.center.y > cvs.height - ball.radius){
+                ball.center.y = cvs.height - ball.radius;
+                ball.velocity.y = -ball.velocity.y;
                 changement = true;
             }
         }
         //Left
-        if(ball.center.x < ball.size.radius){
-            ball.center.x = ball.size.radius;
+        if(ball.center.x < ball.radius){
+            ball.center.x = ball.radius;
             ball.velocity.x = -ball.velocity.x;
             changement = true;
         } else {
             //Right
-            if(ball.center.x > cvs.width-ball.size.radius){
-                ball.center.x = cvs.width - ball.size.radius;
+            if(ball.center.x > cvs.width-ball.radius){
+                ball.center.x = cvs.width - ball.radius;
                 ball.velocity.x = -ball.velocity.x;
                 changement = true;
             }
@@ -394,7 +392,7 @@
         var context = canvas.getContext("2d");
         context.beginPath();
         context.fillStyle=BALLOON_COLOR;
-        context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
+        context.arc(circle.center.x, circle.center.y, circle.radius, 0, 2 * Math.PI);
         context.fill();
     }
 
@@ -406,7 +404,7 @@
         var isOneBalloonRemaining = false;
         var i=0
         while(i<balloons.length && !isOneBalloonRemaining){
-            if(balloons[i].size.radius > 0){
+            if(balloons[i].radius > 0){
                 isOneBalloonRemaining = true;
             }
             i++;
@@ -487,11 +485,11 @@
             switch(hook.type){
                 case GRAPPLE_HOOK_NUMBER :
                     deleteWeapon(hook);
-                break;
+                    break;
 
                 case TRIDENT_NUMBER :
                     hook.shooting = false;
-                break;
+                    break;
             }
         } else {
 
@@ -520,48 +518,22 @@
         }
 
         //Hitting a balloon
-        for(var i=0 ; i < balloons.length ; i++){
-            
-            if(balloons[i].size.radius > 0){
+        for(var i=0 ; i<balloons.length ; i++){
+            if(balloons[i].radius>0){
 
-                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
-                && balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length){
+                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].radius, 2) 
+                && balloons[i].center.y + balloons[i].radius > hook.position.y - hook.length){
 
                     deleteWeapon(hook);
-                    //Points
-                    player.score += balloons[i].size.radius*10 ;
-                    
-                    
-                    //Two new balloons if the balloons is not of the minimal size
-                    if(balloons[i].size.number > 1){
-                        var oldBall = balloons[i];
-
-                        balloons[balloons.length] =  {
-                            center: {x: oldBall.center.x, y: oldBall.center.y},
-                            size: BALLON_SIZE[oldBall.size.number - 1],
-                            velocity:{ x: -1, y: -2},
-                            gravity: {x :0, y: 9.81/1000}
-                        };
-                        
-                    
-                        balloons[balloons.length] =  {
-                            center: {x: oldBall.center.x, y: oldBall.center.y},
-                            size: BALLON_SIZE[oldBall.size.number - 1],
-                            velocity:{ x: 1, y: -2},
-                            gravity: {x :0, y: 9.81/1000}
-                        };
-                    }
-                    
-
-                    //Delete the balloon
-                    balloons[i].size = BALLON_SIZE[0];
+                    player.score += balloons[i].radius*10 ;
+                    balloons    [i].radius = 0;
                 }
             }
         }
 
     }
- 
-    
+
+
     // ######################################
     // #### Balloons and platforms collisions
 
@@ -594,10 +566,10 @@
     * @return true or false
     */
     function isBalloonNearObject(ball,object){
-        return(!(ball.center.x < object.position.x - ball.size.radius
-        || ball.center.x > object.position.x + object.width + ball.size.radius
-        || ball.center.y < object.position.y - ball.size.radius
-        || ball.center.y > object.position.y + object.height + ball.size.radius))
+        return(!(ball.center.x < object.position.x - ball.radius
+        || ball.center.x > object.position.x + object.width + ball.radius
+        || ball.center.y < object.position.y - ball.radius
+        || ball.center.y > object.position.y + object.height + ball.radius))
     }
 
     /**
@@ -606,8 +578,8 @@
     function isInHorizontalCollision(ball, object){
         var collision = false;
         if(isBalloonBetweenRectangleX(ball, object)){
-            if(ball.center.y >= object.position.y - ball.size.radius 
-            && ball.center.y <= object.position.y + object.height + ball.size.radius){
+            if(ball.center.y >= object.position.y - ball.radius 
+            && ball.center.y <= object.position.y + object.height + ball.radius){
                 collision = true;
             }
         }
@@ -620,8 +592,8 @@
     function isInVerticalCollision(ball, object){
         var collision = false;
         if(isBalloonBetweenRectangleY(ball, object)){
-            if(ball.center.x >= object.position.x - ball.size.radius
-            && ball.center.x <= object.position.x + object.width + ball.size.radius){
+            if(ball.center.x >= object.position.x - ball.radius
+            && ball.center.x <= object.position.x + object.width + ball.radius){
                 collision = true;
             }
         }
@@ -629,14 +601,14 @@
     }
 
 
-    
+
     /**
     * Is the balloon colliding with the bottom right corner ?
     * @return true is yes, else false
     */
     function isBalloonCollidingBottomRightCorner(ball,object){
         let bottomRightCorner = {x: object.position.x + object.width, y: object.position.y + object.height} ;
-        return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.size.radius * ball.size.radius);
+        return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.radius * ball.radius);
     }
 
     /**
@@ -645,7 +617,7 @@
     */
     function isBalloonCollidingTopRightCorner(ball,object){
         let topRightCorner = {x: object.position.x + object.width, y: object.position.y} ;
-        return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.size.radius * ball.size.radius);
+        return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.radius * ball.radius);
     }
 
     /**
@@ -654,7 +626,7 @@
     */
     function isBalloonCollidingTopLeftCorner(ball,object){
         let topLeftCorner = {x: object.position.x, y: object.position.y} ;
-        return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.size.radius * ball.size.radius);
+        return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.radius * ball.radius);
     }
 
 
@@ -664,10 +636,10 @@
     */
     function isBalloonCollidingBottomLeftCorner(ball,object){
         let bottomLeftCorner = {x: object.position.x, y: object.position.y + object.height} ;
-        return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.size.radius * ball.size.radius);
+        return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.radius * ball.radius);
     }
 
- 
+
     /**
      * Make sure the balloons are not colliding with rectangle objects like platforms
      * @return true if a correction is applied
@@ -788,7 +760,7 @@
         return(collisionAngles || collisionX || collisionY);
     }
 
-    
+
     /**
     *
     */
@@ -796,7 +768,7 @@
         var speed = Math.sqrt(Math.pow(ball.velocity.x, 2) + Math.pow(ball.velocity.y, 2));
         console.log(speed);
     }
-    
+
 
     // ------------------------------
     //  Game
@@ -806,7 +778,7 @@
     * Initialization of the game
     */
     init = function() {
-       // Initizalisation of the global var context
+        // Initizalisation of the global var context
         context = document.getElementById("cvs").getContext("2d");
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
@@ -875,7 +847,7 @@
 
         // Update balloons position 
         for(var i=0 ; i<balloons.length ; i++){
-            if(balloons[i].size.radius>0){
+            if(balloons[i].radius>0){
                 // Update balloons[i].velocity
                 balloons[i].velocity.x += balloons[i].gravity.x*delta;
                 balloons[i].velocity.y += balloons[i].gravity.y*delta;
@@ -889,10 +861,10 @@
         //Verifying that balloons do not crash into something
         for(var i=0 ; i < balloons.length ; i++){
 
-            if(balloons[i].size.radius>0){    
+            if(balloons[i].radius>0){    
 
                 //Collisions with player
-                if(collisionsWithPlayer(balloons[i], player) && !isInvincible){
+                if(collisionsWithPlayer(balloons[i], player)){
                     pause = true;
                 } else {
                     //No, you will not stick out
@@ -992,9 +964,9 @@
         context.fillText(textTime, 700 - 65, 40);
         context.strokeText(textTime, 700 - 65, 40);
 
-		// platforms drawing
+        // platforms drawing
         for (var i=0; i < platforms.length; i++) {
-        	if(platforms[i].exist){
+            if(platforms[i].exist){
                 if(platforms[i].isDestructible){
                     context.fillStyle = DESTRUCTIBLE_PLATFORM_COLOR;
                 } else {
@@ -1008,12 +980,12 @@
         // ladders drawing
         context.fillStyle= LADDER_COLOR ;
         for (var i=0; i < ladders.length; i++) {
-        	context.fillRect(ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
+            context.fillRect(ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
         }
 
         // balloons displaying
-        for(var i=0 ; i < balloons.length ;i++){
-            if(balloons[i].size.radius > 0){
+        for(var i=0 ; i<balloons.length ;i++){
+            if(balloons[i].radius>0){
                 fillCircle(balloons[i]);
             }
         }
@@ -1089,12 +1061,12 @@
 
             // Shortcut to victory                                                                       // BETA FUNCTION
             case 71:
-              victory = !victory;
+                victory = !victory;
                 break;
 
             // Shortcut to defeat                                                                       // BETA FUNCTION
             case 72:
-              defeat = !defeat;
+                defeat = !defeat;
                 break;
 
             //Activate the default weapon : the grapple hook                                            // BETA FUNCTION
@@ -1108,12 +1080,6 @@
                 player.powerOn = TRIDENT_NUMBER ;
                 console.log("Trident activé");
                 break;
-
-            //Make the player invincible                                                                // BETA FUNCTION
-            case 73:
-                console.log("Joueur invincible");
-                isInvincible = !isInvincible;
-            break;        
         }
     }
 
