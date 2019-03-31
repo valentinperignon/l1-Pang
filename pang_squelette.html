@@ -12,9 +12,9 @@
      * @version 1.0
      */
 
-    // ------------------------------
-    // Future JSON
-    // ------------------------------
+    // -------------------------------------------------------------------------------
+    // ############################# Future JSON file ################################
+    // -------------------------------------------------------------------------------
     
     /** 
      * Array of all the platforms.
@@ -215,9 +215,9 @@
 
 
 
-    // ------------------------------
-    // Variables
-    // ------------------------------
+    // -------------------------------------------------------------------------------
+    // ################################ Variables ####################################
+    // -------------------------------------------------------------------------------
     
     /** Context */
     var context = null;
@@ -435,14 +435,14 @@
      * 
      * @returns {boolean} True if the player is neither on the ground, nor on a platform, nor on a ladder 
      */
-    isNotOnPlatformOrGround = function() {
+    function isNotOnPlatformOrGround(){
         isNot = false;
 
         if(player.position.y + player.height < context.height && findLadder() == -1 && !detectPlatform()) { // not on the ground
             isNot = true;
         }
 
-        return isNot;
+        return(isNot);
     }
 
     /**
@@ -464,6 +464,32 @@
                 player.position.y = context.height-player.height
             }
         }
+    }
+
+    /**
+     * Checks if the player will collide with an object
+     * @param {*} ball - The player
+     * @param {float} newPosX - The (maybe) new X coordinate of the player
+     * @param {float} newPosY - The (maybe) new Y coordinate of the player
+     * @param {*} object - A rectangular object
+     * 
+     * @returns {boolean} True if the player will collide with the object
+     */
+    function isPlayerWithinObject(player,newPosX,newPosY,object){
+        var correction = false;
+        if(object.exist){
+            //
+            if(newPosX + player.width < object.position.x || newPosX > object.position.x + object.width){
+                //No problem
+            } else {
+                if(newPosY + player.height <= object.position.y || newPosY >= object.position.y + object.height){
+                    // No problem
+                } else {
+                    correction = true;
+                }
+            }
+        }
+        return(correction);
     }
 
     /**
@@ -534,6 +560,7 @@
     /**
      * Detect the defeat 
      * (i.e. if there is no time and no ballon remaining)
+     * returns {boolean} true if the defeat is real
      */
     isDefeat = function() {
         var defeat = false;
@@ -849,7 +876,7 @@
      * @param {*} ball - The balloon
      * @param {*} object - A rectangular object
      * 
-     * @returns {float} The correction
+     * @returns {boolean} True if the balloon collided with the object
      */
     function keepBallonOutsideObjects(ball, object){
         if(object.exist){
@@ -1146,12 +1173,38 @@
             isGravity = 0;
         }
 
+        var willCollide = false;
+        var obstacleNumber = -1;
+        for(var i=0 ; i<platforms.length ; i++){
+            if(isPlayerWithinObject(player,newPosXPlayer,newPosYPlayer,platforms[i])){
+                willCollide = true;
+                obstacleNumber = i;
+            }
+        }
+
+        if(willCollide){
+            //Vertical
+            if(newSpdYPlayer < 0 && platforms[obstacleNumber].position.y + platforms[obstacleNumber].height <= player.position.y){
+                newPosYPlayer = platforms[obstacleNumber].position.y + platforms[obstacleNumber].height;
+                newSpdYPlayer = 0
+            }  else {
+                //Horizontal
+                if(newSpdXPlayer>0){
+                    newPosXPlayer = platforms[obstacleNumber].position.x - player.width;    
+                } else if(newSpdXPlayer<0){
+                    newPosXPlayer = platforms[obstacleNumber].position.x + platforms[obstacleNumber].width;
+                }
+                newSpdXPlayer = player.speed.x;
+            }
+        }
+
         // Update player
         player.position.x = newPosXPlayer;
         player.position.y = newPosYPlayer;
         player.speed.x = newSpdXPlayer;
         player.speed.y = newSpdYPlayer;
         keepPlayerWithinBorder();
+    
 
         //Detect the victory
         if(isVictory()){
