@@ -1013,7 +1013,6 @@
                 render();
             } else {
                 document.title = "Pang";
-
                 // update of the game's state
                 update(delta);
                 // draw the game
@@ -1150,6 +1149,25 @@
         context.font = "bolder 30px Arial";
         context.fillText(textTime, 700 - 65, 40);
         context.strokeText(textTime, 700 - 65, 40);
+
+        // Score text
+        var textScore = "SCORE : " + player.score;
+        context.lineWidth = 1.3;
+        context.font = "bolder 23px Arial";
+        context.fillText(textScore, 20, 30);
+        context.strokeText(textScore, 20, 30);
+
+        // Lives text
+        var textLives = "LIVES : ";
+        if(player.livesNumber > 0) {
+            for(var i=0; i<player.livesNumber; i++) {
+                textLives += "I";
+            }
+        } else {
+            textLives += "0";
+        }
+        context.fillText(textLives, 20, 57);
+        context.strokeText(textLives, 20, 57);
 
 		// platforms drawing
         for (var i=0; i < platforms.length; i++) {
