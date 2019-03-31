@@ -433,7 +433,9 @@
     }
 
     /**
-     * Return true if the player is not on the ground, a platform, or a ladder
+     * Detect if the player is neither on the ground, nor on a platform, nor on a ladder
+     * 
+     * @returns {boolean} True if the player is neither on the ground, nor on a platform, nor on a ladder 
      */
     isNotOnPlatformOrGround = function() {
         isNot = false;
@@ -446,7 +448,7 @@
     }
 
     /**
-     * It does exactly what you expect
+     * Keep the player inside of the canvas
      */
     function keepPlayerWithinBorder() {
         if(player.position.x < 0) {
@@ -467,7 +469,7 @@
     }
 
     /**
-     * It does exactly what you expect
+     * Keep balloons inside of the canvas
      */
     function keepBalloonWithinBorders(ball){
         var changement = false;
@@ -500,9 +502,9 @@
         return(changement);
     }
 
-
     /**
-     * Like FillRect, but for circles
+     * Draw a circle
+     * @param {*} cirlce - Balloon which will be draw
      */
     function fillCircle(circle){
         var canvas = document.getElementById("cvs");
@@ -513,9 +515,11 @@
         context.fill();
     }
 
-
     /**
-     * Detect the victory (= no balloon remaining)
+     * Detect the victory
+     * (i.e. detect if no balloon remaining)
+     * 
+     * @returns {boolean} True if the player won
      */
     function isVictory(){
         var isOneBalloonRemaining = false;
@@ -530,7 +534,8 @@
     }
 
     /**
-     * Detect the defeat (= no time remaining)
+     * Detect the defeat 
+     * (i.e. if there is no time and no ballon remaining)
      */
     isDefeat = function() {
         var defeat = false;
@@ -543,21 +548,19 @@
         return defeat;
     }
 
-
-
-    // #####################################
-    // #### Shoot, manage and delete Weapons
-
     /**
-    *
-    */
+     * Detect if the weapon is on a rectangle (for x axis)
+     * @param {*} weapon - Player's weapon
+     * @param {*} rectangle - An obstacle
+     */
     function isWeaponBetweenX(weapon,rectangle){
         return(weapon.position.x > rectangle.position.x && weapon.position.x + HOOK_WITDH < rectangle.position.x + rectangle.width);
     }
 
     /**
-    * Fire a weapon
-    */
+     * Fire a weapon
+     * @param {*} player - The player
+     */
     function shootWeapon(player){
         switch(player.powerOn){
             case GRAPPLE_HOOK_NUMBER:
@@ -572,6 +575,7 @@
 
     /**
      * Shoot a hook
+     * @param {*} grappleHook - The player's weapon (which is currently in use)
      */
     function shootGrappleHook(grappleHook){
         if(grappleHook.type == 0) {
@@ -583,7 +587,8 @@
     }
 
     /**
-     * Delete a weapon
+     * Delete the drawing of the weapon
+     * @param {*} weapon - The weapon which was fire
      */
     function deleteWeapon(weapon){
         weapon.type = 0;
@@ -592,9 +597,9 @@
         weapon.length = 0;
     }
 
-
     /**
-     * Checking if the hook should stop
+     * Check if the hook should stop
+     * @param {*} hook - The player's weapon
      */
     function stopHooks(hook){
         // Hit the top of the screen
@@ -676,38 +681,45 @@
 
     }
  
-    
-    // ######################################
-    // #### Balloons and platforms collisions
-
     /**
-    *
-    */
+     * Square disatnce bewteen two points
+     * @param {*} pointA - First point
+     * @param {*} pointB - Second point
+     * 
+     * @returns {float} The distance between A and B
+     */
     function squareDistanceBetweenPoints(pointA,pointB){
         return((pointA.x - pointB.x)*(pointA.x - pointB.x) + (pointA.y - pointB.y)*(pointA.y - pointB.y));
     }
 
-
     /**
-    * Is the balloonX between the x and (x + width) of the rectangle ? Return boolean
-    * Inputs : balloon with x, rectangle with x and width
-    */
+     * Detect if the balloon is between the x and (x + width) of the rectangle
+     * @param {*} ball - The balloon
+     * @param {*} rectangle - The rectangle
+     * 
+     * @returns {boolean} True if the balloon is between the x and (x + width) of the rectangle
+     */
     function isBalloonBetweenRectangleX(ball,rectangle){
         return(ball.center.x > rectangle.position.x && ball.center.x < rectangle.position.x + rectangle.width);
     }
 
     /**
-    * Is the ballon Y between the y and (y + width) of the rectangle ? Return boolean
-    * Inputs : balloon with y, rectangle with y and height
-    */
+     * Detect if the balloon is between the y and (y + height) of the rectangle
+     * @param {*} ball - The balloon
+     * @param {*} rectangle - The rectangle
+     * 
+     * @returns {boolean} True if the balloon is between the y and (y + height) of the rectangle
+     */
     function isBalloonBetweenRectangleY(ball,rectangle){
         return(ball.center.y >= rectangle.position.y && ball.center.y <= rectangle.position.y + rectangle.height);
     }
 
     /**
-    * Is the balloon near a plateform ? (= near to collide but we don't know if it does)
-    * @return true or false
-    */
+     * Detect if the balloon is near a plateform
+     * (i.e. near to collide but we don't know if it does)
+     * 
+     * @return {boolean} True if the balloon is near a plateform
+     */
     function isBalloonNearObject(ball,object){
         return(!(ball.center.x < object.position.x - ball.size.radius
         || ball.center.x > object.position.x + object.width + ball.size.radius
@@ -716,8 +728,13 @@
     }
 
     /**
-    * @return 'true' if the balloon touches the bottom or the upside of a rectangular object
-    */
+     * Detect  if the balloon touched the bottom or the upside of a rectangular object
+     * (only for horizontal collisions)
+     * @param {*} ball - The balloon
+     * @param {*} object - A rectangular object
+     * 
+     * @returns {boolean} True if the balloon touched the bottom or the upside of a rectangular object
+     */
     function isInHorizontalCollision(ball, object){
         var collision = false;
         if(isBalloonBetweenRectangleX(ball, object)){
@@ -730,8 +747,13 @@
     }
 
     /**
-    *@return 'true' if the balloon touches the left or the right of a rectangular object
-    */
+     * Detect  if the balloon touched the bottom or the upside of a rectangular object
+     * (only for vertical collisions)
+     * @param {*} ball - The balloon
+     * @param {*} object - A rectangular object
+     * 
+     * @returns {boolean} True if the balloon touched the bottom or the upside of a rectangular object
+     */
     function isInVerticalCollision(ball, object){
         var collision = false;
         if(isBalloonBetweenRectangleY(ball, object)){
@@ -742,50 +764,61 @@
         }
         return(collision);
     }
-
-
     
     /**
-    * Is the balloon colliding with the bottom right corner ?
-    * @return true is yes, else false
-    */
+     * Detect if the balloon is colliding with the bottom right corner 
+     * @param {*} ball - The balloon 
+     * @param {*} object - Any object
+     * 
+     * @returns {boolean} True if the balloon is colliding with the bottom right corner
+     */
     function isBalloonCollidingBottomRightCorner(ball,object){
         let bottomRightCorner = {x: object.position.x + object.width, y: object.position.y + object.height} ;
         return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.size.radius * ball.size.radius);
     }
 
     /**
-    * Is the balloon colliding with the top right corner ?
-    * @return true is yes, else false
-    */
+     * Detect if the balloon is colliding with the top right corner 
+     * @param {*} ball - The balloon 
+     * @param {*} object - Any object
+     * 
+     * @returns {boolean} True if the balloon is colliding with the top right corner
+     */
     function isBalloonCollidingTopRightCorner(ball,object){
         let topRightCorner = {x: object.position.x + object.width, y: object.position.y} ;
         return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.size.radius * ball.size.radius);
     }
 
     /**
-    * Is the balloon colliding with the top left corner ?
-    * @return true is yes, else false
-    */
+     * Detect if the balloon is colliding with the bottom left corner 
+     * @param {*} ball - The balloon 
+     * @param {*} object - Any object
+     * 
+     * @returns {boolean} True if the balloon is colliding with the bottom left corner
+     */
     function isBalloonCollidingTopLeftCorner(ball,object){
         let topLeftCorner = {x: object.position.x, y: object.position.y} ;
         return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.size.radius * ball.size.radius);
     }
 
-
     /**
-    * Is the balloon colliding with the top right corner ?
-    * @return true is yes, else false
-    */
+     * Detect if the balloon is colliding with the top left corner 
+     * @param {*} ball - The balloon 
+     * @param {*} object - Any object
+     * 
+     * @returns {boolean} True if the balloon is colliding with the top left corner
+     */
     function isBalloonCollidingBottomLeftCorner(ball,object){
         let bottomLeftCorner = {x: object.position.x, y: object.position.y + object.height} ;
         return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.size.radius * ball.size.radius);
     }
-
  
     /**
      * Make sure the balloons are not colliding with rectangle objects like platforms
-     * @return true if a correction is applied
+     * @param {*} ball - The balloon
+     * @param {*} object - A rectangular object
+     * 
+     * @returns {float} The correction
      */
     function keepBallonOutsideObjects(ball, object){
         if(object.exist){
@@ -883,8 +916,12 @@
     }
 
     /**
-    * Collision with any angles with the others functions
-    */ 
+     * Detect collision with any angles with the others functions
+     * @param {*} ball - The balloon
+     * @param {*} object - Any object
+     * 
+     * @returns {boolean} True if there is a collision
+     */  
     function collisionsAngles(ball,object){
         return(isBalloonCollidingBottomLeftCorner(ball,object)
         || isBalloonCollidingBottomRightCorner(ball,object)
@@ -894,8 +931,12 @@
     }
 
     /**
-    * Call the other testing functions and return if there's a collision
-    */
+     * Detect collision between ball and object
+     * @param {*} ball - The balloon
+     * @param {*} object - Any object
+     * 
+     * @returns {boolean} True if there is a collision
+     */ 
     function collisionsWithPlayer(ball, object){
         var collisionAngles = collisionsAngles(ball, object).collision;
         var collisionY = isInVerticalCollision(ball, object);
@@ -903,16 +944,15 @@
         return(collisionAngles || collisionX || collisionY);
     }
 
-    
     /**
-    *
-    */
+     * Change the balloon's velocity
+     * @param {*} ball 
+     */
     function outputSpeed(ball){
         var speed = Math.sqrt(Math.pow(ball.velocity.x, 2) + Math.pow(ball.velocity.y, 2));
         console.log(speed);
     }
     
-
     // ------------------------------
     //  Game
     // ------------------------------
