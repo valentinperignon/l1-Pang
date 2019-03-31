@@ -213,6 +213,8 @@
         ]
     }
 
+
+
     // ------------------------------
     // Variables
     // ------------------------------
@@ -224,7 +226,7 @@
     var numLevel = 2;
 
     /**
-     * Variables about game sate.
+     * Variables about game state.
      * With focus, pause, victory and defeat
      */
     var isOnFocus = true;
@@ -265,21 +267,15 @@
      * Array of weapons.
      * With type (0: is not active), position, length and shooting
      */
-    var weapons = [
-        {
-            type:0,
-            position: {x: 0, y: 0},
-            length: 0,
-            shooting: false,
-        }
-    ]
+    var weapons = [] ;
 
     /**
      * Weapons related variables.
      * With speed, width, and weapon number
      */
     const GRAPPLE_HOOK_NUMBER = 1 ;
-    const TRIDENT_NUMBER = 2 ;
+    const DOUBLE_HOOK_NUMBER = 2 ;
+    const TRIDENT_NUMBER = 3 ;
     const HOOK_SPEED = 0.3 ;
     const HOOK_WITDH = 5;
     
@@ -289,7 +285,7 @@
     const LADDER_COLOR = "darkgray";
     var BALLOON_COLOR;
     const GRAPPLE_HOOK_COLOR = "red";
-    const TRIDENT_COLOR = "orange"
+    const TRIDENT_COLOR = "orange";
 
 
     // ------------------------------
@@ -504,7 +500,7 @@
 
     /**
      * Draw a circle
-     * @param {*} cirlce - Balloon which will be draw
+     * @param {*} circle - Balloon which will be draw
      */
     function fillCircle(circle){
         var canvas = document.getElementById("cvs");
@@ -554,7 +550,7 @@
      * @param {*} rectangle - An obstacle
      */
     function isWeaponBetweenX(weapon,rectangle){
-        return(weapon.position.x > rectangle.position.x && weapon.position.x + HOOK_WITDH < rectangle.position.x + rectangle.width);
+        return(!(weapon.position.x + HOOK_WITDH < rectangle.position.x || weapon.position.x > rectangle.position.x + rectangle.width));
     }
 
     /**
@@ -564,37 +560,48 @@
     function shootWeapon(player){
         switch(player.powerOn){
             case GRAPPLE_HOOK_NUMBER:
-                shootGrappleHook(weapons[0]);
+                shootGrappleHook();
+                break;
+
+            case DOUBLE_HOOK_NUMBER:
+                shootGrappleHook();
                 break;
 
             case TRIDENT_NUMBER:
-                shootGrappleHook(weapons[0]);
+                shootGrappleHook();
                 break;
         }
     }
 
     /**
      * Shoot a hook
-     * @param {*} grappleHook - The player's weapon (which is currently in use)
      */
-    function shootGrappleHook(grappleHook){
-        if(grappleHook.type == 0) {
-            grappleHook.type = player.powerOn;
-            grappleHook.shooting = true;
-            grappleHook.position = {x: player.position.x+player.width/2 , y: player.position.y+player.height};
-            grappleHook.length = 0;
+    function shootGrappleHook(){
+        //No actual grapple hook shooted or double grapple hook bonus is on
+        if(weapons.length==0 
+        || (weapons.length < 2 && player.powerOn == DOUBLE_HOOK_NUMBER)){
+            weapons[weapons.length] = {
+                type: player.powerOn,
+                shooting: true,
+                position: {x: player.position.x+player.width/2 , y: player.position.y+player.height}, 
+                length: 0    
+            };
         }
     }
 
     /**
      * Delete the drawing of the weapon
-     * @param {*} weapon - The weapon which was fire
      */
-    function deleteWeapon(weapon){
-        weapon.type = 0;
-        weapon.shooting = false;
-        weapon.position = {x:0, y:0};
-        weapon.length = 0;
+    function deleteWeapon(){
+        weapons = [];
+    }
+
+    /**
+     * Delete a double hook that is on the top
+     */
+    function deleteDoubleHook(){
+        var temp = weapons.filter(weapons => weapons.shooting);
+        weapons = temp;
     }
 
     /**
@@ -606,12 +613,19 @@
         if(hook.position.y - hook.length < 0){
             switch(hook.type){
                 case GRAPPLE_HOOK_NUMBER :
-                    deleteWeapon(hook);
+                    deleteWeapon();
                 break;
+
+                case DOUBLE_HOOK_NUMBER:
+                    hook.shooting = false;
+                    deleteDoubleHook();
+                break;                    
 
                 case TRIDENT_NUMBER :
                     hook.shooting = false;
                 break;
+
+                
             }
         } else {
 
@@ -625,6 +639,14 @@
                         switch(hook.type){
                             case GRAPPLE_HOOK_NUMBER :
                                 deleteWeapon(hook);
+                                if(platforms[i].isDestructible){
+                                    platforms[i].exist = false;
+                                }
+                                break;
+                            
+                            case DOUBLE_HOOK_NUMBER :
+                                hook.shooting = false;
+                                deleteDoubleHook();
                                 if(platforms[i].isDestructible){
                                     platforms[i].exist = false;
                                 }
@@ -1080,6 +1102,7 @@
                 switch(weapons[i].type){
 
                     case GRAPPLE_HOOK_NUMBER:
+                    case DOUBLE_HOOK_NUMBER:
                     case TRIDENT_NUMBER:
                         weapons[i].length += HOOK_SPEED * delta ;
                     break;
@@ -1194,12 +1217,12 @@
                 fillCircle(balloons[i]);
             }
         }
-
         // weapons drawing
         for(var i=0 ; i < weapons.length ; i++){
             var weaponWidth = 0, weaponColor;
             switch(weapons[i].type){
                 case GRAPPLE_HOOK_NUMBER :
+                case DOUBLE_HOOK_NUMBER:
                     weaponColor = GRAPPLE_HOOK_COLOR;
                     weaponWidth = HOOK_WITDH;
                     break;
@@ -1286,12 +1309,18 @@
                 console.log("Grappin activé");
                 break;
 
+            //Activate the powerOn double grapple hook                                                  // BETA FUNCTION
+            case 84: 
+                player.powerOn = DOUBLE_HOOK_NUMBER ;
+                console.log("Double grappin activé");
+                break;
+
             //Activate the powerOn Trident                                                              // BETA FUNCTION
-            case 84:
+            case 89:
                 player.powerOn = TRIDENT_NUMBER ;
                 console.log("Trident activé");
                 break;
-
+ 
             //Make the player invincible                                                                // BETA FUNCTION
             case 73:
                 console.log("Joueur invincible");
@@ -1326,8 +1355,10 @@
     <!-- About -->
     <p> Commandes :
         <ul>
+            <li>E : debug, détruire les armes</li>
             <li>R : Arme par défaut</li>
-            <li>T : Trident </li>
+            <li>T : Double grappin </li>
+            <li>Y : Trident </li>
             <li>G : victoire immédiate</li>
             <li>H : défaite immédiate</li>
             <li>I : invincibilité</li>
