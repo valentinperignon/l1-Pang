@@ -12,9 +12,9 @@
      * @version 1.0
      */
 
-    // -------------------------------------------------
+    // ------------------------------
     // Future JSON
-    // -------------------------------------------------
+    // ------------------------------
     
     /** 
      * Array of all the platforms.
@@ -214,50 +214,57 @@
     }
 
     // ------------------------------
-    //  Variables
+    // Variables
     // ------------------------------
     
-    // Context
+    /** Context */
     var context = null;
 
-    // Game state
+    /** Current level */
     var numLevel = 1;
 
-    // Is the game running or not ?
+    /**
+     * Variables about game sate.
+     * With focus, pause, victory and defeat
+     */
     var isOnFocus = true;
     var pause = false;
     var victory = false;
     var defeat = false;
     var isInvincible = false;       //BETA
 
-    // Timer
+    /** Timer (default value: 100sec) */
     var timer = 100;
 
-    //Balloons related variables
+    /**
+     * Balloons related variables.
+     * With the speed
+     */
     const BALLOON_SPEED = 0.1;
-    
-
-    // An array of all the balloons in the game
-    // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
     var balloons = null;
-
     
-    // plaforms, ladders and balloons in the level
+    /**
+     * Platforms related variables
+     */
     var ladders = null;
     var platforms = null;
 
-
-    // when did we update the game last time ?
+    /** Date of the last game update */
     var lastUpdate = Date.now();
 
-    // A beautiful player
-    // With his position, his speed, his size and his others variables
+    /**
+     * The player.
+     * With position (x and y), speed (x and y), height, width, power, shiel, score, lives number and color
+     */
     var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 1, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
     const PLAYER_SPEED = 500;
     var isGravity = 0;
+    const GRAVITY = {x: 0, y: 1500};
 
-    // All the weapons and types of weapons (0= the weapon is not active)
-
+    /** 
+     * Array of weapons.
+     * With type (0: is not active), position, length and shooting
+     */
     var weapons = [
         {
             type:0,
@@ -267,23 +274,16 @@
         }
     ]
 
-    // Weapons related variables
-        // - Hooks
+    /**
+     * Weapons related variables.
+     * With speed, width, and weapon number
+     */
     const GRAPPLE_HOOK_NUMBER = 1 ;
     const TRIDENT_NUMBER = 2 ;
     const HOOK_SPEED = 0.3 ;
     const HOOK_WITDH = 5;
-
-        // - Others weapons
-
-
-    // gravity (thanks Newton)
-    const GRAVITY = {x: 0, y: 1500};
-
     
-    
-    // ### GRAPHICS VARIABLES ###
-    // Colors
+    /** Constants related graphics */
     const DESTRUCTIBLE_PLATFORM_COLOR = "grey";
     const PLATFORM_COLOR = "black";
     const LADDER_COLOR = "darkgray";
@@ -292,14 +292,14 @@
     const TRIDENT_COLOR = "orange"
 
 
-    // ----------------------------------------------------------------------
-    //                          Functions
-    // ----------------------------------------------------------------------
-
+    // ------------------------------
+    // Functions
+    // ------------------------------
 
     /**
-    * Level selection : initialize all the variables
-    */
+     * Initialize all the variables of the current level
+     * @param {int} numLevel - Current level
+     */
     function levelInitialization(numLevel){
         switch(numLevel){
             case 2:
@@ -325,7 +325,8 @@
     }
 
     /**
-     * Moving the player (horizontally)
+     * Move the player (horizontally).
+     * @param {int} move - Key code
      */
     playerMove = function(move) {
         switch (move) {
@@ -340,6 +341,7 @@
 
     /**
      * Stop the player's movement (horizontally)
+     * @param {int} move - Key code
      */
     playerStopMove = function(move) {
         switch (move) {
@@ -357,7 +359,8 @@
     }
 
     /**
-     * Moving the player (with ladders)
+     * Move the player (with ladders)
+     * @param {int} move - Key code
      */
     playerMoveLadder = function(move) {
         if(findLadder() != -1) {
@@ -380,7 +383,9 @@
     }
 
     /**
-     * Return the ladder array's index
+     * Get the ladder array's index which is at the same player position
+     * 
+     * @returns {int} Array's index if the player is on a ladder, -1 if it's not the case
      */
     findLadder = function() {
         var i=0;
@@ -406,6 +411,8 @@
 
     /**
      * Detect if the player is on a platform
+     * 
+     * @returns {boolean} True if the player is on a platform
      */
     detectPlatform = function() {
         var isOn = true;
