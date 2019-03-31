@@ -285,7 +285,9 @@
     const LADDER_COLOR = "darkgray";
     var BALLOON_COLOR;
     const GRAPPLE_HOOK_COLOR = "red";
-    const TRIDENT_COLOR = "orange";
+    const TRIDENT_COLOR1 = "orangered";
+    const TRIDENT_COLOR2 = "orange";
+    const TRIDENT_COLOR3 = "yellow";
 
 
     // ------------------------------
@@ -584,7 +586,8 @@
                 type: player.powerOn,
                 shooting: true,
                 position: {x: player.position.x+player.width/2 , y: player.position.y+player.height}, 
-                length: 0    
+                length: 0,
+                time: 0    
             };
         }
     }
@@ -623,6 +626,9 @@
 
                 case TRIDENT_NUMBER :
                     hook.shooting = false;
+                    if(hook.time > 3){
+                        deleteWeapon();
+                    }
                 break;
 
                 
@@ -654,6 +660,9 @@
 
                             case TRIDENT_NUMBER :
                                 hook.shooting = false;
+                                if(hook.time > 3){
+                                    deleteWeapon();
+                                }
                                 break;
                         }
                     }
@@ -1051,7 +1060,7 @@
     */
     update = function(delta) {
         // update timer
-        timer = timer - delta/1000;
+        timer -= delta/1000;
 
         // Update balloons position 
         for(var i=0 ; i<balloons.length ; i++){
@@ -1097,6 +1106,7 @@
         // Weapons will deal a lot of damages
         for(var i=0 ; i<weapons.length ; i++){
 
+            // Weapon is going up
             if(weapons[i].shooting==true){
 
                 switch(weapons[i].type){
@@ -1106,6 +1116,12 @@
                     case TRIDENT_NUMBER:
                         weapons[i].length += HOOK_SPEED * delta ;
                     break;
+                }
+            } else {
+
+                //Increase the timer of the trident
+                if(weapons[i].type == TRIDENT_NUMBER){
+                    weapons[i].time += delta/1000;
                 }
             }
 
@@ -1228,7 +1244,13 @@
                     break;
 
                 case TRIDENT_NUMBER :
-                    weaponColor = TRIDENT_COLOR ;
+                    if(weapons[i].time < 1){
+                        weaponColor = TRIDENT_COLOR1 ;
+                    } else if(weapons[i].time < 2){
+                        weaponColor = TRIDENT_COLOR2 ;
+                    } else {
+                        weaponColor = TRIDENT_COLOR3 ;
+                    }
                     weaponWidth = HOOK_WITDH;
                     break;
             }
