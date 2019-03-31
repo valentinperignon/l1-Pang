@@ -12,11 +12,14 @@
      * @version 1.0
      */
 
-    // -----------------------------
+    // -------------------------------------------------
     // Future JSON
-    // -----------------------------
+    // -------------------------------------------------
     
-    // All the platforms
+    /** 
+     * Array of all the platforms.
+     * With position (x and y), width, height, height, exist and detructibility
+     */
     const PLATFORMS_LIST = {
         level1 : [],
         level2 : [
@@ -96,7 +99,10 @@
         ]
     }
     
-    // All the ladders
+    /** 
+     * Array of all the ladders.
+     * With position (x and y), width and height
+     */
     const LADDER_WIDTH = 90;
     const LADDERS_LIST = {
         "level1": [],
@@ -130,7 +136,9 @@
         ]
     };
 
-    // Balloons sizes
+    /**
+     * List of size of balloons
+     */
     const BALLOON_SIZE = [
         {number: 0,
         radius: 0,
@@ -154,7 +162,10 @@
         }
     ]
 
-    // Balloons
+    /** 
+     * Array of all the balloons.
+     * With center position (x and y), radius, velocity (x and y), and ballons gravity
+     */
     const BALLOONS_LIST = {
         "level1": [
             {
@@ -201,72 +212,52 @@
             }
         ]
     }
-    // -----------------------------
-    // Variables
-    // -----------------------------
 
-    /** Context */
+    // ------------------------------
+    //  Variables
+    // ------------------------------
+    
+    // Context
     var context = null;
 
-    /** Current level */
+    // Game state
     var numLevel = 1;
 
-    /**
-     * Variables about game sate.
-     * With focus, pause, victory and defeat
-     */
+    // Is the game running or not ?
     var isOnFocus = true;
     var pause = false;
     var victory = false;
     var defeat = false;
+    var isInvincible = false;       //BETA
 
-    /** Timer (default value: 100sec) */
+    // Timer
     var timer = 100;
 
-    /** 
-     * Array of all the balloons.
-     * With center position (x and y), radius, velocity (x and y), and ballons gravity
-     */
-    var balloons = [
-        {center: {x: 400, y:30},
-        radius:30,
-        velocity:{ x: -1, y: 0},
-        gravity: {x :0, y: 9.81/1000},
-        },
-        {center: {x: 500, y:30},
-        radius:30,
-        velocity:{ x: 1, y: 0},
-        gravity: {x :0, y: 9.81/1000},
-        }
-    ];
-
-    /**
-     * Balloons related variables.
-     * With the speed
-     */
+    //Balloons related variables
     const BALLOON_SPEED = 0.1;
+    
 
-    /** Date of the last game update */
+    // An array of all the balloons in the game
+    // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
+    var balloons = null;
+
+    
+    // plaforms, ladders and balloons in the level
+    var ladders = null;
+    var platforms = null;
+
+
+    // when did we update the game last time ?
     var lastUpdate = Date.now();
 
-    /**
-     * The player.
-     * With position (x and y), speed (x and y), height, width, power, shiel, score, lives number and color
-     */
+    // A beautiful player
+    // With his position, his speed, his size and his others variables
     var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 1, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
     const PLAYER_SPEED = 500;
     var isGravity = 0;
 
-    /**
-     * Player related variables.
-     * With gravity
-     */
-    const GRAVITY = {x: 0, y: 1500};
+    // All the weapons and types of weapons (0= the weapon is not active)
 
-    /** 
-     * Array of weapons.
-     * With type (0: is not active), position, length and shooting
-     */
     var weapons = [
         {
             type:0,
@@ -276,27 +267,35 @@
         }
     ]
 
-    /**
-     * Weapons related variables.
-     * With speed, width, and weapon number
-     */
+    // Weapons related variables
         // - Hooks
     const GRAPPLE_HOOK_NUMBER = 1 ;
     const TRIDENT_NUMBER = 2 ;
     const HOOK_SPEED = 0.3 ;
     const HOOK_WITDH = 5;
 
-    /** Constants related graphics */
-    const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
+        // - Others weapons
+
+
+    // gravity (thanks Newton)
+    const GRAVITY = {x: 0, y: 1500};
+
+    
+    
+    // ### GRAPHICS VARIABLES ###
+    // Colors
+    const DESTRUCTIBLE_PLATFORM_COLOR = "grey";
     const PLATFORM_COLOR = "black";
-    const LADDER_COLOR = "gray";
-    const BALLOON_COLOR = "red";
+    const LADDER_COLOR = "darkgray";
+    var BALLOON_COLOR;
     const GRAPPLE_HOOK_COLOR = "red";
     const TRIDENT_COLOR = "orange"
 
-    // -----------------------------
-    // Functions
-    // -----------------------------
+
+    // ----------------------------------------------------------------------
+    //                          Functions
+    // ----------------------------------------------------------------------
+
 
     /**
     * Level selection : initialize all the variables
@@ -326,8 +325,7 @@
     }
 
     /**
-     * Move the player (horizontally).
-     * @param {int} move - Key code
+     * Moving the player (horizontally)
      */
     playerMove = function(move) {
         switch (move) {
@@ -342,7 +340,6 @@
 
     /**
      * Stop the player's movement (horizontally)
-     * @param {int} move - Key code
      */
     playerStopMove = function(move) {
         switch (move) {
@@ -360,8 +357,7 @@
     }
 
     /**
-     * Move the player (with ladders)
-     * @param {int} move - Key code
+     * Moving the player (with ladders)
      */
     playerMoveLadder = function(move) {
         if(findLadder() != -1) {
@@ -384,9 +380,7 @@
     }
 
     /**
-     * Get the ladder array's index which is at the same player position
-     * 
-     * @returns {int} Array's index if the player is on a ladder, -1 if it's not the case
+     * Return the ladder array's index
      */
     findLadder = function() {
         var i=0;
@@ -412,8 +406,6 @@
 
     /**
      * Detect if the player is on a platform
-     * 
-     * @returns {boolean} True if the player is on a platform
      */
     detectPlatform = function() {
         var isOn = true;
@@ -434,9 +426,7 @@
     }
 
     /**
-     * Detect if the player is neither on the ground, nor on a platform, nor on a ladder
-     * 
-     * @returns {boolean} True if the player is neither on the ground, nor on a platform, nor on a ladder 
+     * Return true if the player is not on the ground, a platform, or a ladder
      */
     isNotOnPlatformOrGround = function() {
         isNot = false;
@@ -449,7 +439,7 @@
     }
 
     /**
-     * Keep the player inside of the canvas
+     * It does exactly what you expect
      */
     function keepPlayerWithinBorder() {
         if(player.position.x < 0) {
@@ -470,33 +460,32 @@
     }
 
     /**
-     * Keep balloons inside of the canvas
-     * @param {*} ball - The balloon
+     * It does exactly what you expect
      */
     function keepBalloonWithinBorders(ball){
         var changement = false;
         //Top
-        if(ball.center.y < ball.radius){
-            ball.center.y = ball.radius;
+        if(ball.center.y < ball.size.radius){
+            ball.center.y = ball.size.radius;
             ball.velocity.y = -ball.velocity.y;
             changement = true;
         } else {
             //Bottom
-            if(ball.center.y > cvs.height - ball.radius){
-                ball.center.y = cvs.height - ball.radius;
-                ball.velocity.y = -ball.velocity.y;
+            if(ball.center.y > cvs.height - ball.size.radius){
+                ball.center.y = cvs.height - ball.size.radius;
+                ball.velocity.y = ball.size.Yvelocity;
                 changement = true;
             }
         }
         //Left
-        if(ball.center.x < ball.radius){
-            ball.center.x = ball.radius;
+        if(ball.center.x < ball.size.radius){
+            ball.center.x = ball.size.radius;
             ball.velocity.x = -ball.velocity.x;
             changement = true;
         } else {
             //Right
-            if(ball.center.x > cvs.width-ball.radius){
-                ball.center.x = cvs.width - ball.radius;
+            if(ball.center.x > cvs.width-ball.size.radius){
+                ball.center.x = cvs.width - ball.size.radius;
                 ball.velocity.x = -ball.velocity.x;
                 changement = true;
             }
@@ -506,30 +495,26 @@
 
 
     /**
-     * Draw a circle
-     * @param {*} cirlce - Balloon which will be draw
+     * Like FillRect, but for circles
      */
     function fillCircle(circle){
         var canvas = document.getElementById("cvs");
         var context = canvas.getContext("2d");
         context.beginPath();
         context.fillStyle=BALLOON_COLOR;
-        context.arc(circle.center.x, circle.center.y, circle.radius, 0, 2 * Math.PI);
+        context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
         context.fill();
     }
 
 
     /**
-     * Detect the victory
-     * (i.e. detect if no balloon remaining)
-     * 
-     * @returns {boolean} True if the player won
+     * Detect the victory (= no balloon remaining)
      */
     function isVictory(){
         var isOneBalloonRemaining = false;
         var i=0
         while(i<balloons.length && !isOneBalloonRemaining){
-            if(balloons[i].radius > 0){
+            if(balloons[i].size.radius > 0){
                 isOneBalloonRemaining = true;
             }
             i++;
@@ -538,8 +523,7 @@
     }
 
     /**
-     * Detect the defeat 
-     * (i.e. if there is no time and no ballon remaining)
+     * Detect the defeat (= no time remaining)
      */
     isDefeat = function() {
         var defeat = false;
@@ -552,19 +536,21 @@
         return defeat;
     }
 
+
+
+    // #####################################
+    // #### Shoot, manage and delete Weapons
+
     /**
-     * Detect if the weapon is on a rectangle (for x axis)
-     * @param {*} weapon - Player's weapon
-     * @param {*} rectangle - An obstacle
-     */
+    *
+    */
     function isWeaponBetweenX(weapon,rectangle){
         return(weapon.position.x > rectangle.position.x && weapon.position.x + HOOK_WITDH < rectangle.position.x + rectangle.width);
     }
 
     /**
-     * Fire a weapon
-     * @param {*} player - The player
-     */
+    * Fire a weapon
+    */
     function shootWeapon(player){
         switch(player.powerOn){
             case GRAPPLE_HOOK_NUMBER:
@@ -579,7 +565,6 @@
 
     /**
      * Shoot a hook
-     * @param {*} grappleHook - The player's weapon (which is currently in use)
      */
     function shootGrappleHook(grappleHook){
         if(grappleHook.type == 0) {
@@ -591,8 +576,7 @@
     }
 
     /**
-     * Delete the drawing of the weapon
-     * @param {*} weapon - The weapon which was fire
+     * Delete a weapon
      */
     function deleteWeapon(weapon){
         weapon.type = 0;
@@ -601,9 +585,9 @@
         weapon.length = 0;
     }
 
+
     /**
-     * Check if the hook should stop
-     * @param {*} hook - The player's weapon
+     * Checking if the hook should stop
      */
     function stopHooks(hook){
         // Hit the top of the screen
@@ -611,11 +595,11 @@
             switch(hook.type){
                 case GRAPPLE_HOOK_NUMBER :
                     deleteWeapon(hook);
-                    break;
+                break;
 
                 case TRIDENT_NUMBER :
                     hook.shooting = false;
-                    break;
+                break;
             }
         } else {
 
@@ -644,15 +628,17 @@
         }
 
         //Hitting a balloon
-        for(var i=0 ; i<balloons.length ; i++){
-            if(balloons[i].radius>0){
+        for(var i=0 ; i < balloons.length ; i++){
+            
+            if(balloons[i].size.radius > 0){
 
-                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].radius, 2) 
-                && balloons[i].center.y + balloons[i].radius > hook.position.y - hook.length){
+                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
+                && balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length){
 
                     deleteWeapon(hook);
                     //Points
                     player.score += balloons[i].size.radius*10 ;
+                    
                     
                     //Two new balloons if the balloons is not of the minimal size
                     if(balloons[i].size.number > 1){
@@ -665,13 +651,15 @@
                             gravity: {x :0, y: 9.81/1000}
                         };
                         
+                    
                         balloons[balloons.length] =  {
                             center: {x: oldBall.center.x, y: oldBall.center.y},
                             size: BALLOON_SIZE[oldBall.size.number - 1],
                             velocity:{ x: 1, y: -2},
                             gravity: {x :0, y: 9.81/1000}
                         };
-                    }                   
+                    }
+                    
 
                     //Delete the balloon
                     balloons[i].size = BALLOON_SIZE[0];
@@ -680,66 +668,54 @@
         }
 
     }
+ 
+    
+    // ######################################
+    // #### Balloons and platforms collisions
 
     /**
-     * Square disatnce bewteen two points
-     * @param {*} pointA - First point
-     * @param {*} pointB - Second point
-     * 
-     * @returns {float} The distance between A and B
-     */
+    *
+    */
     function squareDistanceBetweenPoints(pointA,pointB){
         return((pointA.x - pointB.x)*(pointA.x - pointB.x) + (pointA.y - pointB.y)*(pointA.y - pointB.y));
     }
 
+
     /**
-     * Detect if the balloon is between the x and (x + width) of the rectangle
-     * @param {*} ball - The balloon
-     * @param {*} rectangle - The rectangle
-     * 
-     * @returns {boolean} True if the balloon is between the x and (x + width) of the rectangle
-     */
+    * Is the balloonX between the x and (x + width) of the rectangle ? Return boolean
+    * Inputs : balloon with x, rectangle with x and width
+    */
     function isBalloonBetweenRectangleX(ball,rectangle){
         return(ball.center.x > rectangle.position.x && ball.center.x < rectangle.position.x + rectangle.width);
     }
 
     /**
-     * Detect if the balloon is between the y and (y + height) of the rectangle
-     * @param {*} ball - The balloon
-     * @param {*} rectangle - The rectangle
-     * 
-     * @returns {boolean} True if the balloon is between the y and (y + height) of the rectangle
-     */
+    * Is the ballon Y between the y and (y + width) of the rectangle ? Return boolean
+    * Inputs : balloon with y, rectangle with y and height
+    */
     function isBalloonBetweenRectangleY(ball,rectangle){
         return(ball.center.y >= rectangle.position.y && ball.center.y <= rectangle.position.y + rectangle.height);
     }
 
     /**
-     * Detect if the balloon is near a plateform
-     * (i.e. near to collide but we don't know if it does)
-     * 
-     * @return {boolean} True if the balloon is near a plateform
-     */
+    * Is the balloon near a plateform ? (= near to collide but we don't know if it does)
+    * @return true or false
+    */
     function isBalloonNearObject(ball,object){
-        return(!(ball.center.x < object.position.x - ball.radius
-        || ball.center.x > object.position.x + object.width + ball.radius
-        || ball.center.y < object.position.y - ball.radius
-        || ball.center.y > object.position.y + object.height + ball.radius))
+        return(!(ball.center.x < object.position.x - ball.size.radius
+        || ball.center.x > object.position.x + object.width + ball.size.radius
+        || ball.center.y < object.position.y - ball.size.radius
+        || ball.center.y > object.position.y + object.height + ball.size.radius))
     }
 
     /**
-     * Detect  if the balloon touched the bottom or the upside of a rectangular object
-     * (only for horizontal collisions)
-     * @param {*} ball - The balloon
-     * @param {*} object - A rectangular object
-     * 
-     * @returns {boolean} True if the balloon touched the bottom or the upside of a rectangular object
-     */
+    * @return 'true' if the balloon touches the bottom or the upside of a rectangular object
+    */
     function isInHorizontalCollision(ball, object){
         var collision = false;
         if(isBalloonBetweenRectangleX(ball, object)){
-            if(ball.center.y >= object.position.y - ball.radius 
-            && ball.center.y <= object.position.y + object.height + ball.radius){
+            if(ball.center.y >= object.position.y - ball.size.radius 
+            && ball.center.y <= object.position.y + object.height + ball.size.radius){
                 collision = true;
             }
         }
@@ -747,78 +723,62 @@
     }
 
     /**
-     * Detect  if the balloon touched the bottom or the upside of a rectangular object
-     * (only for vertical collisions)
-     * @param {*} ball - The balloon
-     * @param {*} object - A rectangular object
-     * 
-     * @returns {boolean} True if the balloon touched the bottom or the upside of a rectangular object
-     */
+    *@return 'true' if the balloon touches the left or the right of a rectangular object
+    */
     function isInVerticalCollision(ball, object){
         var collision = false;
         if(isBalloonBetweenRectangleY(ball, object)){
-            if(ball.center.x >= object.position.x - ball.radius
-            && ball.center.x <= object.position.x + object.width + ball.radius){
+            if(ball.center.x >= object.position.x - ball.size.radius
+            && ball.center.x <= object.position.x + object.width + ball.size.radius){
                 collision = true;
             }
         }
         return(collision);
     }
 
+
+    
     /**
-     * Detect if the balloon is colliding with the bottom right corner 
-     * @param {*} ball - The balloon 
-     * @param {*} object - Any object
-     * 
-     * @returns {boolean} True if the balloon is colliding with the bottom right corner
-     */
+    * Is the balloon colliding with the bottom right corner ?
+    * @return true is yes, else false
+    */
     function isBalloonCollidingBottomRightCorner(ball,object){
         let bottomRightCorner = {x: object.position.x + object.width, y: object.position.y + object.height} ;
-        return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.size.radius * ball.size.radius);
     }
 
     /**
-     * Detect if the balloon is colliding with the top right corner 
-     * @param {*} ball - The balloon 
-     * @param {*} object - Any object
-     * 
-     * @returns {boolean} True if the balloon is colliding with the top right corner
-     */
+    * Is the balloon colliding with the top right corner ?
+    * @return true is yes, else false
+    */
     function isBalloonCollidingTopRightCorner(ball,object){
         let topRightCorner = {x: object.position.x + object.width, y: object.position.y} ;
-        return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.size.radius * ball.size.radius);
     }
 
     /**
-     * Detect if the balloon is colliding with the bottom left corner 
-     * @param {*} ball - The balloon 
-     * @param {*} object - Any object
-     * 
-     * @returns {boolean} True if the balloon is colliding with the bottom left corner
-     */
-    function isBalloonCollidingBottomLeftCorner(ball,object){
-        let bottomLeftCorner = {x: object.position.x, y: object.position.y + object.height} ;
-        return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.radius * ball.radius);
-    }
-
-    /**
-     * Detect if the balloon is colliding with the top left corner 
-     * @param {*} ball - The balloon 
-     * @param {*} object - Any object
-     * 
-     * @returns {boolean} True if the balloon is colliding with the top left corner
-     */
+    * Is the balloon colliding with the top left corner ?
+    * @return true is yes, else false
+    */
     function isBalloonCollidingTopLeftCorner(ball,object){
         let topLeftCorner = {x: object.position.x, y: object.position.y} ;
-        return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.size.radius * ball.size.radius);
     }
 
+
+    /**
+    * Is the balloon colliding with the top right corner ?
+    * @return true is yes, else false
+    */
+    function isBalloonCollidingBottomLeftCorner(ball,object){
+        let bottomLeftCorner = {x: object.position.x, y: object.position.y + object.height} ;
+        return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.size.radius * ball.size.radius);
+    }
+
+ 
     /**
      * Make sure the balloons are not colliding with rectangle objects like platforms
-     * @param {*} ball - The balloon
-     * @param {*} object - A rectangular object
-     * 
-     * @returns {float} The correction
+     * @return true if a correction is applied
      */
     function keepBallonOutsideObjects(ball, object){
         if(object.exist){
@@ -916,12 +876,8 @@
     }
 
     /**
-     * Detect collision with any angles with the others functions
-     * @param {*} ball - The balloon
-     * @param {*} object - Any object
-     * 
-     * @returns {boolean} True if there is a collision
-     */ 
+    * Collision with any angles with the others functions
+    */ 
     function collisionsAngles(ball,object){
         return(isBalloonCollidingBottomLeftCorner(ball,object)
         || isBalloonCollidingBottomRightCorner(ball,object)
@@ -931,12 +887,8 @@
     }
 
     /**
-     * Detect collision between ball and object
-     * @param {*} ball - The balloon
-     * @param {*} object - Any object
-     * 
-     * @returns {boolean} True if there is a collision
-     */ 
+    * Call the other testing functions and return if there's a collision
+    */
     function collisionsWithPlayer(ball, object){
         var collisionAngles = collisionsAngles(ball, object).collision;
         var collisionY = isInVerticalCollision(ball, object);
@@ -944,15 +896,15 @@
         return(collisionAngles || collisionX || collisionY);
     }
 
-
+    
     /**
-     * Change the balloon's velocity
-     * @param {*} ball 
-     */
+    *
+    */
     function outputSpeed(ball){
         var speed = Math.sqrt(Math.pow(ball.velocity.x, 2) + Math.pow(ball.velocity.y, 2));
+        console.log(speed);
     }
-
+    
 
     // ------------------------------
     //  Game
@@ -962,7 +914,7 @@
     * Initialization of the game
     */
     init = function() {
-        // Initizalisation of the global var context
+       // Initizalisation of the global var context
         context = document.getElementById("cvs").getContext("2d");
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
@@ -1007,7 +959,7 @@
             if(victory || defeat) {
                 if(victory) {
                     document.title = "Pang - gagné !";
-                } else {
+                } else {
                     document.title = "Pang - perdu...";
                 }
                 // draw the game
@@ -1026,8 +978,8 @@
     }
 
     /**
-    *  Game update 
-    *  @param {int} delta the time between now and the last update
+    *  Game update
+    *  @param delta the time between now and the last update
     */
     update = function(delta) {
         // update timer
@@ -1035,7 +987,7 @@
 
         // Update balloons position 
         for(var i=0 ; i<balloons.length ; i++){
-            if(balloons[i].radius>0){
+            if(balloons[i].size.radius>0){
                 // Update balloons[i].velocity
                 balloons[i].velocity.x += balloons[i].gravity.x*delta;
                 balloons[i].velocity.y += balloons[i].gravity.y*delta;
@@ -1049,10 +1001,10 @@
         //Verifying that balloons do not crash into something
         for(var i=0 ; i < balloons.length ; i++){
 
-            if(balloons[i].radius>0){    
+            if(balloons[i].size.radius>0){    
 
                 //Collisions with player
-                if(collisionsWithPlayer(balloons[i], player)){
+                if(collisionsWithPlayer(balloons[i], player) && !isInvincible){
                     pause = true;
                 } else {
                     //No, you will not stick out
@@ -1071,7 +1023,9 @@
                 }
             }
         }
-        
+
+
+
         // Weapons will deal a lot of damages
         for(var i=0 ; i<weapons.length ; i++){
 
@@ -1150,9 +1104,9 @@
         context.fillText(textTime, 700 - 65, 40);
         context.strokeText(textTime, 700 - 65, 40);
 
-        // platforms drawing
-        for (var i=0; i < platforms.length; i++) {
-            if(platforms[i].exist){
+		// platforms drawing
+        for (var i=0; i < platforms.length; i++) {
+        	if(platforms[i].exist){
                 if(platforms[i].isDestructible){
                     context.fillStyle = DESTRUCTIBLE_PLATFORM_COLOR;
                 } else {
@@ -1165,13 +1119,13 @@
 
         // ladders drawing
         context.fillStyle= LADDER_COLOR ;
-        for (var i=0; i < ladders.length; i++) {
-            context.fillRect(ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
+        for (var i=0; i < ladders.length; i++) {
+        	context.fillRect(ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
         }
 
         // balloons displaying
-        for(var i=0 ; i<balloons.length ;i++){
-            if(balloons[i].radius>0){
+        for(var i=0 ; i < balloons.length ;i++){
+            if(balloons[i].size.radius > 0){
                 fillCircle(balloons[i]);
             }
         }
@@ -1247,12 +1201,12 @@
 
             // Shortcut to victory                                                                       // BETA FUNCTION
             case 71:
-                victory = !victory;
+              victory = !victory;
                 break;
 
             // Shortcut to defeat                                                                       // BETA FUNCTION
             case 72:
-                defeat = !defeat;
+              defeat = !defeat;
                 break;
 
             //delete the weapon                                                                         // BETA FUNCTION
@@ -1272,6 +1226,12 @@
                 player.powerOn = TRIDENT_NUMBER ;
                 console.log("Trident activé");
                 break;
+
+            //Make the player invincible                                                                // BETA FUNCTION
+            case 73:
+                console.log("Joueur invincible");
+                isInvincible = !isInvincible;
+            break;        
         }
     }
 
