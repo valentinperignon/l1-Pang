@@ -26,11 +26,16 @@
     var timer = 100;
 
     // An array of all the balloons in the game
-    // With the position, the radius, the velocity and the gravity for this balloon. Plus his color because it is beautiful.
+    // With the position, the radius, the velocity and the gravity for this balloon. Plus its color because it is beautiful.
     var balloons = [
         {center: {x: 400, y:30},
         radius:30,
-        velocity:{ x: .8, y: 0},
+        velocity:{ x: -1, y: 0},
+        gravity: {x :0, y: 9.81/1000},
+        },
+        {center: {x: 500, y:30},
+        radius:30,
+        velocity:{ x: 1, y: 0},
         gravity: {x :0, y: 9.81/1000},
         }
     ];
@@ -969,7 +974,7 @@
         context.fillStyle = player.color;
         context.fillRect(player.position.x, player.position.y, player.width, player.height);
 
-        // Victory screen
+        // Victory and defeat screen
         if(victory){
             context.fillStyle = "green";
             context.fillRect(context.width/5,context.height/5,context.width/5*3,context.height/5*3);
@@ -979,7 +984,7 @@
             context.fillText("Et c'est gagné !", cvs.width/2, cvs.height/2);
         } else {
             if(defeat) {
-                context.fillStyle = "green";
+                context.fillStyle = "red";
                 context.fillRect(cvs.width/5,cvs.height/5,cvs.width/5*3,cvs.height/5*3);
                 context.fillStyle = "black";
                 context.font = '48px serif';
