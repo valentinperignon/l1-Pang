@@ -217,7 +217,7 @@
     var context = null;
 
     // Game state
-    var numLevel = 3;
+    var numLevel = 2;
 
     /**
      * Variables about game state.
@@ -244,7 +244,7 @@
 
     // A beautiful player
     // With his position, his speed, his size and his others variables
-    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 1, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
     const PLAYER_SPEED = 500;
     var isGravity = 0;
 
@@ -326,6 +326,13 @@
         player.width = 70;
         player.position.x = context.width/2 - player.width/2;
         player.position.y = context.height - player.height;
+        player.powerOn = GRAPPLE_HOOK_NUMBER;
+
+        //Initialisation of the timer
+        timer = 100;
+
+        //No weapon
+        weapons = [];
     }
 
 
