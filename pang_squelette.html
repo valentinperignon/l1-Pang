@@ -6,79 +6,17 @@
     <title>Pang</title>
     <script>
 
-    // ------------------------------
-    //  Variables
-    // ------------------------------
-
-    // Context
-    var context = null;
-
-    // Game state
-    var numLevel = 1;
-
-    // Is the game running or not ?
-    var isOnFocus = true;
-    var pause = false;
-    var victory = false;
-    var defeat = false;
-
-    // Timer
-    var timer = 100;
-
-    // An array of all the balloons in the game
-    // With the position, the radius, the velocity and the gravity for this balloon. Plus its color because it is beautiful.
-    var balloons = [
-        {center: {x: 400, y:30},
-        radius:30,
-        velocity:{ x: -1, y: 0},
-        gravity: {x :0, y: 9.81/1000},
-        },
-        {center: {x: 500, y:30},
-        radius:30,
-        velocity:{ x: 1, y: 0},
-        gravity: {x :0, y: 9.81/1000},
-        }
-    ];
-
-    //Balloons related variables
-    const BALLOON_SPEED = 0.1;
-
-    // when did we update the game last time ?
-    var lastUpdate = Date.now();
-
-    // A beautiful player
-    // With his position, his speed, his size and his others variables
-    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 1, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
-    const PLAYER_SPEED = 500;
-    var isGravity = 0;
-
-    // All the weapons and types of weapons (0= the weapon is not active)
-
-    var weapons = [
-        {
-            type:0,
-            position: {x: 0, y: 0},
-            length: 0,
-            shooting: false,
-        }
-    ]
-
-    // Weapons related variables
-        // - Hooks
-    const GRAPPLE_HOOK_NUMBER = 1 ;
-    const TRIDENT_NUMBER = 2 ;
-    const HOOK_SPEED = 0.3 ;
-    const HOOK_WITDH = 5;
-
-        // - Others weapons
-
-
-    // gravity (thanks Newton)
-    const GRAVITY = {x: 0, y: 1500};
-
-    // All the platforms
-    var platformsList = {
-        level1 : [
+    // -------------------------------------------------------------------------------
+    // ############################# Future JSON file ################################
+    // -------------------------------------------------------------------------------
+    
+    /** 
+     * Array of all the platforms.
+     * With position (x and y), width, height, height, exist and detructibility
+     */
+    const PLATFORMS_LIST = {
+        level1 : [],
+        level2 : [
             {
                 "position":{
                     "x": 575,
@@ -121,7 +59,7 @@
             }
         ],
 
-        level2 : [
+        level3 : [
             {
                 "position":{
                     "x": 275,
@@ -129,7 +67,7 @@
                 },
                 "width": 80,
                 "height": 40,
-                "exist": false,
+                "exist": true,
                 "isDestructible": false
             },
             {
@@ -139,18 +77,30 @@
                 },
                 "width": 80,
                 "height": 40,
-                "exist": false,
+                "exist": true,
+                "isDestructible": true
+            },
+            {
+                "position":{
+                    "x": 700,
+                    "y": 500
+                },
+                "width": 100,
+                "height": 100,
+                "exist": true,
                 "isDestructible": true
             }
         ]
     }
-    var platforms = platformsList.level1;
-
-
-    // ladders in the game
+    
+    /** 
+     * Array of all the ladders.
+     * With position (x and y), width and height
+     */
     const LADDER_WIDTH = 90;
-    var laddersList = {
-        "level1": [
+    const LADDERS_LIST = {
+        "level1": [],
+        "level2": [
             {
                 "position":{
                     "x": 35,
@@ -159,22 +109,225 @@
                 "width": LADDER_WIDTH,
                 "height": 200,
             }
+        ],
+        "level3": [
+            {
+                "position":{
+                    "x": 35,
+                    "y": 400
+                },
+                "width": LADDER_WIDTH,
+                "height": 200,
+            },
+            {
+                "position":{
+                    "x": 600,
+                    "y": 400
+                },
+                "width": LADDER_WIDTH,
+                "height": 200,
+            }
         ]
     };
-    var ladders = laddersList.level1;
+
+    /**
+     * List of size of balloons
+     */
+    const BALLOON_SIZE = [
+        {number: 0,
+        radius: 0,
+        Yvelocity:0
+        },
+        {number: 1,
+        radius: 15,
+        Yvelocity: -6
+        },
+        {number: 2,
+        radius: 30,
+        Yvelocity: -7.1
+        },
+        {number: 3,
+        radius: 40,
+        Yvelocity: -8.4
+        },
+        {number: 4,
+        radius: 50,
+        Yvelocity: -9.5
+        }
+    ]
+
+    /** 
+     * Array of all the balloons.
+     * With center position (x and y), radius, velocity (x and y), and ballons gravity
+     */
+    const BALLOONS_LIST = {
+        "level1": [
+            {
+                center: {x: 400, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: -1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            }
+        ],
+
+        "level2": [
+            {
+                center: {x: 400, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: -1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            },
+            {
+                center: {x: 500, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: 1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            }
+        ],
+
+        "level3": [
+            {
+                center: {x: 400, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: -1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            },
+            {
+                center: {x: 500, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: 1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            },
+            {
+                center: {x: 600, y:30},
+                size: BALLOON_SIZE[4],
+                velocity:{ x: 1, y: 0},
+                gravity: {x :0, y: 9.81/1000},
+            }
+        ]
+    }
+
+
+
+    // -------------------------------------------------------------------------------
+    // ################################ Variables ####################################
+    // -------------------------------------------------------------------------------
+    
+    /** Context */
+    var context = null;
+
+    // Game state
+    var numLevel = 3;
+
+    /**
+     * Variables about game state.
+     * With focus, pause, victory and defeat
+     */
+    var isOnFocus = true;
+    var pause = false;
+    var victory = false;
+    var defeat = false;
+    var isInvincible = false;                                                                                           // BETA isInvicible
+
+    // Timer
+    var timer = 100;
+
+    // An array of all the balloons in the game
+    // With the position, the radius, the velocity and the gravity of this balloon, plus its color because it is beautiful.
+    var balloons = [];
+
+    //Balloons related variables
+    const BALLOON_SPEED = 0.1;
+
+    // when did we update the game last time ?
+    var lastUpdate = Date.now();
+
+    // A beautiful player
+    // With his position, his speed, his size and his others variables
+    var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 1, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
+    const PLAYER_SPEED = 500;
+    var isGravity = 0;
+
+    /** 
+     * Array of weapons.
+     * With type (0: is not active), position, length and shooting
+     */
+    var weapons = [] ;
+
+    // Weapons related variables
+        // - Hooks
+    const GRAPPLE_HOOK_NUMBER = 1 ;
+    const DOUBLE_HOOK_NUMBER = 2 ;
+    const TRIDENT_NUMBER = 3 ;
+    const HOOK_SPEED = 0.3 ;
+    const HOOK_WITDH = 5;
+
+        // - Others weapons
+
+
+    // gravity (thanks Newton)
+    const GRAVITY = {x: 0, y: 1500};
+
+    // All the platforms
+    var platforms = [] ;
+
+    // ladders in the game
+    var ladders = [] ;
+
 
     // ### GRAPHICS VARIABLES ###
     // Colors
     const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
     const PLATFORM_COLOR = "black";
     const LADDER_COLOR = "gray";
-    const BALLOON_COLOR = "red";
+    var BALLOON_COLOR ;
     const GRAPPLE_HOOK_COLOR = "red";
-    const TRIDENT_COLOR = "orange"
+    const TRIDENT_COLOR1 = "orangered";
+    const TRIDENT_COLOR2 = "orange";
+    const TRIDENT_COLOR3 = "yellow";
 
-    // ------------------------------
-    //  Functions
-    // ------------------------------
+
+
+
+
+    // ------------------------------------------------------------------------------------------------
+    // ######################################## Functions #############################################
+    // ------------------------------------------------------------------------------------------------
+
+    /**
+    * Level selection : initialize all the variables
+    */
+    function levelInitialization(num){
+        //JSON.parse(JSON.stringify(var)) is to make a copy of the object and not a copy of the adress.
+        switch(num){
+            case 2:
+                ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level2));
+                platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level2));
+                balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level2));
+                BALLOON_COLOR = "blue";
+            break;
+
+            case 3:
+                ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level3));
+                platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level3));
+                balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level3));
+                BALLOON_COLOR = "green";
+            break;
+                
+            default:
+                ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level1));
+                platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level1));
+                balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level1));
+                BALLOON_COLOR = "red";
+        }
+
+        // initialization of the player
+        player.height = 75;
+        player.width = 70;
+        player.position.x = context.width/2 - player.width/2;
+        player.position.y = context.height - player.height;
+    }
+
 
     /**
      * Moving the player (horizontally)
@@ -280,14 +433,14 @@
     /**
      * Return true if the player is not on the ground, a platform, or a ladder
      */
-    isNotOnPlatformOrGround = function() {
+    function isNotOnPlatformOrGround(){
         isNot = false;
 
         if(player.position.y + player.height < context.height && findLadder() == -1 && !detectPlatform()) { // not on the ground
             isNot = true;
         }
 
-        return isNot;
+        return(isNot);
     }
 
     /**
@@ -312,32 +465,58 @@
     }
 
     /**
-     * It does exactly what you expect
+     * Checks if the player will collide with an object
+     * @param {*} ball - The player
+     * @param {float} newPosX - The (maybe) new X coordinate of the player
+     * @param {float} newPosY - The (maybe) new Y coordinate of the player
+     * @param {*} object - A rectangular object
+     * 
+     * @returns {boolean} True if the player will collide with the object
+     */
+    function isPlayerWithinObject(player,newPosX,newPosY,object){
+        var correction = false;
+        if(object.exist){
+            //
+            if(newPosX + player.width < object.position.x || newPosX > object.position.x + object.width){
+                //No problem
+            } else {
+                if(newPosY + player.height <= object.position.y || newPosY >= object.position.y + object.height){
+                    // No problem
+                } else {
+                    correction = true;
+                }
+            }
+        }
+        return(correction);
+    }
+
+    /**
+     * Keep balloons inside of the canvas
      */
     function keepBalloonWithinBorders(ball){
         var changement = false;
         //Top
-        if(ball.center.y < ball.radius){
-            ball.center.y = ball.radius;
+        if(ball.center.y < ball.size.radius){
+            ball.center.y = ball.size.radius;
             ball.velocity.y = -ball.velocity.y;
             changement = true;
         } else {
             //Bottom
-            if(ball.center.y > cvs.height - ball.radius){
-                ball.center.y = cvs.height - ball.radius;
+            if(ball.center.y > cvs.height - ball.size.radius){
+                ball.center.y = cvs.height - ball.size.radius;
                 ball.velocity.y = -ball.velocity.y;
                 changement = true;
             }
         }
         //Left
-        if(ball.center.x < ball.radius){
-            ball.center.x = ball.radius;
+        if(ball.center.x < ball.size.radius){
+            ball.center.x = ball.size.radius;
             ball.velocity.x = -ball.velocity.x;
             changement = true;
         } else {
             //Right
-            if(ball.center.x > cvs.width-ball.radius){
-                ball.center.x = cvs.width - ball.radius;
+            if(ball.center.x > cvs.width-ball.size.radius){
+                ball.center.x = cvs.width - ball.size.radius;
                 ball.velocity.x = -ball.velocity.x;
                 changement = true;
             }
@@ -347,14 +526,15 @@
 
 
     /**
-     * Like FillRect, but for circles
+     * Draw a circle
+     * @param {*} circle - Balloon which will be draw
      */
     function fillCircle(circle){
         var canvas = document.getElementById("cvs");
         var context = canvas.getContext("2d");
         context.beginPath();
         context.fillStyle=BALLOON_COLOR;
-        context.arc(circle.center.x, circle.center.y, circle.radius, 0, 2 * Math.PI);
+        context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
         context.fill();
     }
 
@@ -366,7 +546,7 @@
         var isOneBalloonRemaining = false;
         var i=0
         while(i<balloons.length && !isOneBalloonRemaining){
-            if(balloons[i].radius > 0){
+            if(balloons[i].size.number > 0){
                 isOneBalloonRemaining = true;
             }
             i++;
@@ -375,16 +555,19 @@
     }
 
     /**
-     * Detect the defeat (= no time remaining)
+     * Detect the defeat 
+     * (i.e. if there is no time and no ballon remaining)
+     * returns {boolean} true if the defeat is real
      */
-    isDefeat = function() {
+    isDefeat = function(ball) {
         var defeat = false;
 
         // check
         if(timer <= 1 && !isVictory()) {
             defeat = true;
+        } else if(collisionsWithPlayer(ball, player) && !isInvincible){                                             // BETA IsInvicible
+            defeat = true;    
         }
-
         return defeat;
     }
 
@@ -397,7 +580,7 @@
     *
     */
     function isWeaponBetweenX(weapon,rectangle){
-        return(weapon.position.x > rectangle.position.x && weapon.position.x + HOOK_WITDH < rectangle.position.x + rectangle.width);
+        return(!(weapon.position.x + HOOK_WITDH < rectangle.position.x || weapon.position.x > rectangle.position.x + rectangle.width));
     }
 
     /**
@@ -406,11 +589,15 @@
     function shootWeapon(player){
         switch(player.powerOn){
             case GRAPPLE_HOOK_NUMBER:
-                shootGrappleHook(weapons[0]);
+                shootGrappleHook();
+                break;
+
+            case DOUBLE_HOOK_NUMBER:
+                shootGrappleHook();
                 break;
 
             case TRIDENT_NUMBER:
-                shootGrappleHook(weapons[0]);
+                shootGrappleHook();
                 break;
         }
     }
@@ -418,23 +605,33 @@
     /**
      * Shoot a hook
      */
-    function shootGrappleHook(grappleHook){
-        if(grappleHook.type == 0) {
-            grappleHook.type = player.powerOn;
-            grappleHook.shooting = true;
-            grappleHook.position = {x: player.position.x+player.width/2 , y: player.position.y+player.height};
-            grappleHook.length = 0;
+    function shootGrappleHook(){
+        //No actual grapple hook shooted or double grapple hook bonus is on
+        if(weapons.length==0 
+        || (weapons.length < 2 && player.powerOn == DOUBLE_HOOK_NUMBER)){
+            weapons[weapons.length] = {
+                type: player.powerOn,
+                shooting: true,
+                position: {x: player.position.x+player.width/2 , y: player.position.y+player.height}, 
+                length: 0,
+                time: 0    
+            };
         }
     }
 
     /**
-     * Delete a weapon
+     * Delete the drawing of the weapon
      */
-    function deleteWeapon(weapon){
-        weapon.type = 0;
-        weapon.shooting = false;
-        weapon.position = {x:0, y:0};
-        weapon.length = 0;
+    function deleteWeapon(){
+        weapons = [];
+    }
+
+    /**
+     * Delete a double hook that is on the top
+     */
+    function deleteDoubleHook(){
+        var temp = weapons.filter(weapons => weapons.shooting);
+        weapons = temp;
     }
 
 
@@ -446,12 +643,22 @@
         if(hook.position.y - hook.length < 0){
             switch(hook.type){
                 case GRAPPLE_HOOK_NUMBER :
-                    deleteWeapon(hook);
-                    break;
+                    deleteWeapon();
+                break;
+
+                case DOUBLE_HOOK_NUMBER:
+                    hook.shooting = false;
+                    deleteDoubleHook();
+                break;                    
 
                 case TRIDENT_NUMBER :
                     hook.shooting = false;
-                    break;
+                    if(hook.time > 3){
+                        deleteWeapon();
+                    }
+                break;
+
+                
             }
         } else {
 
@@ -464,7 +671,15 @@
                         
                         switch(hook.type){
                             case GRAPPLE_HOOK_NUMBER :
-                                deleteWeapon(hook);
+                                deleteWeapon();
+                                if(platforms[i].isDestructible){
+                                    platforms[i].exist = false;
+                                }
+                                break;
+                            
+                            case DOUBLE_HOOK_NUMBER :
+                                hook.shooting = false;
+                                deleteDoubleHook();
                                 if(platforms[i].isDestructible){
                                     platforms[i].exist = false;
                                 }
@@ -472,6 +687,9 @@
 
                             case TRIDENT_NUMBER :
                                 hook.shooting = false;
+                                if(hook.time > 3){
+                                    deleteWeapon();
+                                }
                                 break;
                         }
                     }
@@ -481,14 +699,49 @@
 
         //Hitting a balloon
         for(var i=0 ; i<balloons.length ; i++){
-            if(balloons[i].radius>0){
+            if(balloons[i].size.number > 0){
 
-                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].radius, 2) 
-                && balloons[i].center.y + balloons[i].radius > hook.position.y - hook.length){
+                if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
+                && balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length){
 
-                    deleteWeapon(hook);
-                    player.score += balloons[i].radius*10 ;
-                    balloons    [i].radius = 0;
+                    switch(hook.type){
+                        case GRAPPLE_HOOK_NUMBER:
+                        case TRIDENT_NUMBER:
+                            deleteWeapon(hook);
+                        break;
+
+                        case DOUBLE_HOOK_NUMBER:
+                            hook.shooting = false;
+                            deleteDoubleHook();
+                        break;
+                    }         
+
+                    //Points
+                    player.score += balloons[i].size.radius*10 ;
+                    
+                    //Two new balloons if the balloons is not of the minimal size
+                    if(balloons[i].size.number > 1){
+                        var oldBall = balloons[i];
+
+                        balloons[balloons.length] =  {
+                            center: {x: oldBall.center.x, y: oldBall.center.y},
+                            size: BALLOON_SIZE[oldBall.size.number - 1],
+                            velocity:{ x: -1, y: -2},
+                            gravity: {x :0, y: 9.81/1000}
+                        };
+                        
+                    
+                        balloons[balloons.length] =  {
+                            center: {x: oldBall.center.x, y: oldBall.center.y},
+                            size: BALLOON_SIZE[oldBall.size.number - 1],
+                            velocity:{ x: 1, y: -2},
+                            gravity: {x :0, y: 9.81/1000}
+                        };
+                    }
+                    
+
+                    //Delete the balloon
+                    balloons[i].size = BALLOON_SIZE[0];
                 }
             }
         }
@@ -528,10 +781,10 @@
     * @return true or false
     */
     function isBalloonNearObject(ball,object){
-        return(!(ball.center.x < object.position.x - ball.radius
-        || ball.center.x > object.position.x + object.width + ball.radius
-        || ball.center.y < object.position.y - ball.radius
-        || ball.center.y > object.position.y + object.height + ball.radius))
+        return(!(ball.center.x < object.position.x - ball.size.radius
+        || ball.center.x > object.position.x + object.width + ball.size.radius
+        || ball.center.y < object.position.y - ball.size.radius
+        || ball.center.y > object.position.y + object.height + ball.size.radius))
     }
 
     /**
@@ -540,8 +793,8 @@
     function isInHorizontalCollision(ball, object){
         var collision = false;
         if(isBalloonBetweenRectangleX(ball, object)){
-            if(ball.center.y >= object.position.y - ball.radius 
-            && ball.center.y <= object.position.y + object.height + ball.radius){
+            if(ball.center.y >= object.position.y - ball.size.radius 
+            && ball.center.y <= object.position.y + object.height + ball.size.radius){
                 collision = true;
             }
         }
@@ -554,8 +807,8 @@
     function isInVerticalCollision(ball, object){
         var collision = false;
         if(isBalloonBetweenRectangleY(ball, object)){
-            if(ball.center.x >= object.position.x - ball.radius
-            && ball.center.x <= object.position.x + object.width + ball.radius){
+            if(ball.center.x >= object.position.x - ball.size.radius
+            && ball.center.x <= object.position.x + object.width + ball.size.radius){
                 collision = true;
             }
         }
@@ -570,7 +823,7 @@
     */
     function isBalloonCollidingBottomRightCorner(ball,object){
         let bottomRightCorner = {x: object.position.x + object.width, y: object.position.y + object.height} ;
-        return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.size.radius * ball.size.radius);
     }
 
     /**
@@ -579,7 +832,7 @@
     */
     function isBalloonCollidingTopRightCorner(ball,object){
         let topRightCorner = {x: object.position.x + object.width, y: object.position.y} ;
-        return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.size.radius * ball.size.radius);
     }
 
     /**
@@ -588,7 +841,7 @@
     */
     function isBalloonCollidingTopLeftCorner(ball,object){
         let topLeftCorner = {x: object.position.x, y: object.position.y} ;
-        return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.size.radius * ball.size.radius);
     }
 
 
@@ -598,15 +851,18 @@
     */
     function isBalloonCollidingBottomLeftCorner(ball,object){
         let bottomLeftCorner = {x: object.position.x, y: object.position.y + object.height} ;
-        return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.radius * ball.radius);
+        return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.size.radius * ball.size.radius);
     }
 
  
     /**
      * Make sure the balloons are not colliding with rectangle objects like platforms
-     * @return true if a correction is applied
+     * @param {*} ball - The balloon
+     * @param {*} object - A rectangular object
+     * 
+     * @returns {boolean} True if the balloon collided with the object
      */
-    function keepBallonOutsideObjects(ball, object){
+    function keepBalloonOutsideObjects(ball, object){
         if(object.exist){
             var correction = false;
 
@@ -732,9 +988,13 @@
     }
     
 
-    // ------------------------------
-    //  Game
-    // ------------------------------
+
+
+
+    // ------------------------------------------------------------------------------------------------
+    // ########################################## Game  ###############################################
+    // ------------------------------------------------------------------------------------------------
+
 
     /**
     * Initialization of the game
@@ -745,6 +1005,9 @@
         context.width = document.getElementById("cvs").width;
         context.height = document.getElementById("cvs").height;
 
+        //Initialization of the variables
+        levelInitialization(numLevel);
+
         //Pause if it is not on focus
         document.body.onblur = function() {
             isOnFocus = false;
@@ -753,16 +1016,13 @@
             isOnFocus = true;
         }
 
+
         // 2 listeners on the keyboard (keyup and keydown)
         document.addEventListener("keydown", captureKeyboardPress)
         document.addEventListener("keyup", captureKeyboardReleased)
 
-        // initialization of the player
-        player.height = 75;
-        player.width = 70;
-        player.position.x = context.width/2 - player.width/2;
-        player.position.y = context.height - player.height;
-
+        
+    
         // Go my little game loop, and never stop
         gameLoop();
     }
@@ -773,7 +1033,6 @@
     gameLoop = function() {
         var delta = Date.now()-lastUpdate;
         lastUpdate = Date.now();
-
         // Run the game if it is not on pause
         if(!isOnFocus || pause){
             document.title = "Pang - en pause";
@@ -805,11 +1064,11 @@
     */
     update = function(delta) {
         // update timer
-        timer = timer - delta/1000;
+        timer -= delta/1000;
 
         // Update balloons position 
         for(var i=0 ; i<balloons.length ; i++){
-            if(balloons[i].radius>0){
+            if(balloons[i].size.number > 0){
                 // Update balloons[i].velocity
                 balloons[i].velocity.x += balloons[i].gravity.x*delta;
                 balloons[i].velocity.y += balloons[i].gravity.y*delta;
@@ -823,24 +1082,16 @@
         //Verifying that balloons do not crash into something
         for(var i=0 ; i < balloons.length ; i++){
 
-            if(balloons[i].radius>0){    
-
-                //Collisions with player
-                if(collisionsWithPlayer(balloons[i], player)){
-                    pause = true;
-                } else {
-                    //No, you will not stick out
-                    var bordersCorrection = keepBalloonWithinBorders(balloons[i]);
-
-                    if(!bordersCorrection){
-                    
-                        //Don't go into platforms !
-                        var correction = false;
-                        var j=0 ;
-                        while(j < platforms.length && !correction){
-                            correction = keepBallonOutsideObjects(balloons[i], platforms[j]);
-                            j++;
-                        }
+            if(balloons[i].size.number > 0){    
+                //No, you will not stick out
+                var bordersCorrection = keepBalloonWithinBorders(balloons[i]);
+                if(!bordersCorrection){    
+                    //Don't go into platforms !
+                    var correction = false;
+                    var j=0 ;
+                    while(j < platforms.length && !correction){
+                        correction = keepBalloonOutsideObjects(balloons[i], platforms[j]);
+                        j++;
                     }
                 }
             }
@@ -851,14 +1102,22 @@
         // Weapons will deal a lot of damages
         for(var i=0 ; i<weapons.length ; i++){
 
+            // Weapon is going up
             if(weapons[i].shooting==true){
 
                 switch(weapons[i].type){
 
                     case GRAPPLE_HOOK_NUMBER:
+                    case DOUBLE_HOOK_NUMBER:
                     case TRIDENT_NUMBER:
                         weapons[i].length += HOOK_SPEED * delta ;
                     break;
+                }
+            } else {
+
+                //Increase the timer of the trident
+                if(weapons[i].type == TRIDENT_NUMBER){
+                    weapons[i].time += delta/1000;
                 }
             }
 
@@ -883,20 +1142,48 @@
             isGravity = 0;
         }
 
+        var willCollide = false;
+        var obstacleNumber = -1;
+        for(var i=0 ; i<platforms.length ; i++){
+            if(isPlayerWithinObject(player,newPosXPlayer,newPosYPlayer,platforms[i])){
+                willCollide = true;
+                obstacleNumber = i;
+            }
+        }
+
+        if(willCollide){
+            //Vertical
+            if(newSpdYPlayer < 0 && platforms[obstacleNumber].position.y + platforms[obstacleNumber].height <= player.position.y){
+                newPosYPlayer = platforms[obstacleNumber].position.y + platforms[obstacleNumber].height;
+                newSpdYPlayer = 0
+            }  else {
+                //Horizontal
+                if(newSpdXPlayer>0){
+                    newPosXPlayer = platforms[obstacleNumber].position.x - player.width;    
+                } else if(newSpdXPlayer<0){
+                    newPosXPlayer = platforms[obstacleNumber].position.x + platforms[obstacleNumber].width;
+                }
+                newSpdXPlayer = player.speed.x;
+            }
+        }
+
         // Update player
         player.position.x = newPosXPlayer;
         player.position.y = newPosYPlayer;
         player.speed.x = newSpdXPlayer;
         player.speed.y = newSpdYPlayer;
         keepPlayerWithinBorder();
+    
 
         //Detect the victory
         if(isVictory()){
             victory = true;
         }
         //Detect the defeat
-        if(isDefeat()){
-            defeat = true;
+        for(var i=0 ; i<balloons.length ; i++){
+            if(isDefeat(balloons[i])){
+                defeat = true;
+            }
         }
     }
 
@@ -926,6 +1213,25 @@
         context.fillText(textTime, 700 - 65, 40);
         context.strokeText(textTime, 700 - 65, 40);
 
+        // Score text
+        var textScore = "SCORE : " + player.score;
+        context.lineWidth = 1.3;
+        context.font = "bolder 23px Arial";
+        context.fillText(textScore, 20, 30);
+        context.strokeText(textScore, 20, 30);
+
+        // Lives text
+        var textLives = "LIVES : ";
+        if(player.livesNumber > 0) {
+            for(var i=0; i<player.livesNumber; i++) {
+                textLives += "I";
+            }
+        } else {
+            textLives += "0";
+        }
+        context.fillText(textLives, 20, 57);
+        context.strokeText(textLives, 20, 57);
+
 		// platforms drawing
         for (var i=0; i < platforms.length; i++) {
         	if(platforms[i].exist){
@@ -947,22 +1253,28 @@
 
         // balloons displaying
         for(var i=0 ; i<balloons.length ;i++){
-            if(balloons[i].radius>0){
+            if(balloons[i].size.number > 0){
                 fillCircle(balloons[i]);
             }
         }
-
         // weapons drawing
         for(var i=0 ; i < weapons.length ; i++){
             var weaponWidth = 0, weaponColor;
             switch(weapons[i].type){
                 case GRAPPLE_HOOK_NUMBER :
+                case DOUBLE_HOOK_NUMBER:
                     weaponColor = GRAPPLE_HOOK_COLOR;
                     weaponWidth = HOOK_WITDH;
                     break;
 
                 case TRIDENT_NUMBER :
-                    weaponColor = TRIDENT_COLOR ;
+                    if(weapons[i].time < 1){
+                        weaponColor = TRIDENT_COLOR1 ;
+                    } else if(weapons[i].time < 2){
+                        weaponColor = TRIDENT_COLOR2 ;
+                    } else {
+                        weaponColor = TRIDENT_COLOR3 ;
+                    }
                     weaponWidth = HOOK_WITDH;
                     break;
             }
@@ -975,21 +1287,39 @@
         context.fillRect(player.position.x, player.position.y, player.width, player.height);
 
         // Victory and defeat screen
-        if(victory){
-            context.fillStyle = "green";
-            context.fillRect(context.width/5,context.height/5,context.width/5*3,context.height/5*3);
-            context.fillStyle = "black";
-            context.font = '48px serif';
-            context.textAlign = "center";
-            context.fillText("Et c'est gagné !", cvs.width/2, cvs.height/2);
-        } else {
-            if(defeat) {
-                context.fillStyle = "red";
-                context.fillRect(cvs.width/5,cvs.height/5,cvs.width/5*3,cvs.height/5*3);
+        if(player.livesNumber > 1){
+            if(victory){
+                context.fillStyle = "green";
+                context.fillRect(context.width/5,context.height/5,context.width/5*3,context.height/5*3);
                 context.fillStyle = "black";
                 context.font = '48px serif';
                 context.textAlign = "center";
-                context.fillText("Et c'est perdu...", cvs.width/2, cvs.height/2);
+                context.fillText("Et c'est gagné !", cvs.width/2, cvs.height/2);
+            } else {
+                if(defeat) {
+                    player.livesNumber -= 1;
+                    defeat = false;
+                    levelInitialization(numLevel);    
+                }
+            }
+        } else{
+            if(victory){
+                context.fillStyle = "green";
+                context.fillRect(context.width/5,context.height/5,context.width/5*3,context.height/5*3);
+                context.fillStyle = "black";
+                context.font = '48px serif';
+                context.textAlign = "center";
+                context.fillText("Et c'est gagné !", cvs.width/2, cvs.height/2);
+            } else {
+                if(defeat) {
+                    player.livesNumber -= 1;
+                    context.fillStyle = "red";
+                    context.fillRect(cvs.width/5,cvs.height/5,cvs.width/5*3,cvs.height/5*3);
+                    context.fillStyle = "black";
+                    context.font = '48px serif';                
+                    context.textAlign = "center";
+                    context.fillText("Et c'est perdu... ", cvs.width/2, cvs.height/2);
+                }
             }
         }
     }
@@ -1021,14 +1351,23 @@
                 shootWeapon(player);
                 break;
 
+            // Enter to insert credits and play again
+            case 13:
+                defeat = false;
+                pause = false;
+                levelInitialization(numLevel);
+                player.livesNumber = 3;
+                player.score = 0;
+                break;
+
             // Shortcut to victory                                                                       // BETA FUNCTION
             case 71:
-              victory = !victory;
+                victory = !victory;
                 break;
 
             // Shortcut to defeat                                                                       // BETA FUNCTION
             case 72:
-              defeat = !defeat;
+                defeat = !defeat;
                 break;
 
             //Activate the default weapon : the grapple hook                                            // BETA FUNCTION
@@ -1037,11 +1376,28 @@
                 console.log("Grappin activé");
                 break;
 
+            //Activate the powerOn double grapple hook                                                  // BETA FUNCTION
+            case 84: 
+                player.powerOn = DOUBLE_HOOK_NUMBER ;
+                console.log("Double grappin activé");
+                break;
+
             //Activate the powerOn Trident                                                              // BETA FUNCTION
-            case 84:
+            case 89:
                 player.powerOn = TRIDENT_NUMBER ;
                 console.log("Trident activé");
                 break;
+ 
+            //Make the player invincible                                                                // BETA FUNCTION
+            case 73:
+                if(isInvincible){
+                    console.log("Joueur plus invincible");
+                } else {
+                console.log("Joueur invincible");
+                }
+                isInvincible = !isInvincible;
+                
+            break;        
         }
     }
 
@@ -1071,11 +1427,14 @@
     <!-- About -->
     <p> Commandes :
         <ul>
+            <li>E : debug, détruire les armes</li>
             <li>R : Arme par défaut</li>
-            <li>T : Trident </li>
+            <li>T : Double grappin </li>
+            <li>Y : Trident </li>
             <li>G : victoire immédiate</li>
             <li>H : défaite immédiate</li>
             <li>P : pause</li>
+            <li>Entrée : réinsérer des crédits quand on est mort</li>
         </ul>
     </p>
 
