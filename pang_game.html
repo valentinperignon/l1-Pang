@@ -1204,7 +1204,16 @@
     *  Game render
     */
     render = function() {
-        if(numLevel == 0) { // show menu
+        if(numLevel == 0) { 
+            // ---------------
+            // MENU
+            // ---------------
+
+            // variables d'affichage
+            var textCopyright = "© Fabian D., Nathanaël H. Valentin P.";
+            var textPlay = "ENTRÉE POUR COMMENCER ...";
+            var textLevel = "OU SAISISSEZ LE NIVEAU";
+
             // fond noir
             context.fillStyle = "black";
             context.fillRect(0, 0, context.width, context.height);
@@ -1215,13 +1224,19 @@
             // affichage du texte "copyright"
             context.fillStyle = "white";
             context.font = "17px Georgia";
-            context.fillText("© Fabian D., Nathanaël H. Valentin P.", 245, 189+80+20);
+            context.fillText(textCopyright, (context.width - context.measureText(textCopyright).width)/2, 189+80+20);
 
             // affichage du texte "Commencer à jouer..."
             context.fillStyle = "white";
             context.font = "35px Georgia";
-            context.fillText("COMMENCER À JOUER ...", 190, context.height-80-50);
-        } else { // show game
+            context.fillText(textPlay, (context.width - context.measureText(textPlay).width)/2, context.height-110-50);
+            context.font = "25px Georgia";
+            context.fillText(textLevel, (context.width - context.measureText(textLevel).width)/2, context.height-70-50);
+        } else {
+            // ---------------
+            // GAME
+            // ---------------
+
             // Wiping the screen
             context.clearRect(0, 0, context.width, context.height);
             //context.drawImage(bg_paris, 0, 0, 800, 600);
