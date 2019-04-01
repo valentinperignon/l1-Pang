@@ -26,8 +26,19 @@
     var timer = 100;
 
     // An array of all the balloons in the game
-    // With the position, the radius, the velocity and the gravity of this balloon, plus its color because it is beautiful.
-    var balloons = [];
+    // With the position, the radius, the velocity and the gravity for this balloon. Plus its color because it is beautiful.
+    var balloons = [
+        {center: {x: 400, y:30},
+        radius:30,
+        velocity:{ x: -1, y: 0},
+        gravity: {x :0, y: 9.81/1000},
+        },
+        {center: {x: 500, y:30},
+        radius:30,
+        velocity:{ x: 1, y: 0},
+        gravity: {x :0, y: 9.81/1000},
+        }
+    ];
 
     //Balloons related variables
     const BALLOON_SPEED = 0.1;
@@ -66,14 +77,91 @@
     const GRAVITY = {x: 0, y: 1500};
 
     // All the platforms
-    var platformsList;
-    var platforms;
+    var platformsList = {
+        level1 : [
+            {
+                "position":{
+                    "x": 575,
+                    "y": 200
+                },
+                "width": 120,
+                "height": 400,
+                "exist": true,
+                "isDestructible": false
+            },
+            {
+                "position":{
+                    "x": 460,
+                    "y": 200
+                },
+                "width": 80,
+                "height": 40,
+                "exist": true,
+                "isDestructible": false
+            },
+            {
+                "position":{
+                    "x": 275,
+                    "y": 200
+                },
+                "width": 80,
+                "height": 40,
+                "exist": true,
+                "isDestructible": false
+            },
+            {
+                "position":{
+                    "x": 125,
+                    "y": 400
+                },
+                "width": 80,
+                "height": 40,
+                "exist": true,
+                "isDestructible": true
+            }
+        ],
+
+        level2 : [
+            {
+                "position":{
+                    "x": 275,
+                    "y": 200
+                },
+                "width": 80,
+                "height": 40,
+                "exist": false,
+                "isDestructible": false
+            },
+            {
+                "position":{
+                    "x": 125,
+                    "y": 200
+                },
+                "width": 80,
+                "height": 40,
+                "exist": false,
+                "isDestructible": true
+            }
+        ]
+    }
+    var platforms = platformsList.level1;
 
 
     // ladders in the game
     const LADDER_WIDTH = 90;
-    var laddersList;
-    var ladders;
+    var laddersList = {
+        "level1": [
+            {
+                "position":{
+                    "x": 35,
+                    "y": 400
+                },
+                "width": LADDER_WIDTH,
+                "height": 200,
+            }
+        ]
+    };
+    var ladders = laddersList.level1;
 
     // ### GRAPHICS VARIABLES ###
     // Colors
@@ -287,17 +375,16 @@
     }
 
     /**
-     * Detect the defeat (= no time remaining or being touched by balloons)
+     * Detect the defeat (= no time remaining)
      */
-    isDefeat = function(ball) {
+    isDefeat = function() {
         var defeat = false;
 
         // check
         if(timer <= 1 && !isVictory()) {
             defeat = true;
-        } else if(collisionsWithPlayer(ball, player)){
-            defeat = true;    
         }
+
         return defeat;
     }
 
@@ -519,7 +606,7 @@
      * Make sure the balloons are not colliding with rectangle objects like platforms
      * @return true if a correction is applied
      */
-    function keepBalloonOutsideObjects(ball, object){
+    function keepBallonOutsideObjects(ball, object){
         if(object.exist){
             var correction = false;
 
@@ -676,105 +763,6 @@
         player.position.x = context.width/2 - player.width/2;
         player.position.y = context.height - player.height;
 
-        //initialization of the balloons
-        balloons = [
-            {center: {x: 400, y:30},
-            radius:30,
-            velocity:{ x: -1, y: 0},
-            gravity: {x :0, y: 9.81/1000},
-            },
-            {center: {x: 500, y:30},
-            radius:30,
-            velocity:{ x: 1, y: 0},
-            gravity: {x :0, y: 9.81/1000},
-            }
-        ];
-
-        // initialization of the platforms
-        platformsList = {
-        level1 : [
-            {
-                "position":{
-                    "x": 575,
-                    "y": 200
-                },
-                "width": 120,
-                "height": 400,
-                "exist": true,
-                "isDestructible": false
-            },
-            {
-                "position":{
-                    "x": 460,
-                    "y": 200
-                },
-                "width": 80,
-                "height": 40,
-                "exist": true,
-                "isDestructible": false
-            },
-            {
-                "position":{
-                    "x": 275,
-                    "y": 200
-                },
-                "width": 80,
-                "height": 40,
-                "exist": true,
-                "isDestructible": false
-            },
-            {
-                "position":{
-                    "x": 125,
-                    "y": 400
-                },
-                "width": 80,
-                "height": 40,
-                "exist": true,
-                "isDestructible": true
-            }
-        ],
-
-        level2 : [
-            {
-                "position":{
-                    "x": 275,
-                    "y": 200
-                },
-                "width": 80,
-                "height": 40,
-                "exist": false,
-                "isDestructible": false
-            },
-            {
-                "position":{
-                    "x": 125,
-                    "y": 200
-                },
-                "width": 80,
-                "height": 40,
-                "exist": false,
-                "isDestructible": true
-            }
-        ]
-    }
-    platforms = platformsList.level1;
-
-    //initialization of the ladders
-    laddersList = {
-        "level1": [
-            {
-                "position":{
-                    "x": 35,
-                    "y": 400
-                },
-                "width": LADDER_WIDTH,
-                "height": 200,
-            }
-        ]
-    };
-    ladders = laddersList.level1;
-
         // Go my little game loop, and never stop
         gameLoop();
     }
@@ -836,15 +824,23 @@
         for(var i=0 ; i < balloons.length ; i++){
 
             if(balloons[i].radius>0){    
-                //No, you will not stick out
-                var bordersCorrection = keepBalloonWithinBorders(balloons[i]);
-                if(!bordersCorrection){    
-                    //Don't go into platforms !
-                    var correction = false;
-                    var j=0 ;
-                    while(j < platforms.length && !correction){
-                        correction = keepBalloonOutsideObjects(balloons[i], platforms[j]);
-                        j++;
+
+                //Collisions with player
+                if(collisionsWithPlayer(balloons[i], player)){
+                    pause = true;
+                } else {
+                    //No, you will not stick out
+                    var bordersCorrection = keepBalloonWithinBorders(balloons[i]);
+
+                    if(!bordersCorrection){
+                    
+                        //Don't go into platforms !
+                        var correction = false;
+                        var j=0 ;
+                        while(j < platforms.length && !correction){
+                            correction = keepBallonOutsideObjects(balloons[i], platforms[j]);
+                            j++;
+                        }
                     }
                 }
             }
@@ -899,10 +895,8 @@
             victory = true;
         }
         //Detect the defeat
-        for(var i=0 ; i<balloons.length ; i++){
-            if(isDefeat(balloons[i])){
-                defeat = true;
-            }
+        if(isDefeat()){
+            defeat = true;
         }
     }
 
@@ -981,39 +975,21 @@
         context.fillRect(player.position.x, player.position.y, player.width, player.height);
 
         // Victory and defeat screen
-        if(player.livesNumber > 0){
-            if(victory){
-                context.fillStyle = "green";
-                context.fillRect(context.width/5,context.height/5,context.width/5*3,context.height/5*3);
+        if(victory){
+            context.fillStyle = "green";
+            context.fillRect(context.width/5,context.height/5,context.width/5*3,context.height/5*3);
+            context.fillStyle = "black";
+            context.font = '48px serif';
+            context.textAlign = "center";
+            context.fillText("Et c'est gagné !", cvs.width/2, cvs.height/2);
+        } else {
+            if(defeat) {
+                context.fillStyle = "red";
+                context.fillRect(cvs.width/5,cvs.height/5,cvs.width/5*3,cvs.height/5*3);
                 context.fillStyle = "black";
                 context.font = '48px serif';
                 context.textAlign = "center";
-                context.fillText("Et c'est gagné !", cvs.width/2, cvs.height/2);
-            } else {
-                if(defeat) {
-                    player.livesNumber += -1;
-                    console.log("nombre de vie restantes : " + player.livesNumber);
-                    defeat = false;
-                    init();     
-                }
-            }
-        } else{
-            if(victory){
-                context.fillStyle = "green";
-                context.fillRect(context.width/5,context.height/5,context.width/5*3,context.height/5*3);
-                context.fillStyle = "black";
-                context.font = '48px serif';
-                context.textAlign = "center";
-                context.fillText("Et c'est gagné !", cvs.width/2, cvs.height/2);
-            } else {
-                if(defeat) {
-                    context.fillStyle = "red";
-                    context.fillRect(cvs.width/5,cvs.height/5,cvs.width/5*3,cvs.height/5*3);
-                    context.fillStyle = "black";
-                    context.font = '48px serif';                
-                    context.textAlign = "center";
-                    context.fillText("Et c'est perdu... ", cvs.width/2, cvs.height/2);
-                }
+                context.fillText("Et c'est perdu...", cvs.width/2, cvs.height/2);
             }
         }
     }
@@ -1045,22 +1021,14 @@
                 shootWeapon(player);
                 break;
 
-            // Enter to insert credits and play again
-            case 13:
-                defeat = false;
-                init();
-                player.livesNumber = 3;
-                player.score = 0;
-                break;
-
             // Shortcut to victory                                                                       // BETA FUNCTION
             case 71:
-                victory = !victory;
+              victory = !victory;
                 break;
 
             // Shortcut to defeat                                                                       // BETA FUNCTION
             case 72:
-                defeat = !defeat;
+              defeat = !defeat;
                 break;
 
             //Activate the default weapon : the grapple hook                                            // BETA FUNCTION
