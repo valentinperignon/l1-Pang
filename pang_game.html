@@ -504,7 +504,7 @@
             //Bottom
             if(ball.center.y > cvs.height - ball.size.radius){
                 ball.center.y = cvs.height - ball.size.radius;
-                ball.velocity.y = -ball.velocity.y;
+                ball.velocity.y = ball.size.Yvelocity;
                 changement = true;
             }
         }
