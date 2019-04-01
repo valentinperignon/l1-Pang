@@ -674,7 +674,7 @@
 
             for(var i=0 ; i<platforms.length ; i++){
                 if(platforms[i].exist && isWeaponBetweenX(hook,platforms[i])){
-                    if(hook.position.y - hook.length  < platforms[i].position.y + platforms[i].height){
+                    if(hook.position.y - hook.length  < platforms[i].position.y + platforms[i].height && hook.position.y > platforms[i].position.y){
                         
                         switch(hook.type){
                             case GRAPPLE_HOOK_NUMBER :
