@@ -207,8 +207,6 @@
         ]
     }
 
-
-
     // -------------------------------------------------------------------------------
     // ################################ Variables ####################################
     // -------------------------------------------------------------------------------
@@ -216,7 +214,7 @@
     /** Context */
     var context = null;
 
-    // Game state
+    /** Level number */
     var numLevel = 2;
 
     /**
@@ -229,23 +227,25 @@
     var defeat = false;
     var isInvincible = false;                                                                                           // BETA isInvicible
 
-    // Timer
+    /** Timer */
     var timer = 100;
 
-    // An array of all the balloons in the game
-    // With the position, the radius, the velocity and the gravity of this balloon, plus its color because it is beautiful.
+    /** An array of all the balloons in the game
+     * With the position, the radius, the velocity, gravity and the color
+     */
     var balloons = [];
 
-    //Balloons related variables
+    /** Balloons related variables */
     const BALLOON_SPEED = 0.1;
 
-    // when did we update the game last time ?
+    /** Date of the last update */
     var lastUpdate = Date.now();
 
-    // A beautiful player
-    // With his position, his speed, his size and his others variables
+    /** A player
+     * With his position (x and y), speed (x and y), height, width, power on, shield, lives number and color */
     var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
     const PLAYER_SPEED = 500;
+    const GRAVITY = {x: 0, y: 1500};
     var isGravity = 0;
 
     /** 
@@ -254,29 +254,23 @@
      */
     var weapons = [] ;
 
-    // Weapons related variables
+    /** Weapons related variables */
         // - Hooks
     const GRAPPLE_HOOK_NUMBER = 1 ;
     const DOUBLE_HOOK_NUMBER = 2 ;
     const TRIDENT_NUMBER = 3 ;
     const HOOK_SPEED = 0.3 ;
     const HOOK_WITDH = 5;
-
         // - Others weapons
+    // ADD HERE
 
-
-    // gravity (thanks Newton)
-    const GRAVITY = {x: 0, y: 1500};
-
-    // All the platforms
+    /** All the platforms */
     var platforms = [] ;
 
-    // ladders in the game
+    /** Ladders in the game */
     var ladders = [] ;
 
-
-    // ### GRAPHICS VARIABLES ###
-    // Colors
+    /** Constants for the graphical part */
     const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
     const PLATFORM_COLOR = "black";
     const LADDER_COLOR = "gray";
@@ -285,10 +279,6 @@
     const TRIDENT_COLOR1 = "orangered";
     const TRIDENT_COLOR2 = "orange";
     const TRIDENT_COLOR3 = "yellow";
-
-
-
-
 
     // ------------------------------------------------------------------------------------------------
     // ######################################## Functions #############################################
@@ -334,7 +324,6 @@
         //No weapon
         weapons = [];
     }
-
 
     /**
      * Moving the player (horizontally)
@@ -537,8 +526,6 @@
      * @param {*} circle - Balloon which will be draw
      */
     function fillCircle(circle){
-        var canvas = document.getElementById("cvs");
-        var context = canvas.getContext("2d");
         context.beginPath();
         context.fillStyle=BALLOON_COLOR;
         context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
