@@ -274,7 +274,8 @@
     const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
     const PLATFORM_COLOR = "black";
     const LADDER_COLOR = "gray";
-    var BALLOON_COLOR ;
+    var BALLOON_COLOR;
+    var BALLON_GRADIENT;
     const GRAPPLE_HOOK_COLOR = "red";
     const TRIDENT_COLOR1 = "orangered";
     const TRIDENT_COLOR2 = "orange";
@@ -488,6 +489,9 @@
 
     /**
      * Keep balloons inside of the canvas
+     * @param {*} ball - A balloon
+     *
+     * @returns {int} The changement
      */
     function keepBalloonWithinBorders(ball){
         var changement = false;
@@ -520,14 +524,40 @@
         return(changement);
     }
 
+    /**
+     * Update the gradient of a circle
+     * @param {*} circle - Balloon which will be update
+     */
+    updateCircleColor = function(circle) {
+        BALLON_GRADIENT = context.createRadialGradient(circle.center.x-circle.size.radius/3, circle.center.y-circle.size.radius/3, circle.size.radius/5, circle.center.x, circle.center.y, circle.size.radius);
+
+        switch(BALLOON_COLOR) {
+            case "blue":            
+                BALLON_GRADIENT.addColorStop(0, '#5e92f3');
+                BALLON_GRADIENT.addColorStop(.2, '#1565c0');
+                BALLON_GRADIENT.addColorStop(1, '#003c8f');
+                break;
+            case "red":
+                BALLON_GRADIENT.addColorStop(0, '#ff7961');
+                BALLON_GRADIENT.addColorStop(.2, '#f44336');
+                BALLON_GRADIENT.addColorStop(1, '#ab000d');
+                break;
+            case "green":
+                BALLON_GRADIENT.addColorStop(0, '#76d275');
+                BALLON_GRADIENT.addColorStop(.2, '#43a047');
+                BALLON_GRADIENT.addColorStop(1, '#00701a');
+        }
+    }
 
     /**
      * Draw a circle
      * @param {*} circle - Balloon which will be draw
      */
     function fillCircle(circle){
+        updateCircleColor(circle);
+
         context.beginPath();
-        context.fillStyle=BALLOON_COLOR;
+        context.fillStyle=BALLON_GRADIENT;
         context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
         context.fill();
     }
@@ -838,7 +868,6 @@
         return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.size.radius * ball.size.radius);
     }
 
-
     /**
     * Is the balloon colliding with the top right corner ?
     * @return true is yes, else false
@@ -848,7 +877,6 @@
         return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.size.radius * ball.size.radius);
     }
 
- 
     /**
      * Make sure the balloons are not colliding with rectangle objects like platforms
      * @param {*} ball - The balloon
@@ -959,7 +987,6 @@
         || isBalloonCollidingBottomRightCorner(ball,object)
         || isBalloonCollidingTopLeftCorner(ball,object)
         || isBalloonCollidingTopRightCorner(ball,object));
-
     }
 
     /**
@@ -971,7 +998,6 @@
         var collisionX = isInHorizontalCollision(ball, object);
         return(collisionAngles || collisionX || collisionY);
     }
-
     
     /**
     *
@@ -980,15 +1006,10 @@
         var speed = Math.sqrt(Math.pow(ball.velocity.x, 2) + Math.pow(ball.velocity.y, 2));
         console.log(speed);
     }
-    
-
-
-
 
     // ------------------------------------------------------------------------------------------------
     // ########################################## Game  ###############################################
     // ------------------------------------------------------------------------------------------------
-
 
     /**
     * Initialization of the game
@@ -1090,8 +1111,6 @@
                 }
             }
         }
-
-
 
         // Weapons will deal a lot of damages
         for(var i=0 ; i<weapons.length ; i++){
