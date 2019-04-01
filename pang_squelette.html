@@ -6,223 +6,17 @@
     <title>Pang</title>
     <script>
 
-    // -------------------------------------------------------------------------------
-    // ############################# Future JSON file ################################
-    // -------------------------------------------------------------------------------
-    
-    /** 
-     * Array of all the platforms.
-     * With position (x and y), width, height, height, exist and detructibility
-     */
-    const PLATFORMS_LIST = {
-        level1 : [],
-        level2 : [
-            {
-                "position":{
-                    "x": 575,
-                    "y": 200
-                },
-                "width": 120,
-                "height": 400,
-                "exist": true,
-                "isDestructible": false
-            },
-            {
-                "position":{
-                    "x": 460,
-                    "y": 200
-                },
-                "width": 80,
-                "height": 40,
-                "exist": true,
-                "isDestructible": false
-            },
-            {
-                "position":{
-                    "x": 275,
-                    "y": 200
-                },
-                "width": 80,
-                "height": 40,
-                "exist": true,
-                "isDestructible": false
-            },
-            {
-                "position":{
-                    "x": 125,
-                    "y": 400
-                },
-                "width": 80,
-                "height": 40,
-                "exist": true,
-                "isDestructible": true
-            }
-        ],
+    // ------------------------------
+    //  Variables
+    // ------------------------------
 
-        level3 : [
-            {
-                "position":{
-                    "x": 275,
-                    "y": 200
-                },
-                "width": 80,
-                "height": 40,
-                "exist": true,
-                "isDestructible": false
-            },
-            {
-                "position":{
-                    "x": 125,
-                    "y": 200
-                },
-                "width": 80,
-                "height": 40,
-                "exist": true,
-                "isDestructible": true
-            },
-            {
-                "position":{
-                    "x": 700,
-                    "y": 500
-                },
-                "width": 100,
-                "height": 100,
-                "exist": true,
-                "isDestructible": true
-            }
-        ]
-    }
-    
-    /** 
-     * Array of all the ladders.
-     * With position (x and y), width and height
-     */
-    const LADDER_WIDTH = 90;
-    const LADDERS_LIST = {
-        "level1": [],
-        "level2": [
-            {
-                "position":{
-                    "x": 35,
-                    "y": 400
-                },
-                "width": LADDER_WIDTH,
-                "height": 200,
-            }
-        ],
-        "level3": [
-            {
-                "position":{
-                    "x": 35,
-                    "y": 400
-                },
-                "width": LADDER_WIDTH,
-                "height": 200,
-            },
-            {
-                "position":{
-                    "x": 600,
-                    "y": 400
-                },
-                "width": LADDER_WIDTH,
-                "height": 200,
-            }
-        ]
-    };
-
-    /**
-     * List of size of balloons
-     */
-    const BALLOON_SIZE = [
-        {number: 0,
-        radius: 0,
-        Yvelocity:0
-        },
-        {number: 1,
-        radius: 15,
-        Yvelocity: -6
-        },
-        {number: 2,
-        radius: 30,
-        Yvelocity: -7.1
-        },
-        {number: 3,
-        radius: 40,
-        Yvelocity: -8.4
-        },
-        {number: 4,
-        radius: 50,
-        Yvelocity: -9.5
-        }
-    ]
-
-    /** 
-     * Array of all the balloons.
-     * With center position (x and y), radius, velocity (x and y), and ballons gravity
-     */
-    const BALLOONS_LIST = {
-        "level1": [
-            {
-                center: {x: 400, y:30},
-                size: BALLOON_SIZE[4],
-                velocity:{ x: -1, y: 0},
-                gravity: {x :0, y: 9.81/1000},
-            }
-        ],
-
-        "level2": [
-            {
-                center: {x: 400, y:30},
-                size: BALLOON_SIZE[4],
-                velocity:{ x: -1, y: 0},
-                gravity: {x :0, y: 9.81/1000},
-            },
-            {
-                center: {x: 500, y:30},
-                size: BALLOON_SIZE[4],
-                velocity:{ x: 1, y: 0},
-                gravity: {x :0, y: 9.81/1000},
-            }
-        ],
-
-        "level3": [
-            {
-                center: {x: 400, y:30},
-                size: BALLOON_SIZE[4],
-                velocity:{ x: -1, y: 0},
-                gravity: {x :0, y: 9.81/1000},
-            },
-            {
-                center: {x: 500, y:30},
-                size: BALLOON_SIZE[4],
-                velocity:{ x: 1, y: 0},
-                gravity: {x :0, y: 9.81/1000},
-            },
-            {
-                center: {x: 600, y:30},
-                size: BALLOON_SIZE[4],
-                velocity:{ x: 1, y: 0},
-                gravity: {x :0, y: 9.81/1000},
-            }
-        ]
-    }
-
-
-
-    // -------------------------------------------------------------------------------
-    // ################################ Variables ####################################
-    // -------------------------------------------------------------------------------
-    
-    /** Context */
+    // Context
     var context = null;
 
     // Game state
     var numLevel = 1;
 
-    /**
-     * Variables about game state.
-     * With focus, pause, victory and defeat
-     */
+    // Is the game running or not ?
     var isOnFocus = true;
     var pause = false;
     var victory = false;
@@ -247,17 +41,21 @@
     const PLAYER_SPEED = 500;
     var isGravity = 0;
 
-    /** 
-     * Array of weapons.
-     * With type (0: is not active), position, length and shooting
-     */
-    var weapons = [] ;
+    // All the weapons and types of weapons (0= the weapon is not active)
+
+    var weapons = [
+        {
+            type:0,
+            position: {x: 0, y: 0},
+            length: 0,
+            shooting: false,
+        }
+    ]
 
     // Weapons related variables
         // - Hooks
     const GRAPPLE_HOOK_NUMBER = 1 ;
-    const DOUBLE_HOOK_NUMBER = 2 ;
-    const TRIDENT_NUMBER = 3 ;
+    const TRIDENT_NUMBER = 2 ;
     const HOOK_SPEED = 0.3 ;
     const HOOK_WITDH = 5;
 
@@ -284,9 +82,7 @@
     const LADDER_COLOR = "gray";
     const BALLOON_COLOR = "red";
     const GRAPPLE_HOOK_COLOR = "red";
-    const TRIDENT_COLOR1 = "orangered";
-    const TRIDENT_COLOR2 = "orange";
-    const TRIDENT_COLOR3 = "yellow";
+    const TRIDENT_COLOR = "orange"
 
     // ------------------------------
     //  Functions
@@ -396,14 +192,14 @@
     /**
      * Return true if the player is not on the ground, a platform, or a ladder
      */
-    function isNotOnPlatformOrGround(){
+    isNotOnPlatformOrGround = function() {
         isNot = false;
 
         if(player.position.y + player.height < context.height && findLadder() == -1 && !detectPlatform()) { // not on the ground
             isNot = true;
         }
 
-        return(isNot);
+        return isNot;
     }
 
     /**
@@ -428,33 +224,7 @@
     }
 
     /**
-     * Checks if the player will collide with an object
-     * @param {*} ball - The player
-     * @param {float} newPosX - The (maybe) new X coordinate of the player
-     * @param {float} newPosY - The (maybe) new Y coordinate of the player
-     * @param {*} object - A rectangular object
-     * 
-     * @returns {boolean} True if the player will collide with the object
-     */
-    function isPlayerWithinObject(player,newPosX,newPosY,object){
-        var correction = false;
-        if(object.exist){
-            //
-            if(newPosX + player.width < object.position.x || newPosX > object.position.x + object.width){
-                //No problem
-            } else {
-                if(newPosY + player.height <= object.position.y || newPosY >= object.position.y + object.height){
-                    // No problem
-                } else {
-                    correction = true;
-                }
-            }
-        }
-        return(correction);
-    }
-
-    /**
-     * Keep balloons inside of the canvas
+     * It does exactly what you expect
      */
     function keepBalloonWithinBorders(ball){
         var changement = false;
@@ -489,8 +259,7 @@
 
 
     /**
-     * Draw a circle
-     * @param {*} circle - Balloon which will be draw
+     * Like FillRect, but for circles
      */
     function fillCircle(circle){
         var canvas = document.getElementById("cvs");
@@ -518,9 +287,7 @@
     }
 
     /**
-     * Detect the defeat 
-     * (i.e. if there is no time and no ballon remaining)
-     * returns {boolean} true if the defeat is real
+     * Detect the defeat (= no time remaining or being touched by balloons)
      */
     isDefeat = function(ball) {
         var defeat = false;
@@ -543,7 +310,7 @@
     *
     */
     function isWeaponBetweenX(weapon,rectangle){
-        return(!(weapon.position.x + HOOK_WITDH < rectangle.position.x || weapon.position.x > rectangle.position.x + rectangle.width));
+        return(weapon.position.x > rectangle.position.x && weapon.position.x + HOOK_WITDH < rectangle.position.x + rectangle.width);
     }
 
     /**
@@ -552,15 +319,11 @@
     function shootWeapon(player){
         switch(player.powerOn){
             case GRAPPLE_HOOK_NUMBER:
-                shootGrappleHook();
-                break;
-
-            case DOUBLE_HOOK_NUMBER:
-                shootGrappleHook();
+                shootGrappleHook(weapons[0]);
                 break;
 
             case TRIDENT_NUMBER:
-                shootGrappleHook();
+                shootGrappleHook(weapons[0]);
                 break;
         }
     }
@@ -568,33 +331,23 @@
     /**
      * Shoot a hook
      */
-    function shootGrappleHook(){
-        //No actual grapple hook shooted or double grapple hook bonus is on
-        if(weapons.length==0 
-        || (weapons.length < 2 && player.powerOn == DOUBLE_HOOK_NUMBER)){
-            weapons[weapons.length] = {
-                type: player.powerOn,
-                shooting: true,
-                position: {x: player.position.x+player.width/2 , y: player.position.y+player.height}, 
-                length: 0,
-                time: 0    
-            };
+    function shootGrappleHook(grappleHook){
+        if(grappleHook.type == 0) {
+            grappleHook.type = player.powerOn;
+            grappleHook.shooting = true;
+            grappleHook.position = {x: player.position.x+player.width/2 , y: player.position.y+player.height};
+            grappleHook.length = 0;
         }
     }
 
     /**
-     * Delete the drawing of the weapon
+     * Delete a weapon
      */
-    function deleteWeapon(){
-        weapons = [];
-    }
-
-    /**
-     * Delete a double hook that is on the top
-     */
-    function deleteDoubleHook(){
-        var temp = weapons.filter(weapons => weapons.shooting);
-        weapons = temp;
+    function deleteWeapon(weapon){
+        weapon.type = 0;
+        weapon.shooting = false;
+        weapon.position = {x:0, y:0};
+        weapon.length = 0;
     }
 
 
@@ -606,22 +359,12 @@
         if(hook.position.y - hook.length < 0){
             switch(hook.type){
                 case GRAPPLE_HOOK_NUMBER :
-                    deleteWeapon();
-                break;
-
-                case DOUBLE_HOOK_NUMBER:
-                    hook.shooting = false;
-                    deleteDoubleHook();
-                break;                    
+                    deleteWeapon(hook);
+                    break;
 
                 case TRIDENT_NUMBER :
                     hook.shooting = false;
-                    if(hook.time > 3){
-                        deleteWeapon();
-                    }
-                break;
-
-                
+                    break;
             }
         } else {
 
@@ -639,20 +382,9 @@
                                     platforms[i].exist = false;
                                 }
                                 break;
-                            
-                            case DOUBLE_HOOK_NUMBER :
-                                hook.shooting = false;
-                                deleteDoubleHook();
-                                if(platforms[i].isDestructible){
-                                    platforms[i].exist = false;
-                                }
-                                break;
 
                             case TRIDENT_NUMBER :
                                 hook.shooting = false;
-                                if(hook.time > 3){
-                                    deleteWeapon();
-                                }
                                 break;
                         }
                     }
@@ -785,10 +517,7 @@
  
     /**
      * Make sure the balloons are not colliding with rectangle objects like platforms
-     * @param {*} ball - The balloon
-     * @param {*} object - A rectangular object
-     * 
-     * @returns {boolean} True if the balloon collided with the object
+     * @return true if a correction is applied
      */
     function keepBalloonOutsideObjects(ball, object){
         if(object.exist){
@@ -1088,7 +817,7 @@
     */
     update = function(delta) {
         // update timer
-        timer -= delta/1000;
+        timer = timer - delta/1000;
 
         // Update balloons position 
         for(var i=0 ; i<balloons.length ; i++){
@@ -1126,22 +855,14 @@
         // Weapons will deal a lot of damages
         for(var i=0 ; i<weapons.length ; i++){
 
-            // Weapon is going up
             if(weapons[i].shooting==true){
 
                 switch(weapons[i].type){
 
                     case GRAPPLE_HOOK_NUMBER:
-                    case DOUBLE_HOOK_NUMBER:
                     case TRIDENT_NUMBER:
                         weapons[i].length += HOOK_SPEED * delta ;
                     break;
-                }
-            } else {
-
-                //Increase the timer of the trident
-                if(weapons[i].type == TRIDENT_NUMBER){
-                    weapons[i].time += delta/1000;
                 }
             }
 
@@ -1166,38 +887,12 @@
             isGravity = 0;
         }
 
-        var willCollide = false;
-        var obstacleNumber = -1;
-        for(var i=0 ; i<platforms.length ; i++){
-            if(isPlayerWithinObject(player,newPosXPlayer,newPosYPlayer,platforms[i])){
-                willCollide = true;
-                obstacleNumber = i;
-            }
-        }
-
-        if(willCollide){
-            //Vertical
-            if(newSpdYPlayer < 0 && platforms[obstacleNumber].position.y + platforms[obstacleNumber].height <= player.position.y){
-                newPosYPlayer = platforms[obstacleNumber].position.y + platforms[obstacleNumber].height;
-                newSpdYPlayer = 0
-            }  else {
-                //Horizontal
-                if(newSpdXPlayer>0){
-                    newPosXPlayer = platforms[obstacleNumber].position.x - player.width;    
-                } else if(newSpdXPlayer<0){
-                    newPosXPlayer = platforms[obstacleNumber].position.x + platforms[obstacleNumber].width;
-                }
-                newSpdXPlayer = player.speed.x;
-            }
-        }
-
         // Update player
         player.position.x = newPosXPlayer;
         player.position.y = newPosYPlayer;
         player.speed.x = newSpdXPlayer;
         player.speed.y = newSpdYPlayer;
         keepPlayerWithinBorder();
-    
 
         //Detect the victory
         if(isVictory()){
@@ -1262,24 +957,18 @@
                 fillCircle(balloons[i]);
             }
         }
+
         // weapons drawing
         for(var i=0 ; i < weapons.length ; i++){
             var weaponWidth = 0, weaponColor;
             switch(weapons[i].type){
                 case GRAPPLE_HOOK_NUMBER :
-                case DOUBLE_HOOK_NUMBER:
                     weaponColor = GRAPPLE_HOOK_COLOR;
                     weaponWidth = HOOK_WITDH;
                     break;
 
                 case TRIDENT_NUMBER :
-                    if(weapons[i].time < 1){
-                        weaponColor = TRIDENT_COLOR1 ;
-                    } else if(weapons[i].time < 2){
-                        weaponColor = TRIDENT_COLOR2 ;
-                    } else {
-                        weaponColor = TRIDENT_COLOR3 ;
-                    }
+                    weaponColor = TRIDENT_COLOR ;
                     weaponWidth = HOOK_WITDH;
                     break;
             }
@@ -1380,23 +1069,11 @@
                 console.log("Grappin activé");
                 break;
 
-            //Activate the powerOn double grapple hook                                                  // BETA FUNCTION
-            case 84: 
-                player.powerOn = DOUBLE_HOOK_NUMBER ;
-                console.log("Double grappin activé");
-                break;
-
             //Activate the powerOn Trident                                                              // BETA FUNCTION
-            case 89:
+            case 84:
                 player.powerOn = TRIDENT_NUMBER ;
                 console.log("Trident activé");
                 break;
- 
-            //Make the player invincible                                                                // BETA FUNCTION
-            case 73:
-                console.log("Joueur invincible");
-                isInvincible = !isInvincible;
-            break;        
         }
     }
 
@@ -1426,10 +1103,8 @@
     <!-- About -->
     <p> Commandes :
         <ul>
-            <li>E : debug, détruire les armes</li>
             <li>R : Arme par défaut</li>
-            <li>T : Double grappin </li>
-            <li>Y : Trident </li>
+            <li>T : Trident </li>
             <li>G : victoire immédiate</li>
             <li>H : défaite immédiate</li>
             <li>P : pause</li>
