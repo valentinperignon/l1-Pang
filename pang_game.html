@@ -1,24 +1,30 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <title>Pang</title>
-
+        <!-- Javascript -->
         <script src="script.js"></script>
+        <!-- CSS -->
+        <link rel="stylesheet" href="style.css">
     </head>
     <body onload="init()">
-        <!-- Canvas -->
-        <canvas id="cvs" width="800" height="600" style="margin: 0 auto; border: solid 1px #000;"></canvas>
+        <!-- Content-->
+        <div id="content">
+            <!-- Canvas -->
+            <canvas id="cvs" width="800" height="600"></canvas>
 
-        <!-- About -->
-        <p>Commandes :
-            <ul>
-                <li><strong>E</strong> : debug, détruire les armes</li>
-                <li><strong>R</strong> : Arme par défaut / <strong>T</strong> : Double grappin / <strong>Y</strong> : Trident</li>
-                <li><strong>G</strong> : victoire immédiate / H : défaite immédiate</li>
-                <li><strong>P</strong> : pause</li>
-            </ul>
-        </p>
+            <!-- About -->
+            <div id="about">
+                <h1>Commandes :</h1>
+                <ul>
+                    <li><strong>E</strong> : debug, détruire les armes</li>
+                    <li><strong>R</strong> : Arme par défaut / <strong>T</strong> : Double grappin / <strong>Y</strong> : Trident</li>
+                    <li><strong>G</strong> : victoire immédiate / H : défaite immédiate</li>
+                    <li><strong>P</strong> : pause</li>
+                </ul>
+            </div>
+        </div>
 
         <!-- Pictures -->
         <div style="display: none">
