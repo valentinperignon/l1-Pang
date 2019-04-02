@@ -13,7 +13,7 @@
 
  body {
     background-color: white;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: sans-serif;
  }
 
  h1 {
@@ -28,7 +28,50 @@
     width: 800px;
 }
 
+/* Text content */
+.text_content {
+    padding: 5px 20px;
+}
+
 /* Canvas */
 #cvs {
-    border: 1px solid black;
+    border: 3px solid #000a12;
+    border-radius: 15px;
+    background-color: white;
 }
+
+/* About */
+#about {
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* source : https://codepen.io/shdwjk/pen/OWpbNN */
+.oldkey {
+    border-radius: 10px;
+    background: -webkit-radial-gradient( center, #FAF6F3,#FAF6F3, #D8C8B7);
+    border-style: solid;
+    border-width: 8px;
+    border-color: #E7DBD0 #DACABB #BFAF9D #F6EDE5;
+    display: inline-block;
+    min-width: 3em;
+    height: 3em;
+    line-height: 3em;
+    font-weight: bold;
+    font-family: sans-serif;
+    vertical-align: middle;
+    text-align: center;
+    color: #222;
+    margin: .1em;
+    cursor: pointer;
+
+}
+.oldkey:hover {
+    box-shadow: .1em .1em .3em .2em #666;
+    background: -webkit-radial-gradient( center,#FAF6F3,#FAF6F3, #BFAF9D);
+}
+
+.oldkey span {
+    padding-left: 1em;
+    padding-right: 1em;
+ }
