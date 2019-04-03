@@ -18,17 +18,27 @@ const PLATFORMS_LIST = {
     level2 : [
         {
             "position":{
-                "x": 575,
+                "x": 830,
                 "y": 200
             },
-            "width": 80,    
+            "width": 150,    
             "height": 30,
             "exist": true,
             "isDestructible": false
         },
         {
             "position":{
-                "x": 425,
+                "x": 635,
+                "y": 200
+            },
+            "width": 80,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 490,
                 "y": 200
             },
             "width": 80,
@@ -38,20 +48,20 @@ const PLATFORMS_LIST = {
         },
         {
             "position":{
-                "x": 275,
+                "x": 350,
                 "y": 200
             },
             "width": 80,
             "height": 30,
             "exist": true,
-            "isDestructible": false
+            "isDestructible": true
         },
         {
             "position":{
-                "x": 125,
+                "x": 100,
                 "y": 200
             },
-            "width": 80,
+            "width": 150,
             "height": 30,
             "exist": true,
             "isDestructible": false
@@ -59,23 +69,44 @@ const PLATFORMS_LIST = {
     ],
 
     level3 : [
+        //horizontal platforms
         {
             "position":{
-                "x": 275,
+                "x": 650,
                 "y": 200
             },
             "width": 80,
-            "height": 40,
+            "height": 30,
             "exist": true,
             "isDestructible": false
         },
         {
             "position":{
-                "x": 125,
+                "x": 550,
                 "y": 200
             },
             "width": 80,
-            "height": 40,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 450,
+                "y": 200
+            },
+            "width": 80,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 350,
+                "y": 200
+            },
+            "width": 80,
+            "height": 30,
             "exist": true,
             "isDestructible": true
         },
@@ -85,6 +116,47 @@ const PLATFORMS_LIST = {
                 "y": 500
             },
             "width": 100,
+            "height": 100,
+            "exist": true,
+            "isDestructible": true
+        },
+        //vertical platforms
+        {
+            "position":{
+                "x": 750,
+                "y": 30
+            },
+            "width": 30,
+            "height": 100,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 750,
+                "y": 130
+            },
+            "width": 30,
+            "height": 100,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 300,
+                "y": 30
+            },
+            "width": 30,
+            "height": 100,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 300,
+                "y": 130
+            },
+            "width": 30,
             "height": 100,
             "exist": true,
             "isDestructible": true
@@ -206,6 +278,7 @@ var context = null;
 
 /** Level number */
 var numLevel = 0;
+const MAX_LEVEL = 3;
 
 /**
  * Variables about game state.
@@ -301,6 +374,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level1));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level1));
             BALLOON_COLOR = "red";
+            BACKGROUND_IMAGE = bg_paris;
     }
 
     // initialization of the player
@@ -1256,7 +1330,7 @@ render = function() {
 
 		// Wiping the screen
 		//context.clearRect(0, 0, context.width, context.height);
-		context.drawImage(BACKGROUND_IMAGE, 0, 0, 800, 600);
+		context.drawImage(BACKGROUND_IMAGE, 0, 0, 1080, 608);
 
 		// Timer text
 		var textTime = "TIME : ";
@@ -1415,13 +1489,21 @@ captureKeyboardPress = function(event) {
 				break;
 
 			// Enter to insert credits and play again
-			case 13:
-				defeat = false;
-				pause = false;
-				levelInitialization(numLevel);
-				player.livesNumber = 3;
-				player.score = 0;
-				break;
+            case 13: 
+                if(defeat){
+                    defeat = false;
+                    levelInitialization(numLevel);
+                    player.livesNumber = 3;
+                    player.score = 0;
+                } else if(victory){
+                    numLevel += 1;
+                    if(numLevel > MAX_LEVEL){
+                        numLevel = 0;
+                    }
+                    victory = !victory;
+                    levelInitialization(numLevel);
+                }
+                break;
 
 			// Shortcut to victory                                                                      // BETA FUNCTION
 			case 71:
