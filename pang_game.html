@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Pang</title>
+        <!-- Javascript -->
+        <script src="script.js"></script>
+        <!-- CSS -->
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body onload="init()">
+        <!-- Content-->
+        <div id="content">
+            <!-- Canvas -->
+            <canvas id="cvs" width="800" height="600"></canvas>
+
+            <!-- About -->
+            <div id="about">
+                <div class="oldkey" onclick="open('commandes.html', 'Popup', 'scrollbars=0,height=160,width=475'); return false;"><span>Commandes</span></div>
+                <div class="oldkey" onclick="open('regles.html', 'Popup', 'scrollbars=0,height=160,width=475'); return false;"><span>Règles du jeu</span></div>
+            </div>
+        </div>
+
+        <!-- Pictures -->
+        <div style="display: none">
+            <img src="assets/bg_paris.jpg" alt="bg_paris" id="bg_paris">
+            <img src="assets/logo.jpg" alt="logo" id="logo">
+        </div>
+    </body>
+</html>
