@@ -340,10 +340,13 @@ var ladders = [] ;
 var items = [];
 
 /** Item related variables */
-const GRAPPLE_HOOK_ITEM = GRAPPLE_HOOK_NUMBER;
-const DOUBLE_HOOK_ITEM = DOUBLE_HOOK_NUMBER;
-const TRIDENT_ITEM = TRIDENT_NUMBER;
+const GRAPPLE_HOOK_ITEM = GRAPPLE_HOOK_NUMBER; //1
+const DOUBLE_HOOK_ITEM = DOUBLE_HOOK_NUMBER; //2
+const TRIDENT_ITEM = TRIDENT_NUMBER; //3
+const TIMER_BOOST_ITEM = 4;
+const DYNAMITE_ITEM = 5;
 
+const MAX_ITEM = 5;
 
 /** Constants for the graphical part */
 const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
@@ -360,8 +363,8 @@ var BACKGROUND_IMAGE;
 const GRAPPLE_HOOK_ITEM_COLOR = "red";
 const DOUBLE_HOOK_ITEM_COLOR = "darkred";
 const TRIDENT_ITEM_COLOR = "yellow";
-
-
+const TIMER_BOOST_ITEM_COLOR = "plum";
+const DYNAMYTE_COLOR = "seashell";
 
 // ------------------------------------------------------------------------------------------------
 // ######################################## Functions #############################################
@@ -876,7 +879,7 @@ function stopHooks(hook){
                     };
 
                     //Maybe an item is spawning
-                    if(Math.random()<0.20){
+                    if(Math.random()<1.20){
                         createItem(oldBall);
                     }
 
@@ -1127,7 +1130,7 @@ function collisionsWithPlayer(ball, object){
 function createItem(ball){
     if(ball.size.number>0){
         items[items.length] = {
-            type: Math.floor(Math.random()*3)+1,
+            type: Math.floor(Math.random()*MAX_ITEM)+1,
             position: {x: ball.center.x, y:ball.center.y},
             height: 20,
             width: 20,
@@ -1148,14 +1151,68 @@ function playerTouchItem(){
 
                 if((items[i].position.y > player.position.y && items[i].position.y < player.position.y + player.height)  
                 || (items[i].position.y + items[i].height > player.position.y && items[i].position.y + items[i].height < player.position.y + player.height)){
-                    player.powerOn = items[i].type;
-                    items[i].type = -1;
+                    
+                    switch(items[i].type){
+
+                        case GRAPPLE_HOOK_ITEM:
+                        case DOUBLE_HOOK_ITEM_COLOR:
+                        case TRIDENT_ITEM:
+                            player.powerOn = items[i].type;
+                            items[i].type = -1;
+                        break;
+
+                        case TIMER_BOOST_ITEM:
+                            timer += 10;
+                            items[i].type = -1;
+                        break;
+
+                        case DYNAMITE_ITEM:
+                            dynamiteExplode();
+                            items[i].type = -1;
+                        break;
+                    }
                 }
             }
         }
     }
 }
 
+
+/**
+ * Dynamite item : boooom
+ */
+function dynamiteExplode(){
+    var bigBalloonRemaining = true;
+    
+    while(bigBalloonRemaining){
+        bigBalloonRemaining = false;
+        for(var i=0 ; i<balloons.length ; i++){
+
+            if(balloons[i].size.number > 1){            
+                var oldBall = balloons[i];
+
+                balloons[balloons.length] =  {
+                    center: {x: oldBall.center.x-3, y: oldBall.center.y},
+                    size: BALLOON_SIZE[oldBall.size.number - 1],
+                    velocity:{ x: -1, y: -2 + Math.random()},
+                    gravity: {x :0, y: 9.81/1000}
+                };
+                
+            
+                balloons[balloons.length] =  {
+                    center: {x: oldBall.center.x+3, y: oldBall.center.y},
+                    size: BALLOON_SIZE[oldBall.size.number - 1],
+                    velocity:{ x: 1, y: -2 + Math.random()},
+                    gravity: {x :0, y: 9.81/1000}
+                };
+
+                balloons[i].size = BALLOON_SIZE[0];
+
+                bigBalloonRemaining = true;
+            }
+        }
+    }
+}
 
 
 // ------------------------------------------------------------------------------------------------
@@ -1369,7 +1426,8 @@ update = function(delta) {
 */
 render = function() {
 	if(numLevel == 0) { 
-		// ---------------
+        
+        // ---------------
 		// MENU
 		// ---------------
 
@@ -1397,7 +1455,8 @@ render = function() {
 		context.font = "25px Georgia";
 		context.fillText(textLevel, (context.width - context.measureText(textLevel).width)/2, context.height-70-50);
 	} else {
-		// ---------------
+        
+        // ---------------
 		// GAME
 		// ---------------
 
@@ -1482,6 +1541,14 @@ render = function() {
 
                     case TRIDENT_ITEM:
                         context.fillStyle = TRIDENT_ITEM_COLOR;
+                    break;
+
+                    case TIMER_BOOST_ITEM:
+                        context.fillStyle = TIMER_BOOST_ITEM_COLOR;
+                    break;
+
+                    case DYNAMITE_ITEM:
+                        context.fillStyle = DYNAMYTE_COLOR;
                     break;
                 }
                 context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
