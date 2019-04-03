@@ -18,17 +18,27 @@ const PLATFORMS_LIST = {
     level2 : [
         {
             "position":{
-                "x": 575,
+                "x": 830,
                 "y": 200
             },
-            "width": 80,    
+            "width": 150,    
             "height": 30,
             "exist": true,
             "isDestructible": false
         },
         {
             "position":{
-                "x": 425,
+                "x": 635,
+                "y": 200
+            },
+            "width": 80,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 490,
                 "y": 200
             },
             "width": 80,
@@ -38,20 +48,20 @@ const PLATFORMS_LIST = {
         },
         {
             "position":{
-                "x": 275,
+                "x": 350,
                 "y": 200
             },
             "width": 80,
             "height": 30,
             "exist": true,
-            "isDestructible": false
+            "isDestructible": true
         },
         {
             "position":{
-                "x": 125,
+                "x": 100,
                 "y": 200
             },
-            "width": 80,
+            "width": 150,
             "height": 30,
             "exist": true,
             "isDestructible": false
@@ -59,23 +69,44 @@ const PLATFORMS_LIST = {
     ],
 
     level3 : [
+        //horizontal platforms
         {
             "position":{
-                "x": 275,
+                "x": 650,
                 "y": 200
             },
             "width": 80,
-            "height": 40,
+            "height": 30,
             "exist": true,
             "isDestructible": false
         },
         {
             "position":{
-                "x": 125,
+                "x": 550,
                 "y": 200
             },
             "width": 80,
-            "height": 40,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 450,
+                "y": 200
+            },
+            "width": 80,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 350,
+                "y": 200
+            },
+            "width": 80,
+            "height": 30,
             "exist": true,
             "isDestructible": true
         },
@@ -85,6 +116,47 @@ const PLATFORMS_LIST = {
                 "y": 500
             },
             "width": 100,
+            "height": 100,
+            "exist": true,
+            "isDestructible": true
+        },
+        //vertical platforms
+        {
+            "position":{
+                "x": 750,
+                "y": 30
+            },
+            "width": 30,
+            "height": 100,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 750,
+                "y": 130
+            },
+            "width": 30,
+            "height": 100,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 300,
+                "y": 30
+            },
+            "width": 30,
+            "height": 100,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 300,
+                "y": 130
+            },
+            "width": 30,
             "height": 100,
             "exist": true,
             "isDestructible": true
@@ -124,26 +196,26 @@ const LADDERS_LIST = {
  * List of size of balloons
  */
 const BALLOON_SIZE = [
-	{number: 0,
-	radius: 0,
-	Yvelocity:0
-	},
-	{number: 1,
-	radius: 15,
-	Yvelocity: -6
-	},
-	{number: 2,
-	radius: 30,
-	Yvelocity: -7.1
-	},
-	{number: 3,
-	radius: 40,
-	Yvelocity: -8.4
-	},
-	{number: 4,
-	radius: 50,
-	Yvelocity: -9.5
-	}
+    {number: 0,
+    radius: 0,
+    Yvelocity:0
+    },
+    {number: 1,
+    radius: 15,
+    Yvelocity: -6
+    },
+    {number: 2,
+    radius: 30,
+    Yvelocity: -7
+    },
+    {number: 3,
+    radius: 40,
+    Yvelocity: -8
+    },
+    {number: 4,
+    radius: 50,
+    Yvelocity: -9.5
+    }
 ]
 
 /** 
@@ -206,6 +278,7 @@ var context = null;
 
 /** Level number */
 var numLevel = 0;
+const MAX_LEVEL = 3;
 
 /**
  * Variables about game state.
@@ -260,6 +333,18 @@ var platforms = [] ;
 /** Ladders in the game */
 var ladders = [] ;
 
+
+/**
+ * Bonus items array
+ */
+var items = [];
+
+/** Item related variables */
+const GRAPPLE_HOOK_ITEM = GRAPPLE_HOOK_NUMBER;
+const DOUBLE_HOOK_ITEM = DOUBLE_HOOK_NUMBER;
+const TRIDENT_ITEM = TRIDENT_NUMBER;
+
+
 /** Constants for the graphical part */
 const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
 const PLATFORM_COLOR = "black";
@@ -271,6 +356,12 @@ const TRIDENT_COLOR1 = "orangered";
 const TRIDENT_COLOR2 = "orange";
 const TRIDENT_COLOR3 = "yellow";
 var BACKGROUND_IMAGE;
+
+const GRAPPLE_HOOK_ITEM_COLOR = "red";
+const DOUBLE_HOOK_ITEM_COLOR = "darkred";
+const TRIDENT_ITEM_COLOR = "yellow";
+
+
 
 // ------------------------------------------------------------------------------------------------
 // ######################################## Functions #############################################
@@ -318,6 +409,9 @@ function levelInitialization(num){
 
     //No weapon
     weapons = [];
+
+    //No items
+    items = [];
 }
 
 /**
@@ -355,17 +449,17 @@ function playerStopMove(move) {
 /**
  * Moving the player (with ladders)
  */
-function playerMoveLadder(move) {
-	if(findLadder() != -1) {
-		switch(move) {
-			case 38:
-				player.speed.y = -PLAYER_SPEED;
-				break;
-			case 40:
-				player.speed.y = PLAYER_SPEED;
-				break;
-		}
-	}
+playerMoveLadder = function(move) {
+    if(findLadder(player) != -1) {
+        switch(move) {
+            case 38:
+                player.speed.y = -PLAYER_SPEED;
+                break;
+            case 40:
+                player.speed.y = PLAYER_SPEED;
+                break;
+        }
+    }
 }
 
 /**
@@ -378,58 +472,62 @@ function playerStopMoveLadder() {
 /**
  * Return the ladder array's index
  */
- function findLadder() {
-	var i=0;
-	var find = false;
+function findLadder(object) {
+    var i=0;
+    var find = false;
 
-	while(i<ladders.length && !find) {
-		if(player.position.x >= ladders[i].position.x - 0.33*player.width && player.position.x <= ladders[i].position.x + ladders[i].width - 0.66*player.width) {
-			if(player.position.y >= ladders[i].position.y - 1.1*player.height && player.position.y <= context.height) {
-				find = true;
-			} else {
-				i++;
-			}
-		} else {
-			i++
-		}
-	}
+    while(i<ladders.length && !find) {
+        if(object.position.x >= ladders[i].position.x - 0.33*object.width && object.position.x <= ladders[i].position.x + ladders[i].width - 0.66*object.width) {
+            if(object.position.y >= ladders[i].position.y - 1.1*object.height && object.position.y <= context.height) {
+                find = true;
+            } else {
+                i++;
+            }
+        } else {
+            i++
+        }
+    }
 
-	if(i == ladders.length) {
-		i = -1;
-	}
-	return i;
+    if(i == ladders.length) {
+        i = -1;
+    }
+    return i;
 }
 
 /**
  * Detect if the player is on a platform
  */
-function detectPlatform() {
-	var isOn = true;
+function detectPlatform(object) {
+    var isOn = true;
 
-	for(var i=0; i<platforms.length; i++) {
-		if(!platforms[i].exist
-		|| player.position.x + player.width < platforms[i].position.x
-		|| player.position.x > platforms[i].position.x + platforms[i].width
-		|| player.position.y > platforms[i].position.y + platforms[i].height
-		|| player.position.y + player.height < platforms[i].position.y) {
-			isOn = false;
-		} else {
-			isOn = true;
-		}
-	}
+    for(var i=0; i<platforms.length; i++) {
+        if(!platforms[i].exist
+        || object.position.x + object.width < platforms[i].position.x
+        || object.position.x > platforms[i].position.x + platforms[i].width
+        || object.position.y > platforms[i].position.y + platforms[i].height
+        || object.position.y + object.height < platforms[i].position.y) {
+            isOn = false;
+        } else {
+            isOn = true;
+        }
+    }
 
-	return isOn;
+    return isOn;
 }
 
 /**
- * Return true if the player is not on the ground, a platform, or a ladder
+ * Return true if the object is not on the ground, a platform, or a ladder
  */
-function isNotOnPlatformOrGround(){
-	isNot = false;
-
-	if(player.position.y + player.height < context.height && findLadder() == -1 && !detectPlatform()) { // not on the ground
-		isNot = true;
-	}
+function isNotOnPlatformOrGround(object){
+    isNot = false;
+    
+    if(platforms.length == 0 || ladders.length == 0){
+        return true;
+    }
+ 
+    if(object.position.y + object.height < context.height && findLadder(object) == -1 && !detectPlatform(object)) { // not on the ground
+        isNot = true;
+    }
 
 	return(isNot);
 }
@@ -648,17 +746,17 @@ function shootWeapon(player){
  * Shoot a hook
  */
 function shootGrappleHook(){
-	//No actual grapple hook shooted or double grapple hook bonus is on
-	if(weapons.length==0 
-	|| (weapons.length < 2 && player.powerOn == DOUBLE_HOOK_NUMBER)){
-		weapons[weapons.length] = {
-			type: player.powerOn,
-			shooting: true,
-			position: {x: player.position.x+player.width/2 , y: player.position.y+player.height}, 
-			length: 0,
-			time: 0    
-		};
-	}
+    //No actual grapple hook shooted or double grapple hook bonus is on
+    if(weapons.length==0 
+    || (weapons.length < 2 && player.powerOn == DOUBLE_HOOK_NUMBER)){
+        weapons[weapons.length] = {
+            type: player.powerOn,
+            shooting: true,
+            position: {x: player.position.x+player.width/2 , y: player.position.y+player.height}, 
+            length: player.height,
+            time: 0    
+        };
+    }
 }
 
 /**
@@ -681,112 +779,116 @@ function deleteDoubleHook(){
  * Checking if the hook should stop
  */
 function stopHooks(hook){
-	// Hit the top of the screen
-	if(hook.position.y - hook.length < 0){
-		switch(hook.type){
-			case GRAPPLE_HOOK_NUMBER :
-				deleteWeapon();
-			break;
+    // Hit the top of the screen
+    if(hook.position.y - hook.length < 0){
+        switch(hook.type){
+            case GRAPPLE_HOOK_NUMBER :
+                deleteWeapon();
+            break;
 
-			case DOUBLE_HOOK_NUMBER:
-				hook.shooting = false;
-				deleteDoubleHook();
-			break;                    
+            case DOUBLE_HOOK_NUMBER:
+                hook.shooting = false;
+                deleteDoubleHook();
+            break;                    
 
-			case TRIDENT_NUMBER :
-				hook.shooting = false;
-				if(hook.time > 3){
-					deleteWeapon();
-				}
-			break;
+            case TRIDENT_NUMBER :
+                hook.shooting = false;
+                if(hook.time > 3){
+                    deleteWeapon();
+                }
+            break;
 
-			
-		}
-	} else {
+            
+        }
+    } else {
 
-		//Hit a platform
-		var isItHittingPlatform = false;
+        //Hit a platform
+        var isItHittingPlatform = false;
 
-		for(var i=0 ; i<platforms.length ; i++){
-			if(platforms[i].exist && isWeaponBetweenX(hook,platforms[i])){
-				if(hook.position.y - hook.length  < platforms[i].position.y + platforms[i].height && hook.position.y > platforms[i].position.y){
-					
-					switch(hook.type){
-						case GRAPPLE_HOOK_NUMBER :
-							deleteWeapon();
-							if(platforms[i].isDestructible){
-								platforms[i].exist = false;
-							}
-							break;
-						
-						case DOUBLE_HOOK_NUMBER :
-							hook.shooting = false;
-							deleteDoubleHook();
-							if(platforms[i].isDestructible){
-								platforms[i].exist = false;
-							}
-							break;
+        for(var i=0 ; i<platforms.length ; i++){
+            if(platforms[i].exist && isWeaponBetweenX(hook,platforms[i])){
+                if(hook.position.y - hook.length  < platforms[i].position.y + platforms[i].height && hook.position.y > platforms[i].position.y){
+                    
+                    switch(hook.type){
+                        case GRAPPLE_HOOK_NUMBER :
+                        case DOUBLE_HOOK_NUMBER :
+                            hook.shooting = false;
+                            deleteWeapon();
+                            if(platforms[i].isDestructible){
+                                platforms[i].exist = false;
+                            }
+                        break;
 
-						case TRIDENT_NUMBER :
-							hook.shooting = false;
-							if(hook.time > 3){
-								deleteWeapon();
-							}
-							break;
-					}
-				}
-			}
-		}
-	}
+                        case TRIDENT_NUMBER :
+                            hook.shooting = false;
+                            if(platforms[i].isDestructible){
+                                platforms[i].exist = false;
+                                deleteWeapon(); 
+                            }
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
-	//Hitting a balloon
-	for(var i=0 ; i<balloons.length ; i++){
-		if(balloons[i].size.number > 0){
+    //Hitting a balloon
+    for(var i=0 ; i<balloons.length ; i++){
+        if(balloons[i].size.number > 0){
 
-			if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
-			&& balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length){
+            if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
+            && balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length
+            && balloons[i].center.y + balloons[i].size.radius < hook.position.y){
 
-				switch(hook.type){
-					case GRAPPLE_HOOK_NUMBER:
-					case TRIDENT_NUMBER:
-						deleteWeapon(hook);
-					break;
+                switch(hook.type){
+                    case GRAPPLE_HOOK_NUMBER:
+                    case TRIDENT_NUMBER:
+                        deleteWeapon(hook);
+                    break;
 
-					case DOUBLE_HOOK_NUMBER:
-						hook.shooting = false;
-						deleteDoubleHook();
-					break;
-				}         
+                    case DOUBLE_HOOK_NUMBER:
+                        hook.shooting = false;
+                        deleteDoubleHook();
+                    break;
+                }         
 
-				//Points
-				player.score += balloons[i].size.radius*10 ;
-				
-				//Two new balloons if the balloons is not of the minimal size
-				if(balloons[i].size.number > 1){
-					var oldBall = balloons[i];
+                //Points
+                player.score += balloons[i].size.radius*10 ;
+                
+                //Two new balloons if the balloons is not of the minimal size
+                
+                if(balloons[i].size.number > 1){
+                    var oldBall = balloons[i];
 
-					balloons[balloons.length] =  {
-						center: {x: oldBall.center.x, y: oldBall.center.y},
-						size: BALLOON_SIZE[oldBall.size.number - 1],
-						velocity:{ x: -1, y: -2},
-						gravity: {x :0, y: 9.81/1000}
-					};
-					
-				
-					balloons[balloons.length] =  {
-						center: {x: oldBall.center.x, y: oldBall.center.y},
-						size: BALLOON_SIZE[oldBall.size.number - 1],
-						velocity:{ x: 1, y: -2},
-						gravity: {x :0, y: 9.81/1000}
-					};
-				}
-				
+                    balloons[balloons.length] =  {
+                        center: {x: oldBall.center.x, y: oldBall.center.y},
+                        size: BALLOON_SIZE[oldBall.size.number - 1],
+                        velocity:{ x: -1, y: -2},
+                        gravity: {x :0, y: 9.81/1000}
+                    };
+                    
+                
+                    balloons[balloons.length] =  {
+                        center: {x: oldBall.center.x, y: oldBall.center.y},
+                        size: BALLOON_SIZE[oldBall.size.number - 1],
+                        velocity:{ x: 1, y: -2},
+                        gravity: {x :0, y: 9.81/1000}
+                    };
 
-				//Delete the balloon
-				balloons[i].size = BALLOON_SIZE[0];
-			}
-		}
-	}
+                    //Maybe an item is spawning
+                    if(Math.random()<0.20){
+                        createItem(oldBall);
+                    }
+
+
+                }
+                
+
+                //Delete the balloon
+                balloons[i].size = BALLOON_SIZE[0];
+            }
+        }
+    }
 
 }
 
@@ -1017,6 +1119,45 @@ function collisionsWithPlayer(ball, object){
 	return(collisionAngles || collisionX || collisionY);
 }
 
+
+/** 
+ * Create a random item when splitting a balloon
+ * @param {*} ball the splitted balloon
+ */
+function createItem(ball){
+    if(ball.size.number>0){
+        items[items.length] = {
+            type: Math.floor(Math.random()*3)+1,
+            position: {x: ball.center.x, y:ball.center.y},
+            height: 20,
+            width: 20,
+            time: 0
+        }
+    }
+}
+
+
+/** 
+ * Update the player powerOn if he touch an item
+ */
+function playerTouchItem(){
+    for(var i = 0 ; i < items.length ; i++){
+        if(items[i].type != -1){
+            if((items[i].position.x > player.position.x && items[i].position.x < player.position.x + player.width)  
+            || (items[i].position.x + items[i].width > player.position.x && items[i].position.x + items[i].width < player.position.x + player.width)){
+
+                if((items[i].position.y > player.position.y && items[i].position.y < player.position.y + player.height)  
+                || (items[i].position.y + items[i].height > player.position.y && items[i].position.y + items[i].height < player.position.y + player.height)){
+                    player.powerOn = items[i].type;
+                    items[i].type = -1;
+                }
+            }
+        }
+    }
+}
+
+
+
 // ------------------------------------------------------------------------------------------------
 // ########################################## Game  ###############################################
 // ------------------------------------------------------------------------------------------------
@@ -1086,126 +1227,141 @@ gameLoop = function() {
 *  @param delta the time between now and the last update
 */
 update = function(delta) {
-	// update timer
-	timer -= delta/1000;
+    // update timer
+    timer -= delta/1000;
 
-	// Update balloons position 
-	for(var i=0 ; i<balloons.length ; i++){
-		if(balloons[i].size.number > 0){
-			// Update balloons[i].velocity
-			balloons[i].velocity.x += balloons[i].gravity.x*delta;
-			balloons[i].velocity.y += balloons[i].gravity.y*delta;
+    // Update balloons position 
+    for(var i=0 ; i<balloons.length ; i++){
+        if(balloons[i].size.number > 0){
+            // Update balloons[i].velocity
+            balloons[i].velocity.x += balloons[i].gravity.x*delta;
+            balloons[i].velocity.y += balloons[i].gravity.y*delta;
 
-			// Update balloons[i].center
-			balloons[i].center.x += balloons[i].velocity.x * delta * BALLOON_SPEED;
-			balloons[i].center.y += balloons[i].velocity.y * delta * BALLOON_SPEED;
-		}
-	}
+            // Update balloons[i].center
+            balloons[i].center.x += balloons[i].velocity.x * delta * BALLOON_SPEED;
+            balloons[i].center.y += balloons[i].velocity.y * delta * BALLOON_SPEED;
+        }
+    }
 
-	//Verifying that balloons do not crash into something
-	for(var i=0 ; i < balloons.length ; i++){
+    //Verifying that balloons do not crash into something
+    for(var i=0 ; i < balloons.length ; i++){
 
-		if(balloons[i].size.number > 0){    
-			//No, you will not stick out
-			var bordersCorrection = keepBalloonWithinBorders(balloons[i]);
-			if(!bordersCorrection){    
-				//Don't go into platforms !
-				var correction = false;
-				var j=0 ;
-				while(j < platforms.length && !correction){
-					correction = keepBalloonOutsideObjects(balloons[i], platforms[j]);
-					j++;
-				}
-			}
-		}
-	}
+        if(balloons[i].size.number > 0){    
+            //No, you will not stick out
+            var bordersCorrection = keepBalloonWithinBorders(balloons[i]);
+            if(!bordersCorrection){    
+                //Don't go into platforms !
+                var correction = false;
+                var j=0 ;
+                while(j < platforms.length && !correction){
+                    correction = keepBalloonOutsideObjects(balloons[i], platforms[j]);
+                    j++;
+                }
+            }
+        }
+    }
 
-	// Weapons will deal a lot of damages
-	for(var i=0 ; i<weapons.length ; i++){
+    // Weapons will deal a lot of damages
+    for(var i=0 ; i<weapons.length ; i++){
 
-		// Weapon is going up
-		if(weapons[i].shooting==true){
+        // Weapon is going up
+        if(weapons[i].shooting==true){
 
-			switch(weapons[i].type){
+            switch(weapons[i].type){
 
-				case GRAPPLE_HOOK_NUMBER:
-				case DOUBLE_HOOK_NUMBER:
-				case TRIDENT_NUMBER:
-					weapons[i].length += HOOK_SPEED * delta ;
-				break;
-			}
-		} else {
+                case GRAPPLE_HOOK_NUMBER:
+                case DOUBLE_HOOK_NUMBER:
+                case TRIDENT_NUMBER:
+                    weapons[i].length += HOOK_SPEED * delta ;
+                break;
+            }
+        } else {
 
-			//Increase the timer of the trident
-			if(weapons[i].type == TRIDENT_NUMBER){
-				weapons[i].time += delta/1000;
-			}
-		}
+            //Increase the timer of the trident
+            if(weapons[i].type == TRIDENT_NUMBER){
+                weapons[i].time += delta/1000;
+            }
+        }
 
-		stopHooks(weapons[i]);
-	}
+        stopHooks(weapons[i]);
+    }
 
-	// New player's position
-	var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000
-	var newSpdXPlayer = player.speed.x + isGravity*GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + isGravity*GRAVITY.y*delta/1000;
-	if(findLadder() != -1) {
-		if(newPosYPlayer + player.height < ladders[findLadder()].position.y) {
-			newPosYPlayer = ladders[findLadder()].position.y - player.height;
-		}
-	} else {
-		if(newPosYPlayer < player.position.y) {
-			newPosYPlayer = player.position.y;
-		}
-	}
-	if(isNotOnPlatformOrGround()) {
-		isGravity = 1;
-	} else {
-		isGravity = 0;
-	}
+    // Items are falling and olding
+    for(var i=0 ; i < items.length ; i++){
+        if(items[i].type != -1 && isNotOnPlatformOrGround(items[i]) && items[i].position.y + items[i].height < cvs.height){
+            items[i].position.y =items[i].position.y + GRAVITY.y*delta/10000;
+        } else {
+            items[i].time += delta/1000;
+            
+            if(items[i].time > 3 ){
+                items[i].type = -1;
+            }
+        }
+    }
 
-	var willCollide = false;
-	var obstacleNumber = -1;
-	for(var i=0 ; i<platforms.length ; i++){
-		if(isPlayerWithinObject(player,newPosXPlayer,newPosYPlayer,platforms[i])){
-			willCollide = true;
-			obstacleNumber = i;
-		}
-	}
+    // New player's position
+    var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000
+    var newSpdXPlayer = player.speed.x + isGravity*GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + isGravity*GRAVITY.y*delta/1000;
+    if(findLadder(player) != -1) {
+        if(newPosYPlayer + player.height < ladders[findLadder(player)].position.y) {
+            newPosYPlayer = ladders[findLadder(player)].position.y - player.height;
+        }
+    } else {
+        if(newPosYPlayer < player.position.y) {
+            newPosYPlayer = player.position.y;
+        }
+    }
+    if(isNotOnPlatformOrGround(player)) {
+        isGravity = 1;
+    } else {
+        isGravity = 0;
+    }
 
-	if(willCollide){
-		//Vertical
-		if(newSpdYPlayer < 0 && platforms[obstacleNumber].position.y + platforms[obstacleNumber].height <= player.position.y){
-			newPosYPlayer = platforms[obstacleNumber].position.y + platforms[obstacleNumber].height;
-			newSpdYPlayer = 0
-		}  else {
-			//Horizontal
-			if(newSpdXPlayer>0){
-				newPosXPlayer = platforms[obstacleNumber].position.x - player.width;    
-			} else if(newSpdXPlayer<0){
-				newPosXPlayer = platforms[obstacleNumber].position.x + platforms[obstacleNumber].width;
-			}
-			newSpdXPlayer = player.speed.x;
-		}
-	}
+    var willCollide = false;
+    var obstacleNumber = -1;
+    for(var i=0 ; i<platforms.length ; i++){
+        if(isPlayerWithinObject(player,newPosXPlayer,newPosYPlayer,platforms[i])){
+            willCollide = true;
+            obstacleNumber = i;
+        }
+    }
 
-	// Update player
-	player.position.x = newPosXPlayer;
-	player.position.y = newPosYPlayer;
-	player.speed.x = newSpdXPlayer;
-	player.speed.y = newSpdYPlayer;
-	keepPlayerWithinBorder();
+    if(willCollide){
+        //Vertical
+        if(newSpdYPlayer < 0 && platforms[obstacleNumber].position.y + platforms[obstacleNumber].height <= player.position.y){
+            newPosYPlayer = platforms[obstacleNumber].position.y + platforms[obstacleNumber].height;
+            newSpdYPlayer = 0
+        }  else {
+            //Horizontal
+            if(newSpdXPlayer>0){
+                newPosXPlayer = platforms[obstacleNumber].position.x - player.width;    
+            } else if(newSpdXPlayer<0){
+                newPosXPlayer = platforms[obstacleNumber].position.x + platforms[obstacleNumber].width;
+            }
+            newSpdXPlayer = player.speed.x;
+        }
+    }
 
+    // Update player
+    player.position.x = newPosXPlayer;
+    player.position.y = newPosYPlayer;
+    player.speed.x = newSpdXPlayer;
+    player.speed.y = newSpdYPlayer;
+    keepPlayerWithinBorder();
 
-	//Detect the victory
-	if(isVictory()){
-		victory = true;
-	}
-	//Detect the defeat
-	for(var i=0 ; i<balloons.length ; i++){
-		if(isDefeat(balloons[i])){
-			defeat = true;
-		}
-	}
+    // Yeah an item
+    playerTouchItem();
+
+    //Detect the victory
+    if(isVictory()){
+        victory = true;
+    }
+    //Detect the defeat
+    for(var i=0 ; i<balloons.length ; i++){
+        if(isDefeat(balloons[i])){
+            defeat = true;
+        }
+    }
 }
 
 /**
@@ -1309,7 +1465,30 @@ render = function() {
 			if(balloons[i].size.number > 0){
 				fillCircle(balloons[i]);
 			}
-		}
+        }
+        
+        // items displaying
+        for(var i=0 ; i<items.length ; i++){
+            
+            if(items[i].type !=-1){
+                switch(items[i].type){
+                    case GRAPPLE_HOOK_ITEM:
+                        context.fillStyle = GRAPPLE_HOOK_ITEM_COLOR;
+                    break;
+
+                    case DOUBLE_HOOK_ITEM:
+                        context.fillStyle = DOUBLE_HOOK_ITEM_COLOR;
+                    break;
+
+                    case TRIDENT_ITEM:
+                        context.fillStyle = TRIDENT_ITEM_COLOR;
+                    break;
+                }
+                context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
+            }
+        }
+
+
 		// weapons drawing
 		for(var i=0 ; i < weapons.length ; i++){
 			var weaponWidth = 0, weaponColor;
@@ -1406,13 +1585,21 @@ captureKeyboardPress = function(event) {
 				break;
 
 			// Enter to insert credits and play again
-			case 13:
-				defeat = false;
-				pause = false;
-				levelInitialization(numLevel);
-				player.livesNumber = 3;
-				player.score = 0;
-				break;
+            case 13: 
+                if(defeat){
+                    defeat = false;
+                    levelInitialization(numLevel);
+                    player.livesNumber = 3;
+                    player.score = 0;
+                } else if(victory){
+                    numLevel += 1;
+                    if(numLevel > MAX_LEVEL){
+                        numLevel = 0;
+                    }
+                    victory = !victory;
+                    levelInitialization(numLevel);
+                }
+                break;
 
 			// Shortcut to victory                                                                      // BETA FUNCTION
 			case 71:
