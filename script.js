@@ -143,11 +143,11 @@ const BALLOON_SIZE = [
     },
     {number: 2,
     radius: 30,
-    Yvelocity: -7.1
+    Yvelocity: -7
     },
     {number: 3,
     radius: 40,
-    Yvelocity: -8.4
+    Yvelocity: -8
     },
     {number: 4,
     radius: 50,
@@ -276,9 +276,9 @@ var ladders = [] ;
 var items = [];
 
 /** Item related variables */
-const GRAPPLE_HOOK_ITEM = 0;
-const DOUBLE_HOOK_ITEM = 1;
-const TRIDENT_ITEM = 2;
+const GRAPPLE_HOOK_ITEM = GRAPPLE_HOOK_NUMBER;
+const DOUBLE_HOOK_ITEM = DOUBLE_HOOK_NUMBER;
+const TRIDENT_ITEM = TRIDENT_NUMBER;
 
 
 /** Constants for the graphical part */
@@ -291,6 +291,12 @@ const GRAPPLE_HOOK_COLOR = "red";
 const TRIDENT_COLOR1 = "orangered";
 const TRIDENT_COLOR2 = "orange";
 const TRIDENT_COLOR3 = "yellow";
+
+const GRAPPLE_HOOK_ITEM_COLOR = "red";
+const DOUBLE_HOOK_ITEM_COLOR = "darkred";
+const TRIDENT_ITEM_COLOR = "yellow";
+
+
 
 // ------------------------------------------------------------------------------------------------
 // ######################################## Functions #############################################
@@ -335,6 +341,9 @@ function levelInitialization(num){
 
     //No weapon
     weapons = [];
+
+    //No items
+    items = [];
 }
 
 /**
@@ -373,7 +382,7 @@ playerStopMove = function(move) {
  * Moving the player (with ladders)
  */
 playerMoveLadder = function(move) {
-    if(findLadder() != -1) {
+    if(findLadder(player) != -1) {
         switch(move) {
             case 38:
                 player.speed.y = -PLAYER_SPEED;
@@ -395,13 +404,13 @@ playerStopMoveLadder = function() {
 /**
  * Return the ladder array's index
  */
-findLadder = function() {
+function findLadder(object) {
     var i=0;
     var find = false;
 
     while(i<ladders.length && !find) {
-        if(player.position.x >= ladders[i].position.x - 0.33*player.width && player.position.x <= ladders[i].position.x + ladders[i].width - 0.66*player.width) {
-            if(player.position.y >= ladders[i].position.y - 1.1*player.height && player.position.y <= context.height) {
+        if(object.position.x >= ladders[i].position.x - 0.33*object.width && object.position.x <= ladders[i].position.x + ladders[i].width - 0.66*object.width) {
+            if(object.position.y >= ladders[i].position.y - 1.1*object.height && object.position.y <= context.height) {
                 find = true;
             } else {
                 i++;
@@ -420,15 +429,15 @@ findLadder = function() {
 /**
  * Detect if the player is on a platform
  */
-detectPlatform = function() {
+function detectPlatform(object) {
     var isOn = true;
 
     for(var i=0; i<platforms.length; i++) {
         if(!platforms[i].exist
-        || player.position.x + player.width < platforms[i].position.x
-        || player.position.x > platforms[i].position.x + platforms[i].width
-        || player.position.y > platforms[i].position.y + platforms[i].height
-        || player.position.y + player.height < platforms[i].position.y) {
+        || object.position.x + object.width < platforms[i].position.x
+        || object.position.x > platforms[i].position.x + platforms[i].width
+        || object.position.y > platforms[i].position.y + platforms[i].height
+        || object.position.y + object.height < platforms[i].position.y) {
             isOn = false;
         } else {
             isOn = true;
@@ -439,12 +448,16 @@ detectPlatform = function() {
 }
 
 /**
- * Return true if the player is not on the ground, a platform, or a ladder
+ * Return true if the object is not on the ground, a platform, or a ladder
  */
-function isNotOnPlatformOrGround(){
+function isNotOnPlatformOrGround(object){
     isNot = false;
-
-    if(player.position.y + player.height < context.height && findLadder() == -1 && !detectPlatform()) { // not on the ground
+    
+    if(platforms.length == 0 || ladders.length == 0){
+        return true;
+    }
+ 
+    if(object.position.y + object.height < context.height && findLadder(object) == -1 && !detectPlatform(object)) { // not on the ground
         isNot = true;
     }
 
@@ -706,14 +719,21 @@ function stopHooks(hook){
                     
                     switch(hook.type){
                         case GRAPPLE_HOOK_NUMBER :
-                        case TRIDENT_NUMBER :
                         case DOUBLE_HOOK_NUMBER :
                             hook.shooting = false;
                             deleteWeapon();
                             if(platforms[i].isDestructible){
                                 platforms[i].exist = false;
                             }
-                            break;
+                        break;
+
+                        case TRIDENT_NUMBER :
+                            hook.shooting = false;
+                            if(platforms[i].isDestructible){
+                                platforms[i].exist = false;
+                                deleteWeapon(); 
+                            }
+                        break;
                     }
                 }
             }
@@ -744,6 +764,7 @@ function stopHooks(hook){
                 player.score += balloons[i].size.radius*10 ;
                 
                 //Two new balloons if the balloons is not of the minimal size
+                
                 if(balloons[i].size.number > 1){
                     var oldBall = balloons[i];
 
@@ -761,6 +782,13 @@ function stopHooks(hook){
                         velocity:{ x: 1, y: -2},
                         gravity: {x :0, y: 9.81/1000}
                     };
+
+                    //Maybe an item is spawning
+                    if(Math.random()<0.20){
+                        createItem(oldBall);
+                    }
+
+
                 }
                 
 
@@ -1015,14 +1043,33 @@ function outputSpeed(ball){
 function createItem(ball){
     if(ball.size.number>0){
         items[items.length] = {
-            type: DOUBLE_HOOK_ITEM
-            
-
-
+            type: Math.floor(Math.random()*3)+1,
+            position: {x: ball.center.x, y:ball.center.y},
+            height: 20,
+            width: 20,
+            time: 0
         }
-
     }
+}
 
+
+/** 
+ * Update the player powerOn if he touch an item
+ */
+function playerTouchItem(){
+    for(var i = 0 ; i < items.length ; i++){
+        if(items[i].type != -1){
+            if((items[i].position.x > player.position.x && items[i].position.x < player.position.x + player.width)  
+            || (items[i].position.x + items[i].width > player.position.x && items[i].position.x + items[i].width < player.position.x + player.width)){
+
+                if((items[i].position.y > player.position.y && items[i].position.y < player.position.y + player.height)  
+                || (items[i].position.y + items[i].height > player.position.y && items[i].position.y + items[i].height < player.position.y + player.height)){
+                    player.powerOn = items[i].type;
+                    items[i].type = -1;
+                }
+            }
+        }
+    }
 }
 
 
@@ -1157,19 +1204,32 @@ update = function(delta) {
         stopHooks(weapons[i]);
     }
 
+    // Items are falling and olding
+    for(var i=0 ; i < items.length ; i++){
+        if(items[i].type != -1 && isNotOnPlatformOrGround(items[i]) && items[i].position.y + items[i].height < cvs.height){
+            items[i].position.y =items[i].position.y + GRAVITY.y*delta/10000;
+        } else {
+            items[i].time += delta/1000;
+            
+            if(items[i].time > 3 ){
+                items[i].type = -1;
+            }
+        }
+    }
+
     // New player's position
     var newPosXPlayer = player.position.x + player.speed.x*delta/1000, newPosYPlayer = player.position.y + player.speed.y*delta/1000
     var newSpdXPlayer = player.speed.x + isGravity*GRAVITY.x*delta/1000, newSpdYPlayer = player.speed.y + isGravity*GRAVITY.y*delta/1000;
-    if(findLadder() != -1) {
-        if(newPosYPlayer + player.height < ladders[findLadder()].position.y) {
-            newPosYPlayer = ladders[findLadder()].position.y - player.height;
+    if(findLadder(player) != -1) {
+        if(newPosYPlayer + player.height < ladders[findLadder(player)].position.y) {
+            newPosYPlayer = ladders[findLadder(player)].position.y - player.height;
         }
     } else {
         if(newPosYPlayer < player.position.y) {
             newPosYPlayer = player.position.y;
         }
     }
-    if(isNotOnPlatformOrGround()) {
+    if(isNotOnPlatformOrGround(player)) {
         isGravity = 1;
     } else {
         isGravity = 0;
@@ -1207,6 +1267,8 @@ update = function(delta) {
     player.speed.y = newSpdYPlayer;
     keepPlayerWithinBorder();
 
+    // Yeah an item
+    playerTouchItem();
 
     //Detect the victory
     if(isVictory()){
@@ -1322,6 +1384,28 @@ render = function() {
                 fillCircle(balloons[i]);
             }
         }
+
+        // items displaying
+        for(var i=0 ; i<items.length ; i++){
+            
+            if(items[i].type !=-1){
+                switch(items[i].type){
+                    case GRAPPLE_HOOK_ITEM:
+                        context.fillStyle = GRAPPLE_HOOK_ITEM_COLOR;
+                    break;
+
+                    case DOUBLE_HOOK_ITEM:
+                        context.fillStyle = DOUBLE_HOOK_ITEM_COLOR;
+                    break;
+
+                    case TRIDENT_ITEM:
+                        context.fillStyle = TRIDENT_ITEM_COLOR;
+                    break;
+                }
+                context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
+            }
+        }
+
         // weapons drawing
         for(var i=0 ; i < weapons.length ; i++){
             var weaponWidth = 0, weaponColor;
