@@ -455,7 +455,8 @@ const DOUBLE_HOOK_ITEM_COLOR = "darkred";
 const TRIDENT_ITEM_COLOR = "yellow";
 const TIMER_BOOST_ITEM_COLOR = "plum";
 const DYNAMYTE_COLOR = "seashell";
-var DYNAMITE_IMAGE;                         // Put images in the levelInitialization
+var DYNAMITE_IMAGE = new Image();                         // Put images in the levelInitialization
+    DYNAMITE_IMAGE.src = "./assets/dynamite.png";
 
 // ------------------------------------------------------------------------------------------------
 // ######################################## Functions #############################################
@@ -515,8 +516,6 @@ function levelInitialization(num){
     //No items
     items = [];
 
-    //Items images
-    DYNAMITE_IMAGE = dynamite;
 }
 
 /**
@@ -1257,7 +1256,7 @@ function playerTouchItem(){
                     switch(items[i].type){
 
                         case GRAPPLE_HOOK_ITEM:
-                        case DOUBLE_HOOK_ITEM_COLOR:
+                        case DOUBLE_HOOK_ITEM:
                         case TRIDENT_ITEM:
                             player.powerOn = items[i].type;
                             items[i].type = -1;
@@ -1291,6 +1290,8 @@ function dynamiteExplode(){
         for(var i=0 ; i<balloons.length ; i++){
 
             if(balloons[i].size.number > 1){            
+                player.score += balloons[i].size.radius*10;
+
                 var oldBall = balloons[i];
 
                 balloons[balloons.length] =  {
@@ -1637,10 +1638,15 @@ render = function() {
         for(var i=0 ; i<items.length ; i++){
             
             if(items[i].type !=-1){
-                context.beginPath();
-	            context.fillStyle="white";
-	            context.arc(items[i].position.x + items[i].width/2, items[i].position.y + items[i].height/2, items[i].width/2, 0, 2 * Math.PI);
-	            context.fill();
+                
+                if(items[i].time < 2){
+                    context.fillStyle="white";
+                } else {
+                    context.fillStyle="darkgrey";
+                }
+                context.beginPath();                    
+                context.arc(items[i].position.x + items[i].width/2, items[i].position.y + items[i].height/2, items[i].width/2, 0, 2 * Math.PI);
+                context.fill();
 
                 switch(items[i].type){
                     case GRAPPLE_HOOK_ITEM:
