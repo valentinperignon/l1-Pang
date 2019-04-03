@@ -21,18 +21,18 @@ const PLATFORMS_LIST = {
                 "x": 575,
                 "y": 200
             },
-            "width": 120,
-            "height": 400,
+            "width": 80,    
+            "height": 30,
             "exist": true,
             "isDestructible": false
         },
         {
             "position":{
-                "x": 460,
+                "x": 425,
                 "y": 200
             },
             "width": 80,
-            "height": 40,
+            "height": 30,
             "exist": true,
             "isDestructible": false
         },
@@ -42,19 +42,19 @@ const PLATFORMS_LIST = {
                 "y": 200
             },
             "width": 80,
-            "height": 40,
+            "height": 30,
             "exist": true,
             "isDestructible": false
         },
         {
             "position":{
                 "x": 125,
-                "y": 400
+                "y": 200
             },
             "width": 80,
-            "height": 40,
+            "height": 30,
             "exist": true,
-            "isDestructible": true
+            "isDestructible": false
         }
     ],
 
@@ -99,16 +99,7 @@ const PLATFORMS_LIST = {
 const LADDER_WIDTH = 90;
 const LADDERS_LIST = {
     "level1": [],
-    "level2": [
-        {
-            "position":{
-                "x": 35,
-                "y": 400
-            },
-            "width": LADDER_WIDTH,
-            "height": 200,
-        }
-    ],
+    "level2": [],
     "level3": [
         {
             "position":{
@@ -313,7 +304,7 @@ function levelInitialization(num){
 
     // initialization of the player
     player.height = 75;
-    player.width = 70;
+    player.width = 50;
     player.position.x = context.width/2 - player.width/2;
     player.position.y = context.height - player.height;
     player.powerOn = GRAPPLE_HOOK_NUMBER;
