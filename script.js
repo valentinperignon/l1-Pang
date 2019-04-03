@@ -269,6 +269,18 @@ var platforms = [] ;
 /** Ladders in the game */
 var ladders = [] ;
 
+
+/**
+ * Bonus items array
+ */
+var items = [];
+
+/** Item related variables */
+const GRAPPLE_HOOK_ITEM = 0;
+const DOUBLE_HOOK_ITEM = 1;
+const TRIDENT_ITEM = 2;
+
+
 /** Constants for the graphical part */
 const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
 const PLATFORM_COLOR = "black";
@@ -636,7 +648,7 @@ function shootGrappleHook(){
             type: player.powerOn,
             shooting: true,
             position: {x: player.position.x+player.width/2 , y: player.position.y+player.height}, 
-            length: 0,
+            length: player.height,
             time: 0    
         };
     }
@@ -694,24 +706,12 @@ function stopHooks(hook){
                     
                     switch(hook.type){
                         case GRAPPLE_HOOK_NUMBER :
+                        case TRIDENT_NUMBER :
+                        case DOUBLE_HOOK_NUMBER :
+                            hook.shooting = false;
                             deleteWeapon();
                             if(platforms[i].isDestructible){
                                 platforms[i].exist = false;
-                            }
-                            break;
-                        
-                        case DOUBLE_HOOK_NUMBER :
-                            hook.shooting = false;
-                            deleteDoubleHook();
-                            if(platforms[i].isDestructible){
-                                platforms[i].exist = false;
-                            }
-                            break;
-
-                        case TRIDENT_NUMBER :
-                            hook.shooting = false;
-                            if(hook.time > 3){
-                                deleteWeapon();
                             }
                             break;
                     }
@@ -725,7 +725,8 @@ function stopHooks(hook){
         if(balloons[i].size.number > 0){
 
             if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
-            && balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length){
+            && balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length
+            && balloons[i].center.y + balloons[i].size.radius < hook.position.y){
 
                 switch(hook.type){
                     case GRAPPLE_HOOK_NUMBER:
@@ -1005,6 +1006,26 @@ function outputSpeed(ball){
     var speed = Math.sqrt(Math.pow(ball.velocity.x, 2) + Math.pow(ball.velocity.y, 2));
     console.log(speed);
 }
+
+
+/** 
+ * Create a random item when splitting a balloon
+ * @param {*} ball the splitted balloon
+ */
+function createItem(ball){
+    if(ball.size.number>0){
+        items[items.length] = {
+            type: DOUBLE_HOOK_ITEM
+            
+
+
+        }
+
+    }
+
+}
+
+
 
 // ------------------------------------------------------------------------------------------------
 // ########################################## Game  ###############################################
