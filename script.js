@@ -344,8 +344,9 @@ const GRAPPLE_HOOK_ITEM = GRAPPLE_HOOK_NUMBER; //1
 const DOUBLE_HOOK_ITEM = DOUBLE_HOOK_NUMBER; //2
 const TRIDENT_ITEM = TRIDENT_NUMBER; //3
 const TIMER_BOOST_ITEM = 4;
+const DYNAMITE_ITEM = 5;
 
-const MAX_ITEM = 4;
+const MAX_ITEM = 5;
 
 /** Constants for the graphical part */
 const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
@@ -363,7 +364,7 @@ const GRAPPLE_HOOK_ITEM_COLOR = "red";
 const DOUBLE_HOOK_ITEM_COLOR = "darkred";
 const TRIDENT_ITEM_COLOR = "yellow";
 const TIMER_BOOST_ITEM_COLOR = "plum";
-
+const DYNAMYTE_COLOR = "seashell";
 
 // ------------------------------------------------------------------------------------------------
 // ######################################## Functions #############################################
@@ -1164,6 +1165,11 @@ function playerTouchItem(){
                             timer += 10;
                             items[i].type = -1;
                         break;
+
+                        case DYNAMITE_ITEM:
+                            dynamiteExplode();
+                            items[i].type = -1;
+                        break;
                     }
                 }
             }
@@ -1171,6 +1177,42 @@ function playerTouchItem(){
     }
 }
 
+
+/**
+ * Dynamite item : boooom
+ */
+function dynamiteExplode(){
+    var bigBalloonRemaining = true;
+    
+    while(bigBalloonRemaining){
+        bigBalloonRemaining = false;
+        for(var i=0 ; i<balloons.length ; i++){
+
+            if(balloons[i].size.number > 1){            
+                var oldBall = balloons[i];
+
+                balloons[balloons.length] =  {
+                    center: {x: oldBall.center.x-3, y: oldBall.center.y},
+                    size: BALLOON_SIZE[oldBall.size.number - 1],
+                    velocity:{ x: -1, y: -2 + Math.random()},
+                    gravity: {x :0, y: 9.81/1000}
+                };
+                
+            
+                balloons[balloons.length] =  {
+                    center: {x: oldBall.center.x+3, y: oldBall.center.y},
+                    size: BALLOON_SIZE[oldBall.size.number - 1],
+                    velocity:{ x: 1, y: -2 + Math.random()},
+                    gravity: {x :0, y: 9.81/1000}
+                };
+
+                balloons[i].size = BALLOON_SIZE[0];
+
+                bigBalloonRemaining = true;
+            }
+        }
+    }
+}
 
 
 // ------------------------------------------------------------------------------------------------
@@ -1384,7 +1426,8 @@ update = function(delta) {
 */
 render = function() {
 	if(numLevel == 0) { 
-		// ---------------
+        
+        // ---------------
 		// MENU
 		// ---------------
 
@@ -1412,7 +1455,8 @@ render = function() {
 		context.font = "25px Georgia";
 		context.fillText(textLevel, (context.width - context.measureText(textLevel).width)/2, context.height-70-50);
 	} else {
-		// ---------------
+        
+        // ---------------
 		// GAME
 		// ---------------
 
@@ -1501,6 +1545,10 @@ render = function() {
 
                     case TIMER_BOOST_ITEM:
                         context.fillStyle = TIMER_BOOST_ITEM_COLOR;
+                    break;
+
+                    case DYNAMITE_ITEM:
+                        context.fillStyle = DYNAMYTE_COLOR;
                     break;
                 }
                 context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
