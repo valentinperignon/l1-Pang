@@ -378,7 +378,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level2));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level2));
 			BALLOON_COLOR = "blue";
-			BACKGROUND_IMAGE = bg_rome;
+			BACKGROUND_IMAGE = citadelle;
         break;
 
         case 3:
@@ -386,7 +386,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level3));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level3));
 			BALLOON_COLOR = "green";
-			BACKGROUND_IMAGE = bg_londres;
+			BACKGROUND_IMAGE = fac;
         break;
             
         default:
@@ -394,7 +394,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level1));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level1));
 			BALLOON_COLOR = "red";
-			BACKGROUND_IMAGE = bg_paris;
+			BACKGROUND_IMAGE = fac;
     }
 
     // initialization of the player
