@@ -1057,7 +1057,7 @@ function isInHorizontalCollision(ball, object){
 	if(isBalloonBetweenRectangleX(ball, object)){
 		if(ball.center.y >= object.position.y - ball.size.radius 
 		&& ball.center.y <= object.position.y + object.height + ball.size.radius){
-			collision = true;
+            collision = true;
 		}
 	}
 	return(collision);
@@ -1267,6 +1267,8 @@ function playerTouchItem(){
                 if((items[i].position.y > player.position.y && items[i].position.y < player.position.y + player.height)  
                 || (items[i].position.y + items[i].height > player.position.y && items[i].position.y + items[i].height < player.position.y + player.height)){
                     
+                    
+                    player.score += 50;
                     switch(items[i].type){
 
                         case GRAPPLE_HOOK_ITEM:
