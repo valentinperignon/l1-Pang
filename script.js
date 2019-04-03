@@ -110,16 +110,7 @@ const PLATFORMS_LIST = {
             "exist": true,
             "isDestructible": true
         },
-        {
-            "position":{
-                "x": 700,
-                "y": 500
-            },
-            "width": 100,
-            "height": 100,
-            "exist": true,
-            "isDestructible": true
-        },
+        
         //vertical platforms
         {
             "position":{
@@ -161,6 +152,96 @@ const PLATFORMS_LIST = {
             "exist": true,
             "isDestructible": true
         }
+    ],
+    level4: [
+        //horizontal platforms
+        {
+            "position":{
+                "x": 990,
+                "y": 400
+            },
+            "width": 90,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 820,
+                "y": 400
+            },
+            "width": 80,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 620,
+                "y": 400
+            },
+            "width": 200,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        },
+        
+        
+        {
+            "position":{
+                "x": 540,
+                "y": 400
+            },
+            "width": 80,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 460,
+                "y": 400
+            },
+            "width": 80,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 260,
+                "y": 400
+            },
+            "width": 200,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 180,
+                "y": 400
+            },
+            "width": 80,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 0,
+                "y": 400
+            },
+            "width": 90,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        }
+        
+        //vertical platforms
+        
+
+
     ]
 }
 
@@ -172,22 +253,23 @@ const LADDER_WIDTH = 90;
 const LADDERS_LIST = {
     "level1": [],
     "level2": [],
-    "level3": [
+    "level3": [],
+    "level4": [
         {
             "position":{
-                "x": 35,
+                "x": 90,
                 "y": 400
             },
             "width": LADDER_WIDTH,
-            "height": 200,
+            "height": 208,
         },
         {
             "position":{
-                "x": 600,
+                "x": 900,
                 "y": 400
             },
             "width": LADDER_WIDTH,
-            "height": 200,
+            "height": 208,
         }
     ]
 };
@@ -250,7 +332,7 @@ const BALLOONS_LIST = {
 	"level3": [
 		{
 			center: {x: 400, y:30},
-			size: BALLOON_SIZE[4],
+			size: BALLOON_SIZE[3],
 			velocity:{ x: -1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		},
@@ -262,11 +344,19 @@ const BALLOONS_LIST = {
 		},
 		{
 			center: {x: 600, y:30},
-			size: BALLOON_SIZE[4],
+			size: BALLOON_SIZE[2],
 			velocity:{ x: 1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
-	]
+    ],
+    "level4": [
+        {
+			center: {x: 400, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+		}
+    ]
 }
 
 // -------------------------------------------------------------------------------
@@ -278,7 +368,7 @@ var context = null;
 
 /** Level number */
 var numLevel = 0;
-const MAX_LEVEL = 3;
+const MAX_LEVEL = 4;
 
 /**
  * Variables about game state.
@@ -386,6 +476,14 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level3));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level3));
 			BALLOON_COLOR = "green";
+			BACKGROUND_IMAGE = bg_londres;
+        break;
+
+        case 4:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level4));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level4));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level4));
+			BALLOON_COLOR = "red";
 			BACKGROUND_IMAGE = bg_londres;
         break;
             
