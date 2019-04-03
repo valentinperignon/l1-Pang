@@ -286,21 +286,24 @@ function levelInitialization(num){
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level2));
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level2));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level2));
-            BALLOON_COLOR = "blue";
+			BALLOON_COLOR = "blue";
+			BACKGROUND_IMAGE = bg_rome;
         break;
 
         case 3:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level3));
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level3));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level3));
-            BALLOON_COLOR = "green";
+			BALLOON_COLOR = "green";
+			BACKGROUND_IMAGE = bg_londres;
         break;
             
         default:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level1));
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level1));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level1));
-            BALLOON_COLOR = "red";
+			BALLOON_COLOR = "red";
+			BACKGROUND_IMAGE = bg_paris;
     }
 
     // initialization of the player
@@ -611,8 +614,6 @@ isDefeat = function(ball) {
 	}
 	return defeat;
 }
-
-
 
 // #####################################
 // #### Shoot, manage and delete Weapons
@@ -1016,14 +1017,6 @@ function collisionsWithPlayer(ball, object){
 	return(collisionAngles || collisionX || collisionY);
 }
 
-/**
-*
-*/
-function outputSpeed(ball){
-	var speed = Math.sqrt(Math.pow(ball.velocity.x, 2) + Math.pow(ball.velocity.y, 2));
-	console.log(speed);
-}
-
 // ------------------------------------------------------------------------------------------------
 // ########################################## Game  ###############################################
 // ------------------------------------------------------------------------------------------------
@@ -1048,12 +1041,10 @@ init = function() {
 		isOnFocus = true;
 	}
 
-
 	// 2 listeners on the keyboard (keyup and keydown)
 	document.addEventListener("keydown", captureKeyboardPress)
 	document.addEventListener("keyup", captureKeyboardReleased)
 
-	
 
 	// Go my little game loop, and never stop
 	gameLoop();
@@ -1256,7 +1247,7 @@ render = function() {
 
 		// Wiping the screen
 		//context.clearRect(0, 0, context.width, context.height);
-		context.drawImage(BACKGROUND_IMAGE, 0, 0, 800, 600);
+		context.drawImage(BACKGROUND_IMAGE, 0, 0, 1080, 608);
 
 		// Timer text
 		var textTime = "TIME : ";
@@ -1272,8 +1263,8 @@ render = function() {
 		context.strokeStyle = "black";
 		context.lineWidth = 1.6;
 		context.font = "bolder 30px Arial";
-		context.fillText(textTime, 700 - 65, 40);
-		context.strokeText(textTime, 700 - 65, 40);
+		context.fillText(textTime, context.width - context.measureText(textTime).width - 20, 40);
+		context.strokeText(textTime, context.width - context.measureText(textTime).width - 20, 40);
 
 		// Score text
 		var textScore = "SCORE : " + player.score;
