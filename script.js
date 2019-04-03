@@ -1308,6 +1308,11 @@ function dynamiteExplode(){
                     gravity: {x :0, y: 9.81/1000}
                 };
 
+                //Maybe an item is spawning
+                if(Math.random()<1.20){
+                    createItem(oldBall);
+                }
+
                 balloons[i].size = BALLOON_SIZE[0];
 
                 bigBalloonRemaining = true;
@@ -1632,6 +1637,11 @@ render = function() {
         for(var i=0 ; i<items.length ; i++){
             
             if(items[i].type !=-1){
+                context.beginPath();
+	            context.fillStyle="white";
+	            context.arc(items[i].position.x + items[i].width/2, items[i].position.y + items[i].height/2, items[i].width/2, 0, 2 * Math.PI);
+	            context.fill();
+
                 switch(items[i].type){
                     case GRAPPLE_HOOK_ITEM:
                         context.fillStyle = GRAPPLE_HOOK_ITEM_COLOR;
