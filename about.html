@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Pang - Commandes</title>
+        <!-- CSS -->
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <!-- Text content -->
+        <div class="text_content">
+            <!-- Titre -->
+            <h1>Bienvenue dans Pang ! </h1>
+
+            <!-- Règles du jeu -->
+            <div id="regles" class="hidden">
+                <h2>Règles du jeu</h2>
+                <p>
+                    Votre mission, si vous l'acceptez, est de détruire tous les ballons présents dans les niveaux en les éclatant avec votre grappin !<br>
+                    Attention, si un ballon vous touche, vous devrez recommencer le niveau... Pour vous aidez dans cette tâche, vous pourrez disposer de bonus lorsque des ballons seront détruits.
+                </p>
+            </div>
+
+            <!-- Bonus -->
+            <div id="bonus" class="hidden">
+                <h2>Bonus</h2>
+                <p>
+                    Pour vous aidez dans cette tâche, vous pourrez disposer de bonus lorsque des ballons seront détruits. <br>
+                    Liste des bonus : 
+                    <ol>
+                        <li>Double tir : permet de tirer un deuxième grappin avant que le premier ait disparu</li>
+                        <li>Trident : permet de tirer un grappin qui va s'acrocher au surfaces dures et resté accroché pendant un court laps de temps</li>
+                        <li>Bouclier : protège le joueur d'un ballon en le détruisant</li>
+                    </ol> 
+                </p>
+            </div>
+
+            <!-- Commandes -->
+            <div id="commandes" class="hidden">
+                <h2>Commandes</h2>
+                <p>
+                    <ul>
+                        <li>Déplacement : touches directionnelles</li>
+                        <li>tir : barre d'espace</li>
+                        <li>insérer des crédit (rejouer) : Entrée</li>
+                        <li><strong>P</strong> : pause</li>
+                        <li><strong>E</strong> : debug, détruire les armes</li>
+                        <li><strong>R</strong> : Arme par défaut / <strong>T</strong> : Double grappin / <strong>Y</strong> : Trident</li>
+                        <li><strong>G</strong> : victoire immédiate / H : défaite immédiate</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+
+        <!-- JS -->
+        <script>
+            /**
+             * Get the value of a parameter set in the URL
+             * @params {String} paramSearch - Name of the parameter
+             * 
+             * @return {String} The value of the parameter
+             */
+            function getURL(paramSearch) {
+                // varaibles
+                var currentLocation, params, index;
+
+                // current URL (after ?)
+                currentLocation = window.location.search;
+                currentLocation = currentLocation.split('?')[1];
+                
+                // parameters
+                params = currentLocation.split('=');
+
+                // recherche du paramètre
+                index = params.indexOf(paramSearch);
+                if(index == -1) {
+                    return "";
+                }
+                return params[index+1];
+            }
+
+            // look for the param named 'part'
+            var paramPart = getURL('part');
+
+            // Text which will be written
+            var regles = document.getElementById('regles');
+            var bonus = document.getElementById('bonus');
+            var commandes = document.getElementById('commandes');
+            switch(paramPart) {
+                case "regles":
+                    regles.removeAttribute('class');
+                    break;
+                case "bonus":
+                    bonus.removeAttribute('class');
+                    break;
+                case "commandes":
+                    commandes.removeAttribute('class');
+                    break;  
+            }
+        </script>
+    </body>
+</html>

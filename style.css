@@ -28,6 +28,11 @@
     width: 1080px;
 }
 
+/* Hidden */
+.hidden {
+    display: none;
+}
+
 /* Text content */
 .text_content {
     padding: 5px 20px;

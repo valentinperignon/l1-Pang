@@ -443,10 +443,10 @@ function drawFinalMessage(gameState) {
 
 	// rectangle
 	if(gameState == 'victory') {
-		context.fillStyle = "green";
+		context.fillStyle = 'rgb(51, 138, 52, .75)';
 		text = "VICTOIRE !";
 	} else {
-		context.fillStyle = "red";
+		context.fillStyle = "rgb(171, 0, 13, .75)";
 		text = "PERDU !";
 	}
 	context.shadowBlur = 15;
