@@ -400,6 +400,7 @@ var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, 
 const PLAYER_SPEED = 500;
 const GRAVITY = {x: 0, y: 1500};
 var isGravity = 0;
+var player_last_direction = 0;
 
 /** 
  * Array of weapons.
@@ -440,22 +441,35 @@ const MAX_ITEM = 5;
 
 /** Constants for the graphical part */
 const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
+
 const PLATFORM_COLOR = "black";
 const LADDER_COLOR = "gray";
+
 var BALLOON_COLOR;
 var BALLON_GRADIENT;
+
 const GRAPPLE_HOOK_COLOR = "red";
 const TRIDENT_COLOR1 = "orangered";
 const TRIDENT_COLOR2 = "orange";
 const TRIDENT_COLOR3 = "yellow";
-var BACKGROUND_IMAGE;
 
 const GRAPPLE_HOOK_ITEM_COLOR = "red";
 const DOUBLE_HOOK_ITEM_COLOR = "darkred";
 const TRIDENT_ITEM_COLOR = "yellow";
 const TIMER_BOOST_ITEM_COLOR = "plum";
-const DYNAMYTE_COLOR = "seashell";
-var DYNAMITE_IMAGE = new Image();                         // Put images in the levelInitialization
+
+
+var BACKGROUND_IMAGE;
+const PLAYER_IMAGE_LEFT = new Image();
+    PLAYER_IMAGE_LEFT.src = "./assets/player_left.png";
+const PLAYER_IMAGE_RIGHT = new Image();
+    PLAYER_IMAGE_RIGHT.src = "./assets/player_right.png"
+const DOUBLE_HOOK_IMAGE = new Image();
+    DOUBLE_HOOK_IMAGE.src = "./assets/double_hook.png";
+const TRIDENT_IMAGE = new Image();
+    TRIDENT_IMAGE.src = "./assets/trident.png";
+
+const DYNAMITE_IMAGE = new Image();                         
     DYNAMITE_IMAGE.src = "./assets/dynamite.png";
 
 // ------------------------------------------------------------------------------------------------
@@ -851,7 +865,7 @@ function shootWeapon(player){
  */
 function shootGrappleHook(){
     //No actual grapple hook shooted or double grapple hook bonus is on
-    if(weapons.length==0 
+    if(weapons.length == 0 
     || (weapons.length < 2 && player.powerOn == DOUBLE_HOOK_NUMBER)){
         weapons[weapons.length] = {
             type: player.powerOn,
@@ -1570,7 +1584,7 @@ render = function() {
 
 		// Wiping the screen
 		//context.clearRect(0, 0, context.width, context.height);
-		context.drawImage(BACKGROUND_IMAGE, 0, 0, 1080, 608);
+		context.drawImage(BACKGROUND_IMAGE, 0, 0);
 
 		// Timer text
 		var textTime = "TIME : ";
@@ -1679,33 +1693,58 @@ render = function() {
 
 		// weapons drawing
 		for(var i=0 ; i < weapons.length ; i++){
-			var weaponWidth = 0, weaponColor;
 			switch(weapons[i].type){
 				case GRAPPLE_HOOK_NUMBER :
-				case DOUBLE_HOOK_NUMBER:
-					weaponColor = GRAPPLE_HOOK_COLOR;
-					weaponWidth = HOOK_WITDH;
-					break;
+					context.fillStyle = GRAPPLE_HOOK_COLOR;
+                    context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length);
+                    break;
+                    
+                case DOUBLE_HOOK_NUMBER:
+                    context.fillStyle = "black";
+        			context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length);
+                    context.drawImage(DOUBLE_HOOK_IMAGE, weapons[i].position.x-5, weapons[i].position.y - weapons[i].length);
+                break;
 
-				case TRIDENT_NUMBER :
-					if(weapons[i].time < 1){
-						weaponColor = TRIDENT_COLOR1 ;
-					} else if(weapons[i].time < 2){
-						weaponColor = TRIDENT_COLOR2 ;
+                case TRIDENT_NUMBER :
+                    if(weapons[i].time < 1){
+						context.fillStyle = TRIDENT_COLOR1 ;
+                    } else if(weapons[i].time < 2){
+						context.fillStyle = TRIDENT_COLOR2 ;
 					} else {
-						weaponColor = TRIDENT_COLOR3 ;
+	                    context.fillStyle = TRIDENT_COLOR3 ;
 					}
-					weaponWidth = HOOK_WITDH;
-					break;
+                    context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length + 5);
+                    context.drawImage(TRIDENT_IMAGE, weapons[i].position.x-20, weapons[i].position.y - weapons[i].length);
+                    break;
 			}
-			context.fillStyle = weaponColor;
-			context.fillRect(weapons[i].position.x,weapons[i].position.y,weaponWidth,-weapons[i].length);
 		}
 
 		// Drawing of the player
-		context.fillStyle = player.color;
-		context.fillRect(player.position.x, player.position.y, player.width, player.height);
+		//context.fillStyle = player.color;
+		//context.fillRect(player.position.x, player.position.y, player.width, player.height);
+        if(!victory){
+            if(player.speed.x > 0){
+                context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
+                player_last_direction = 1;
+            } else if (player.speed.x < 0){
+                context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
+                player_last_direction = -1;
+            } else {
 
+                if(player_last_direction > 0){
+                    context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
+                } else {
+                    context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
+                }
+            }
+        } else {
+            if(player_last_direction > 0){
+                context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
+            } else {
+                context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
+            }
+        }
+        
 		// Victory and defeat screen
 		if(player.livesNumber > 1){
 			var textVictory = "VICTOIRE !";
