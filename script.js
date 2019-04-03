@@ -365,6 +365,7 @@ const DOUBLE_HOOK_ITEM_COLOR = "darkred";
 const TRIDENT_ITEM_COLOR = "yellow";
 const TIMER_BOOST_ITEM_COLOR = "plum";
 const DYNAMYTE_COLOR = "seashell";
+var DYNAMITE_IMAGE;                         // Put images in the levelInitialization
 
 // ------------------------------------------------------------------------------------------------
 // ######################################## Functions #############################################
@@ -415,6 +416,9 @@ function levelInitialization(num){
 
     //No items
     items = [];
+
+    //Items images
+    DYNAMITE_IMAGE = dynamite;
 }
 
 /**
@@ -1132,8 +1136,8 @@ function createItem(ball){
         items[items.length] = {
             type: Math.floor(Math.random()*MAX_ITEM)+1,
             position: {x: ball.center.x, y:ball.center.y},
-            height: 20,
-            width: 20,
+            height: 30,
+            width: 30,
             time: 0
         }
     }
@@ -1533,25 +1537,28 @@ render = function() {
                 switch(items[i].type){
                     case GRAPPLE_HOOK_ITEM:
                         context.fillStyle = GRAPPLE_HOOK_ITEM_COLOR;
+                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
 
                     case DOUBLE_HOOK_ITEM:
                         context.fillStyle = DOUBLE_HOOK_ITEM_COLOR;
+                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
 
                     case TRIDENT_ITEM:
                         context.fillStyle = TRIDENT_ITEM_COLOR;
+                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
 
                     case TIMER_BOOST_ITEM:
                         context.fillStyle = TIMER_BOOST_ITEM_COLOR;
+                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
 
                     case DYNAMITE_ITEM:
-                        context.fillStyle = DYNAMYTE_COLOR;
+                        context.drawImage(DYNAMITE_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
                 }
-                context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
             }
         }
 
