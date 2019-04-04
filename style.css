@@ -31,13 +31,26 @@
 #title {
     padding: 20px 20px;
     background-color: #4caf50;
+}
+
+#title h1 {
+    margin: 0;
     font-weight: lighter;
     font-size: 20px;
     color: #FFF;
 }
 
-#title p {
+/* Subtitle */
+.subtitle {
+    padding: 10px 20px;
+    background: #087f23;
+}
+
+.subtitle h2 {
     margin: 0;
+    font-weight: normal;
+    font-size: 17px;
+    color: #FFF;
 }
 
  /* Content */

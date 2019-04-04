@@ -2,57 +2,63 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Pang - Commandes</title>
+        <title>Pang</title>
         <!-- CSS -->
         <link rel="stylesheet" href="style.css">
     </head>
     <body id="about-body">
         <!-- Titre -->
         <div id="title">
-            <p>Bienvenue dans Pang !</p>
+            <h1>Bienvenue dans Pang !</h1>
         </div>
 
-        <!-- Text content -->
-        <div class="text_content">
-
-            <!-- Règles du jeu -->
-            <div id="regles" class="hidden">
+        <!-- Règles du jeu -->
+        <div id="regles" class="hidden">
+            <div class="subtitle">
                 <h2>Règles du jeu</h2>
+            </div>
+
+            <div class="text_content">
                 <p>
                     Votre mission, si vous l'acceptez, est de détruire tous les ballons présents dans les niveaux en les éclatant avec votre grappin !<br>
                     Attention, si un ballon vous touche, vous devrez recommencer le niveau... Pour vous aidet dans cette tâche, vous pourrez disposer de bonus qui tomberont quand vous éclaterez des ballons.
                 </p>
             </div>
+        </div>
 
-            <!-- Bonus -->
-            <div id="bonus" class="hidden">
+        <!-- Bonus -->
+        <div id="bonus" class="hidden">        
+            <div class="subtitle">
                 <h2>Bonus</h2>
-                <p>
-                    Voici la liste des bonus qui peuvent apparaître sur le terrain
-                    <ol>
-                        <li>Double tir : permet de tirer un deuxième grappin avant que le premier ait disparu. Méfiez-vous de l'alcool, il a tendance à dédoubler la vue,</li>
-                        <li>Trident : permet de tirer un grappin qui, grâce à sa grasse saucisse, va s'accrocher à une surface dure et y rester pendant un court laps de temps</li>
-                        <li>Dynamite : et boum, tous les ballons explosent à leur taille minimale en un clin d'oeil !</li>
-                        <li>Bouclier : protège le joueur d'un ballon en le détruisant</li>
-                    </ol> 
-                </p>
             </div>
 
-            <!-- Commandes -->
-            <div id="commandes" class="hidden">
+            <div class="text_content">
+                <p>Voici la liste des bonus qui peuvent apparaître sur le terrain</p>
+                <ul>
+                    <li>Double tir : permet de tirer un deuxième grappin avant que le premier ait disparu. Méfiez-vous de l'alcool, il a tendance à dédoubler la vue,</li>
+                    <li>Trident : permet de tirer un grappin qui, grâce à sa grasse saucisse, va s'accrocher à une surface dure et y rester pendant un court laps de temps</li>
+                    <li>Dynamite : et boum, tous les ballons explosent à leur taille minimale en un clin d'oeil !</li>
+                    <li>Bouclier : protège le joueur d'un ballon en le détruisant</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Commandes -->
+        <div id="commandes" class="hidden">
+            <div class="subtitle">
                 <h2>Commandes</h2>
-                <p>
-                    <ul>
-                        <li><strong>Touches directionnelles</strong> : Déplacement</li>
-                        <li><strong>Barre d'espace</strong> : tir</li>
-                        <li><strong>Entrée</strong> Insérer des crédit (rejouer)</li>
-                        <li><strong>P</strong> : pause</li>
-                        <li><strong>R</strong> : Arme par défaut / <strong>T</strong> : Double grappin / <strong>Y</strong> : Trident</li>
-                        <li><strong>G</strong> : Victoire immédiate / H : Défaite immédiate</li>
-                    </ul>
-                </p>
             </div>
 
+            <div class="text_content">
+                <ul>
+                    <li><strong>Touches directionnelles</strong> : Déplacement</li>
+                    <li><strong>Barre d'espace</strong> : tir</li>
+                    <li><strong>Entrée</strong> Insérer des crédit (rejouer)</li>
+                    <li><strong>P</strong> : pause</li>
+                    <li><strong>R</strong> : Arme par défaut / <strong>T</strong> : Double grappin / <strong>Y</strong> : Trident</li>
+                    <li><strong>G</strong> : Victoire immédiate / H : Défaite immédiate</li>
+                </ul>
+            </div>
         </div>
 
         <!-- JS -->
@@ -92,12 +98,15 @@
             switch(paramPart) {
                 case "regles":
                     regles.removeAttribute('class');
+                    document.title = "Pang - Règles";
                     break;
                 case "bonus":
                     bonus.removeAttribute('class');
+                    document.title = "Pang - Bonus";
                     break;
                 case "commandes":
                     commandes.removeAttribute('class');
+                    document.title = "Pang - Commandes";
                     break;  
             }
         </script>
