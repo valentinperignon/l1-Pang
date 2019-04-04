@@ -59,6 +59,16 @@
     padding: 5px 20px;
 }
 
+/* Cow lists */
+ul {
+    padding-left: 0px;
+}
+
+li {
+    display: list-item;
+    list-style: disc url('assets/cow.png') inside;
+}
+
 /* Canvas */
 #cvs {
     border: 3px solid #000a12;
