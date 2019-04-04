@@ -28,11 +28,6 @@
     width: 1080px;
 }
 
-/* Hidden */
-.hidden {
-    display: none;
-}
-
 /* Text content */
 .text_content {
     padding: 5px 20px;
@@ -51,7 +46,14 @@
     text-align: center;
 }
 
-/* source : https://codepen.io/shdwjk/pen/OWpbNN */
+/* Hidden block */
+.hidden {
+    display: none;
+}
+
+/* Old buttons
+ * source : https://codepen.io/shdwjk/pen/OWpbNN
+ */
 .oldkey {
     border-radius: 10px;
     background: -webkit-radial-gradient( center, #FAF6F3,#FAF6F3, #D8C8B7);
@@ -71,6 +73,7 @@
     cursor: pointer;
 
 }
+
 .oldkey:hover {
     box-shadow: .1em .1em .3em .2em #666;
     background: -webkit-radial-gradient( center,#FAF6F3,#FAF6F3, #BFAF9D);
