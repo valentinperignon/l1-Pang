@@ -454,9 +454,13 @@ const TRIDENT_COLOR2 = "orange";
 const TRIDENT_COLOR3 = "yellow";
 
 const GRAPPLE_HOOK_ITEM_COLOR = "red";
-const DOUBLE_HOOK_ITEM_COLOR = "darkred";
-const TRIDENT_ITEM_COLOR = "yellow";
-const TIMER_BOOST_ITEM_COLOR = "plum";
+const DOUBLE_HOOK_ITEM_IMAGE = new Image();
+    DOUBLE_HOOK_ITEM_IMAGE.src = "./assets/double_hook_item.png";
+
+const TRIDENT_ITEM_IMAGE = new Image();
+    TRIDENT_ITEM_IMAGE.src = "./assets/trident.png";
+const TIMER_BOOST_ITEM_IMAGE = new Image();
+    TIMER_BOOST_ITEM_IMAGE.src = "./assets/item_timer_bonus.png";
 
 
 var BACKGROUND_IMAGE;
@@ -495,7 +499,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level3));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level3));
 			BALLOON_COLOR = "green";
-			BACKGROUND_IMAGE = saline;
+			BACKGROUND_IMAGE = bg_saline;
         break;
 
         case 4:
@@ -503,7 +507,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level4));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level4));
 			BALLOON_COLOR = "red";
-			BACKGROUND_IMAGE = lion;
+			BACKGROUND_IMAGE = bg_lion;
         break;
             
         default:
@@ -1474,7 +1478,7 @@ update = function(delta) {
         } else {
             items[i].time += delta/1000;
             
-            if(items[i].time > 3 ){
+            if(items[i].time > 4 ){
                 items[i].type = -1;
             }
         }
@@ -1536,6 +1540,7 @@ update = function(delta) {
     //Detect the victory
     if(isVictory()){
         victory = true;
+        player.score += 5*Math.floor(timer);
     }
     //Detect the defeat
     for(var i=0 ; i<balloons.length ; i++){
@@ -1578,7 +1583,8 @@ render = function() {
 		context.fillText(textPlay, (context.width - context.measureText(textPlay).width)/2, context.height-110-50);
 		context.font = "25px Georgia";
 		context.fillText(textLevel, (context.width - context.measureText(textLevel).width)/2, context.height-70-50);
-	} else {
+    
+    } else {
         
         // ---------------
 		// GAME
@@ -1657,8 +1663,10 @@ render = function() {
                 
                 if(items[i].time < 2){
                     context.fillStyle="white";
-                } else {
+                } else if(items[i].time < 3){
                     context.fillStyle="darkgrey";
+                } else {
+                    context.fillStyle="black";
                 }
                 context.beginPath();                    
                 context.arc(items[i].position.x + items[i].width/2, items[i].position.y + items[i].height/2, items[i].width/2, 0, 2 * Math.PI);
@@ -1671,18 +1679,15 @@ render = function() {
                     break;
 
                     case DOUBLE_HOOK_ITEM:
-                        context.fillStyle = DOUBLE_HOOK_ITEM_COLOR;
-                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
+                        context.drawImage(DOUBLE_HOOK_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
 
                     case TRIDENT_ITEM:
-                        context.fillStyle = TRIDENT_ITEM_COLOR;
-                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
+                        context.drawImage(TRIDENT_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
 
                     case TIMER_BOOST_ITEM:
-                        context.fillStyle = TIMER_BOOST_ITEM_COLOR;
-                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
+                        context.drawImage(TIMER_BOOST_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
 
                     case DYNAMITE_ITEM:
@@ -1691,6 +1696,7 @@ render = function() {
                 }
             }
         }
+
 
 		// weapons drawing
 		for(var i=0 ; i < weapons.length ; i++){
@@ -1784,7 +1790,7 @@ captureKeyboardPress = function(event) {
 			case 49: // niveau 1
 			case 50: // niveau 2
             case 51: // niveau 3
-            case 52: // niveau 3
+            case 52: // niveau 4
 				numLevel = event.keyCode - 48;
 				levelInitialization(numLevel);
 				break;
@@ -1801,7 +1807,12 @@ captureKeyboardPress = function(event) {
 			case 38:
 			case 40:
 				playerMoveLadder(event.keyCode);
-				break;
+                break;
+                
+            // 'M' to return to main menu
+            case 77:
+                numLevel = 0;
+            break;
 
 			// 'P' means pause or unpause
 			case 80:
