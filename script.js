@@ -495,7 +495,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level3));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level3));
 			BALLOON_COLOR = "green";
-			BACKGROUND_IMAGE = saline;
+			BACKGROUND_IMAGE = fac;
         break;
 
         case 4:
@@ -503,7 +503,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level4));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level4));
 			BALLOON_COLOR = "red";
-			BACKGROUND_IMAGE = lion;
+			BACKGROUND_IMAGE = bg_londres;
         break;
             
         default:
@@ -1692,6 +1692,7 @@ render = function() {
             }
         }
 
+
 		// weapons drawing
 		for(var i=0 ; i < weapons.length ; i++){
 			switch(weapons[i].type){
@@ -1783,8 +1784,7 @@ captureKeyboardPress = function(event) {
 				break;
 			case 49: // niveau 1
 			case 50: // niveau 2
-            case 51: // niveau 3
-            case 52: // niveau 3
+			case 51: // niveau 3
 				numLevel = event.keyCode - 48;
 				levelInitialization(numLevel);
 				break;
