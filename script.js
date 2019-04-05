@@ -1135,12 +1135,32 @@ function keepBalloonOutsideObjects(ball, object){
 			
 			// Collision with horizontal surfaces
 			if(isInHorizontalCollision(ball,object)){
-				ball.velocity.y *= -1;
+                if(ball.center.y < object.position.y){
+                    console.log(ball.velocity.y)
+                    switch(ball.size.number){
+                        case 4 :
+                            ball.velocity.y = ball.size.Yvelocity - ball.size.Yvelocity*(500-ball.center.y)/500                             
+                        break;
+                        case 3 :
+                            ball.velocity.y = ball.size.Yvelocity - ball.size.Yvelocity*(400-ball.center.y)/400;
+                        break; 
+                        case 2 :
+                            ball.velocity.y = ball.size.Yvelocity - ball.size.Yvelocity*(300-ball.center.y)/300;
+                        break;
+                        case 1 :
+                            ball.velocity.y = ball.size.Yvelocity - ball.size.Yvelocity*(200-ball.center.y)/200;
+                        break;
+                    }
+                    console.log(ball.velocity.y)
+                    console.log(ball.velocity.y)
+                } else {
+                    ball.velocity.y *=-1;
+                }
                 correction = true;
 
 			// or collision with vertical surfaces
 			} else if(isInVerticalCollision(ball,object)){
-				ball.velocity.x *= -1;
+				ball.velocity.x *=-1  ;
 				correction = true;
 
 			// or in collision with angles
