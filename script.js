@@ -1136,7 +1136,6 @@ function keepBalloonOutsideObjects(ball, object){
 			// Collision with horizontal surfaces
 			if(isInHorizontalCollision(ball,object)){
                 if(ball.center.y < object.position.y){
-                    console.log(ball.velocity.y)
                     switch(ball.size.number){
                         case 4 :
                             ball.velocity.y = ball.size.Yvelocity - ball.size.Yvelocity*(500-ball.center.y)/500                             
@@ -1151,8 +1150,6 @@ function keepBalloonOutsideObjects(ball, object){
                             ball.velocity.y = ball.size.Yvelocity - ball.size.Yvelocity*(200-ball.center.y)/200;
                         break;
                     }
-                    console.log(ball.velocity.y)
-                    console.log(ball.velocity.y)
                 } else {
                     ball.velocity.y *=-1;
                 }
