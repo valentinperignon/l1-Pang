@@ -1136,7 +1136,7 @@ function keepBalloonOutsideObjects(ball, object){
 			// Collision with horizontal surfaces
 			if(isInHorizontalCollision(ball,object)){
 				ball.velocity.y *= -1;
-				correction = true;
+                correction = true;
 
 			// or collision with vertical surfaces
 			} else if(isInVerticalCollision(ball,object)){
@@ -1417,14 +1417,42 @@ update = function(delta) {
 
     // Update balloons position 
     for(var i=0 ; i<balloons.length ; i++){
+       
         if(balloons[i].size.number > 0){
             // Update balloons[i].velocity
             balloons[i].velocity.x += balloons[i].gravity.x*delta;
             balloons[i].velocity.y += balloons[i].gravity.y*delta;
 
+            newballoon = 	{
+                center: {x: balloons[i].center.x, y:balloons[i].center.y},
+                size: balloons[i].size,
+                velocity:{ x: balloons[i].velocity.x, y: balloons[i].velocity.y},
+                gravity: {x : balloons[i].gravity.x, y: balloons[i].gravity.y},
+            } 
+
             // Update balloons[i].center
-            balloons[i].center.x += balloons[i].velocity.x * delta * BALLOON_SPEED;
-            balloons[i].center.y += balloons[i].velocity.y * delta * BALLOON_SPEED;
+            newballoon.center.x += balloons[i].velocity.x * delta * BALLOON_SPEED;
+            newballoon.center.y += balloons[i].velocity.y * delta * BALLOON_SPEED;
+                            
+            
+            //No, you will not stick out
+            var bordersCorrection = keepBalloonWithinBorders(newballoon);
+            if(!bordersCorrection){    
+                //Don't go into platforms !
+                var correction = false;
+                var j=0 ;
+                while(j < platforms.length && !correction){
+                    correction = keepBalloonOutsideObjects(newballoon, platforms[j]);
+                    j++;
+                }
+            }
+
+            if(!correction){
+                balloons[i].center.x = newballoon.center.x;
+                balloons[i].center.y = newballoon.center.y; 
+            }
+            balloons[i].velocity.x = newballoon.velocity.x;
+            balloons[i].velocity.y = newballoon.velocity.y;
         }
     }
 
@@ -1432,17 +1460,7 @@ update = function(delta) {
     for(var i=0 ; i < balloons.length ; i++){
 
         if(balloons[i].size.number > 0){    
-            //No, you will not stick out
-            var bordersCorrection = keepBalloonWithinBorders(balloons[i]);
-            if(!bordersCorrection){    
-                //Don't go into platforms !
-                var correction = false;
-                var j=0 ;
-                while(j < platforms.length && !correction){
-                    correction = keepBalloonOutsideObjects(balloons[i], platforms[j]);
-                    j++;
-                }
-            }
+            
         }
     }
 
