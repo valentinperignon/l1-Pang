@@ -2000,8 +2000,9 @@ render = function() {
 		context.fillText(textCopyright, (context.width - context.measureText(textCopyright).width)/2, 189+80+20);
 
         // affichage des boutons
-        for(var i=0; i<10; i++) {
-            context.fillRect(30+i*88.5+i*15, 420, 88.5, 40);
+        var margin = 60, marginButton = 50, sizeButton = 128;
+        for(var i=0; i<5; i++) {
+            context.fillRect(margin + marginButton*i + sizeButton*i, 420, sizeButton, 40);
         }
     
     } else {
