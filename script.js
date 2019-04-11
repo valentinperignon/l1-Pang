@@ -720,7 +720,9 @@ var isInvincible = false;                                                       
 var timer = 100;
 var balloonsFreezeTimer = Date.now();
 var areBalloonsFreeze = false;
-
+var shieldTimer = Date.now();
+var playerBlinkTimer = Date.now();
+var balloonBlinkTimer = Date.now();
 
 /** An array of all the balloons in the game
  * With the position, the radius, the velocity, gravity and the color
@@ -735,7 +737,7 @@ var lastUpdate = Date.now();
 
 /** A player
  * With his position (x and y), speed (x and y), height, width, power on, shield, lives number and color */
-var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: 0, score: 0, livesNumber: 3, color: "blue"};
+var player = {position: {x: 0, y: 0}, speed: {x: 0, y: 0}, height: 0, width: 0, powerOn: 0, shieldOn: false, score: 0, livesNumber: 3, color: "blue"};
 const PLAYER_SPEED = 500;
 const GRAVITY = {x: 0, y: 1500};
 var isGravity = 0;
@@ -754,6 +756,7 @@ const DOUBLE_HOOK_NUMBER = 2 ;
 const TRIDENT_NUMBER = 3 ;
 const HOOK_SPEED = 0.3 ;
 const HOOK_WITDH = 5;
+
 	// - Others weapons
 // ADD HERE
 
@@ -776,8 +779,9 @@ const TRIDENT_ITEM = TRIDENT_NUMBER; //3
 const TIMER_BOOST_ITEM = 4;
 const DYNAMITE_ITEM = 5;
 const FREEZE_ITEM = 6;
+const SHIELD_ITEM = 7;
 
-const MAX_ITEM = 6;
+const MAX_ITEM = 7;
 
 /** Constants for the graphical part */
 const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
@@ -801,7 +805,8 @@ const TRIDENT_ITEM_IMAGE = new Image();
     TRIDENT_ITEM_IMAGE.src = "./assets/trident.png";
 const TIMER_BOOST_ITEM_IMAGE = new Image();
     TIMER_BOOST_ITEM_IMAGE.src = "./assets/item_timer_bonus.png";
-
+const SHIELD_ITEM_IMAGE = new Image();
+    SHIELD_ITEM_IMAGE.src = "./assets/item_shield.png";
 
 var BACKGROUND_IMAGE;
 const PLAYER_IMAGE_LEFT = new Image();
@@ -818,6 +823,10 @@ const DYNAMITE_IMAGE = new Image();
 
 const FREEZE_IMAGE = new Image();
     FREEZE_IMAGE.src = "./assets/item_freeze.png";
+
+const SHIELD_IMAGE = new Image();
+    SHIELD_IMAGE.src = "./assets/shield.png";
+
 
 // ------------------------------------------------------------------------------------------------
 // ######################################## Functions #############################################
@@ -889,7 +898,7 @@ function levelInitialization(num){
     player.height = 75;
     player.width = 42;  
     player.powerOn = GRAPPLE_HOOK_NUMBER;
-   
+    player.shieldOn = false;
 
     //Initialisation of the timer
     timer = 100;
@@ -1189,15 +1198,24 @@ function isVictory(){
  * (i.e. if there is no time and no ballon remaining)
  * returns {boolean} true if the defeat is real
  */
-isDefeat = function(ball) {
+function isDefeat(ball) {
 	var defeat = false;
 
 	// check
 	if(timer <= 1 && !isVictory()) {
 		defeat = true;
 	} else if(ball.size.number > 0 && collisionsWithPlayer(ball, player) && !isInvincible){                                             // BETA IsInvicible
-		defeat = true;    
-	}
+        if(player.shieldOn){
+            player.shieldOn = false;
+            isInvincible = true;
+            shieldTimer = Date.now();
+            splitBalloon(ball);
+            playerBlinkTimer = Date.now();
+            
+        } else {
+            defeat = true;
+        }
+    }
 	return defeat;
 }
 
@@ -1343,37 +1361,8 @@ function stopHooks(hook){
                 //Points
                 player.score += balloons[i].size.radius*10 ;
                 
-                //Two new balloons if the balloons is not of the minimal size
-                
-                if(balloons[i].size.number > 1){
-                    var oldBall = balloons[i];
-
-                    balloons[balloons.length] =  {
-                        center: {x: oldBall.center.x, y: oldBall.center.y},
-                        size: BALLOON_SIZE[oldBall.size.number - 1],
-                        velocity:{ x: -1, y: -2},
-                        gravity: {x :0, y: 9.81/1000}
-                    };
-                    
-                
-                    balloons[balloons.length] =  {
-                        center: {x: oldBall.center.x, y: oldBall.center.y},
-                        size: BALLOON_SIZE[oldBall.size.number - 1],
-                        velocity:{ x: 1, y: -2},
-                        gravity: {x :0, y: 9.81/1000}
-                    };
-
-                    //Maybe an item is spawning
-                    if(Math.random()<1.20){
-                        createItem(oldBall);
-                    }
-
-
-                }
-                
-
-                //Delete the balloon
-                balloons[i].size = BALLOON_SIZE[0];
+                //Split the balloon
+                splitBalloon(balloons[i]);
             }
         }
     }
@@ -1642,6 +1631,39 @@ function createItem(ball){
 }
 
 
+/**
+ * Split a ballon and maybe make an item spawn
+ * @param {*} ball the ball you want to split 
+ */
+function splitBalloon(ball){
+    //Two new balloons if the balloons is not of the minimal size
+    if(ball.size.number > 1){
+        var oldBall = ball;
+
+        balloons[balloons.length] =  {
+            center: {x: oldBall.center.x, y: oldBall.center.y},
+            size: BALLOON_SIZE[oldBall.size.number - 1],
+            velocity:{ x: -1, y: -2},
+            gravity: {x :0, y: 9.81/1000}
+        };
+        
+        balloons[balloons.length] =  {
+            center: {x: oldBall.center.x, y: oldBall.center.y},
+            size: BALLOON_SIZE[oldBall.size.number - 1],
+            velocity:{ x: 1, y: -2},
+            gravity: {x :0, y: 9.81/1000}
+        };
+
+        //Maybe an item is spawning
+        if(Math.random()<1.20){
+            createItem(oldBall);
+        }   
+    }  
+    //Delete the balloon
+    ball.size = BALLOON_SIZE[0];  
+}
+
+
 /** 
  * Update the player powerOn if he touch an item
  */
@@ -1678,6 +1700,12 @@ function playerTouchItem(){
                         case FREEZE_ITEM:
                             areBalloonsFreeze = true;
                             balloonsFreezeTimer = Date.now();
+                            items[i].type = -1;
+                            balloonBlinkTimer = Date.now();
+                        break;
+
+                        case SHIELD_ITEM:
+                            player.shieldOn = true;
                             items[i].type = -1;
                         break;
                     }
@@ -1800,9 +1828,12 @@ gameLoop = function() {
 *  Game update
 *  @param delta the time between now and the last update
 */
-update = function(delta) {
+function update(delta) {
     // update timer
     timer -= delta/1000;
+    if(Date.now() - shieldTimer > 3000){
+        isInvincible = false;
+    }
 
     if(areBalloonsFreeze){
         if(Date.now()-balloonsFreezeTimer>3000){
@@ -1967,7 +1998,7 @@ update = function(delta) {
 /**
 *  Game render
 */
-render = function() {
+function render() {
 	if(numLevel == 0) { 
         
         // ---------------
@@ -2064,10 +2095,13 @@ render = function() {
 		}
 
 		// balloons displaying
-		for(var i=0 ; i<balloons.length ;i++){
-			if(balloons[i].size.number > 0){
-				fillCircle(balloons[i]);
-			}
+        if(!areBalloonsFreeze || (Date.now() - balloonBlinkTimer) < 2000 || (Date.now() - balloonBlinkTimer)%200 < 100 ){
+
+            for(var i=0 ; i<balloons.length ;i++){
+                if(balloons[i].size.number > 0){
+                    fillCircle(balloons[i]);
+                }
+            }
         }
         
         // items displaying
@@ -2111,6 +2145,10 @@ render = function() {
                     case FREEZE_ITEM:
                         context.drawImage(FREEZE_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
+
+                    case SHIELD_ITEM:
+                        context.drawImage(SHIELD_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
+                    break;
                 }
             }
         }
@@ -2145,21 +2183,27 @@ render = function() {
 		}
 
 		// Drawing of the player
-		//context.fillStyle = player.color;
-		//context.fillRect(player.position.x, player.position.y, player.width, player.height);
-        if(!victory){
-            if(player.speed.x > 0){
-                context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
-                player_last_direction = 1;
-            } else if (player.speed.x < 0){
-                context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
-                player_last_direction = -1;
-            } else {
-
-                if(player_last_direction > 0){
+		if(!victory){
+            if(!isInvincible || (Date.now() - playerBlinkTimer)%500 < 250){
+                
+                if(player.speed.x > 0){
                     context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
-                } else {
+                    player_last_direction = 1;
+                } else if (player.speed.x < 0){
                     context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
+                    player_last_direction = -1;
+                } else {
+
+                    if(player_last_direction > 0){
+                        context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
+                    } else {
+                        context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
+                    }
+                }
+
+                //Shield
+                if(player.shieldOn){
+                    context.drawImage(SHIELD_IMAGE,player.position.x,player.position.y);
                 }
             }
         } else {
@@ -2292,13 +2336,15 @@ captureKeyboardPress = function(event) {
 
 			//Make the player invincible                                                                // BETA FUNCTION
 			case 73:
-				if(isInvincible){
+                /**
+                if(isInvincible){
 					console.log("Joueur plus invincible");
 				} else {
 				console.log("Joueur invincible");
 				}
 				isInvincible = !isInvincible;
-				
+                */
+                player.shieldOn = true;
 			break;        
 		}
 	}
