@@ -5,9 +5,9 @@
  * @author Fabian Devel, Nathanaël Houn, Valentin Perignon
  */
 
-// -------------------------------------------------------------------------------
-// ################################ Game design ##################################
-// -------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// ################################ Game design ################################
+// -----------------------------------------------------------------------------
 
 /** 
  * Array of all the platforms.
@@ -695,9 +695,9 @@ const BALLOONS_LIST = {
     ]
 }
 
-// -------------------------------------------------------------------------------
-// ################################ Variables ####################################
-// -------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// ################################ Variables ################################
+// ---------------------------------------------------------------------------
 
 /** Context */
 var context = null;
@@ -830,9 +830,9 @@ const SHIELD_IMAGE = new Image();
     SHIELD_IMAGE.src = "./assets/shield.png";
 
 
-// ------------------------------------------------------------------------------------------------
-// ######################################## Functions #############################################
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// ################################ Functions ################################
+// ---------------------------------------------------------------------------
 
 /**
 * Level selection : initialize all the variables
@@ -1265,19 +1265,16 @@ function isDefeat(ball) {
 	return defeat;
 }
 
-// #####################################
-// #### Shoot, manage and delete Weapons
-
 /**
-*
-*/
+ * Check if is between
+ */
 function isWeaponBetweenX(weapon,rectangle){
 	return(!(weapon.position.x + HOOK_WITDH < rectangle.position.x || weapon.position.x > rectangle.position.x + rectangle.width));
 }
 
 /**
-* Fire a weapon
-*/
+ * Fire a weapon
+ */
 function shootWeapon(player){
 	switch(player.powerOn){
 		case GRAPPLE_HOOK_NUMBER:
@@ -1415,10 +1412,6 @@ function stopHooks(hook){
 
 }
 
-
-// ######################################
-// #### Balloons and platforms collisions
-
 /**
 *
 */
@@ -1485,36 +1478,36 @@ function isInVerticalCollision(ball, object){
 
 
 /**
-* Is the balloon colliding with the bottom right corner ?
-* @return true is yes, else false
-*/
+ * Is the balloon colliding with the bottom right corner ?
+ * @return true is yes, else false
+ */
 function isBalloonCollidingBottomRightCorner(ball,object){
 	let bottomRightCorner = {x: object.position.x + object.width, y: object.position.y + object.height} ;
 	return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.size.radius * ball.size.radius);
 }
 
 /**
-* Is the balloon colliding with the top right corner ?
-* @return true is yes, else false
-*/
+ * Is the balloon colliding with the top right corner ?
+ * @return true is yes, else false
+ */
 function isBalloonCollidingTopRightCorner(ball,object){
 	let topRightCorner = {x: object.position.x + object.width, y: object.position.y} ;
 	return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.size.radius * ball.size.radius);
 }
 
 /**
-* Is the balloon colliding with the top left corner ?
-* @return true is yes, else false
-*/
+ * Is the balloon colliding with the top left corner ?
+ * @return true is yes, else false
+ */
 function isBalloonCollidingTopLeftCorner(ball,object){
 	let topLeftCorner = {x: object.position.x, y: object.position.y} ;
 	return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.size.radius * ball.size.radius);
 }
 
 /**
-* Is the balloon colliding with the top right corner ?
-* @return true is yes, else false
-*/
+ * Is the balloon colliding with the top right corner ?
+ * @return true is yes, else false
+ */
 function isBalloonCollidingBottomLeftCorner(ball,object){
 	let bottomLeftCorner = {x: object.position.x, y: object.position.y + object.height} ;
 	return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.size.radius * ball.size.radius);
@@ -1640,8 +1633,8 @@ function keepBalloonOutsideObjects(ball, object){
 }
 
 /**
-* Collision with any angles with the others functions
-*/ 
+ * Collision with any angles with the others functions
+ */ 
 function collisionsAngles(ball,object){
 	return(isBalloonCollidingBottomLeftCorner(ball,object)
 	|| isBalloonCollidingBottomRightCorner(ball,object)
@@ -1650,8 +1643,8 @@ function collisionsAngles(ball,object){
 }
 
 /**
-* Call the other testing functions and return if there's a collision
-*/
+ * Call the other testing functions and return if there's a collision
+ */
 function collisionsWithPlayer(ball, object){
 	var collisionAngles = collisionsAngles(ball, object).collision;
 	var collisionY = isInVerticalCollision(ball, object);
@@ -1806,9 +1799,9 @@ function dynamiteExplode(){
 }
 
 
-// ------------------------------------------------------------------------------------------------
-// ########################################## Game  ###############################################
-// ------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// ################################ Game  ################################
+// -----------------------------------------------------------------------
 
 /**
 * Initialization of the game
