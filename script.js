@@ -464,7 +464,11 @@ const PLATFORMS_LIST = {
             "exist": true,
             "isDestructible": true
         }
-    ]
+    ],
+    level7: [],
+    level8: [],
+    level9: [],
+    level10: []
 }
 
 /** 
@@ -529,7 +533,11 @@ const LADDERS_LIST = {
             "width": LADDER_WIDTH,
             "height": 200,
         }
-    ] 
+    ],
+    "level7": [],
+    "level8": [],
+    "level9": [],
+    "level10": []
 };
 
 /**
@@ -692,7 +700,31 @@ const BALLOONS_LIST = {
 			velocity:{ x: -1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
-    ]
+    ],
+    "level8": [
+		{
+			center: {x: 400, y:30},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+		}
+    ],
+    "level9": [
+		{
+			center: {x: 400, y:30},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+		}
+    ],
+    "level10": [
+		{
+			center: {x: 400, y:30},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+		}
+	]
 }
 
 // -------------------------------------------------------------------------------
@@ -704,7 +736,7 @@ var context = null;
 
 /** Level number */
 var numLevel = 0;
-const MAX_LEVEL = 6;
+const MAX_LEVEL = 10;
 
 /**
  * Variables about game state.
@@ -845,7 +877,7 @@ function levelInitialization(num){
 			BALLOON_COLOR = "blue";
             BACKGROUND_IMAGE = citadelle;
             player.position.x = context.width/2 - player.width/2;
-            break;
+        break;
 
         case 3:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level3));
@@ -854,7 +886,7 @@ function levelInitialization(num){
 			BALLOON_COLOR = "green";
             BACKGROUND_IMAGE = bg_saline;
             player.position.x = context.width/2 - player.width/2;
-            break;
+        break;
 
         case 4:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level4));
@@ -863,7 +895,7 @@ function levelInitialization(num){
 			BALLOON_COLOR = "red";
             BACKGROUND_IMAGE = bg_lion;
             player.position.x = context.width/2 - player.width/2;
-            break;
+        break;
 
         case 5:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level5));
@@ -872,7 +904,7 @@ function levelInitialization(num){
 			BALLOON_COLOR = "blue";
             BACKGROUND_IMAGE = bg_lion;
             player.position.x = context.width/2 - player.width/2;
-            break;
+        break;
 
         case 6:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level6));
@@ -881,7 +913,43 @@ function levelInitialization(num){
 			BALLOON_COLOR = "green";
             BACKGROUND_IMAGE = bg_lion;
             player.position.x = context.width/2 - player.width/2; 
-            break;
+        break;
+
+        case 7:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level7));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level7));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level7));
+			BALLOON_COLOR = "green";
+            BACKGROUND_IMAGE = bg_lion;
+            player.position.x = context.width/2 - player.width/2; 
+        break;
+
+        case 8:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level8));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level8));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level8));
+			BALLOON_COLOR = "green";
+            BACKGROUND_IMAGE = bg_lion;
+            player.position.x = context.width/2 - player.width/2; 
+        break;
+
+        case 9:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level9));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level9));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level9));
+			BALLOON_COLOR = "green";
+            BACKGROUND_IMAGE = bg_lion;
+            player.position.x = context.width/2 - player.width/2; 
+        break;
+
+        case 10:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level10));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level10));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level10));
+			BALLOON_COLOR = "green";
+            BACKGROUND_IMAGE = bg_lion;
+            player.position.x = context.width/2 - player.width/2; 
+        break;
             
         default:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level1));
