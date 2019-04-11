@@ -1986,8 +1986,6 @@ render = function() {
 
 		// variables d'affichage
 		var textCopyright = "© Fabian D., Nathanaël H., Valentin P.";
-		var textPlay = "ENTRÉE POUR COMMENCER ...";
-		var textLevel = "OU SAISISSEZ LE NIVEAU";
 
 		// fond noir
 		context.fillStyle = "black";
@@ -2001,12 +1999,10 @@ render = function() {
 		context.font = "17px Georgia";
 		context.fillText(textCopyright, (context.width - context.measureText(textCopyright).width)/2, 189+80+20);
 
-		// affichage du texte "Commencer à jouer..."
-		context.fillStyle = "white";
-		context.font = "35px Georgia";
-		context.fillText(textPlay, (context.width - context.measureText(textPlay).width)/2, context.height-110-50);
-		context.font = "25px Georgia";
-		context.fillText(textLevel, (context.width - context.measureText(textLevel).width)/2, context.height-70-50);
+        // affichage des boutons
+        for(var i=0; i<10; i++) {
+            context.fillRect(30+i*88.5+i*15, 420, 88.5, 40);
+        }
     
     } else {
         
