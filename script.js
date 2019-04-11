@@ -2049,27 +2049,44 @@ function render() {
 		// MENU
 		// ---------------
 
-		// variables d'affichage
+		// display variables
 		var textCopyright = "© Fabian D., Nathanaël H., Valentin P.";
 
-		// fond noir
+		// black background
 		context.fillStyle = "black";
 		context.fillRect(0, 0, context.width, context.height);
 
-		// affichage du logo Pang
+		// Pang logo
 		context.drawImage(logo, (context.width-400)/2, 80, 400, 189);
 
-		// affichage du texte "copyright"
+		// "copyright" text
 		context.fillStyle = "white";
 		context.font = "17px Georgia";
 		context.fillText(textCopyright, (context.width - context.measureText(textCopyright).width)/2, 189+80+20);
 
-        // affichage des boutons
+        // buttons display
         var margin = 60, marginButton = 75, widthButton = 132, heightButton = 40;
+        var positionXButton, positionXText1, textButton1, positionXText2, textButton2;
+        context.font = "bold 17px sans-serif";
+        context.textBaseline = "top";
         for(var i=0; i<5; i++) {
-            context.fillRect(margin + marginButton*i + widthButton*i, 400, widthButton, heightButton);
-            context.fillRect(margin + marginButton*i + widthButton*i, 400 + heightButton + 40, widthButton, heightButton);
+            // buttons
+            positionXButton = margin + i*(marginButton + widthButton);
+            context.fillStyle = "#E7DBD0";
+            context.fillRect(positionXButton, 400, widthButton, heightButton); // 1 to 5
+            context.fillRect(positionXButton, 400 + heightButton + 40, widthButton, heightButton); // 6 to 10
+
+            // texts
+            textButton1 = "Niveau " + (i+1);
+            textButton2 = "Niveau " + (i+6);
+            positionXText1 = positionXButton + (widthButton - context.measureText(textButton1).width)/2;
+            positionXText2 = positionXButton + (widthButton - context.measureText(textButton2).width)/2;
+            context.fillStyle = "#222222";
+            context.fillText(textButton1, positionXText1, 400 - (17 - heightButton)/2); // 1 to 5
+            context.fillText(textButton2, positionXText2, (400 + heightButton + 40) - (17 - heightButton)/2); // 6 to 10
+
         }
+        context.textBaseline = "alphabetic";
     
     } else {
         
