@@ -86,7 +86,7 @@ li {
 #cvs {
     border: 3px solid #000a12;
     border-radius: 10px;
-    background-color: white;
+    background: url('assets/bg_fac.jpg');
 }
 
 /* Hidden block */
