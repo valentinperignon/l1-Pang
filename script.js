@@ -774,8 +774,6 @@ const TRIDENT_ITEM_IMAGE = new Image();
 const TIMER_BOOST_ITEM_IMAGE = new Image();
     TIMER_BOOST_ITEM_IMAGE.src = "./assets/item_timer_bonus.png";
 
-
-var BACKGROUND_IMAGE;
 const PLAYER_IMAGE_LEFT = new Image();
     PLAYER_IMAGE_LEFT.src = "./assets/player_left.png";
 const PLAYER_IMAGE_RIGHT = new Image();
@@ -806,7 +804,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level2));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level2));
 			BALLOON_COLOR = "blue";
-			BACKGROUND_IMAGE = citadelle;
+            cvs.style.background = "url('assets/bg_citadelle.jpg')";
         break;
 
         case 3:
@@ -814,7 +812,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level3));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level3));
 			BALLOON_COLOR = "green";
-			BACKGROUND_IMAGE = bg_saline;
+			cvs.style.background = "url('assets/bg_saline.jpg')";
         break;
 
         case 4:
@@ -822,7 +820,55 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level4));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level4));
 			BALLOON_COLOR = "red";
-			BACKGROUND_IMAGE = bg_lion;
+			cvs.style.background = "url('assets/bg_lion.jpg')";
+        break;
+
+        case 5:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level5));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level5));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level5));
+			BALLOON_COLOR = "red";
+			cvs.style.background = "url('assets/bg_joux.jpg')";
+        break;
+
+        case 6:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level6));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level6));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level6));
+			BALLOON_COLOR = "red";
+			cvs.style.background = "url('assets/bg_metabief.jpg')";
+        break;
+
+        case 7:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level7));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level7));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level7));
+			BALLOON_COLOR = "red";
+			cvs.style.background = "url('assets/bg_musee.jpg')";
+        break;
+
+        case 8:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level8));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level8));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level8));
+			BALLOON_COLOR = "red";
+			cvs.style.background = "url('assets/bg_gouffre.jpg')";
+        break;
+
+        case 9:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level9));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level4));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level9));
+			BALLOON_COLOR = "red";
+			cvs.style.background = "url('assets/bg_cascade.jpg')";
+        break;
+
+        case 10:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level10));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level10));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level10));
+			BALLOON_COLOR = "red";
+			cvs.style.background = "url('assets/bg_fromages.jpg')";
         break;
 
         case 5:
@@ -846,7 +892,6 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level1));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level1));
 			BALLOON_COLOR = "red";
-			BACKGROUND_IMAGE = fac;
     }
 
     // initialization of the player
@@ -1971,7 +2016,7 @@ render = function() {
 
 		// Wiping the screen
 		//context.clearRect(0, 0, context.width, context.height);
-		context.drawImage(BACKGROUND_IMAGE, 0, 0);
+        context.clearRect(0, 0, 1080, 608);
 
 		// Timer text
 		var textTime = "TIME : ";
