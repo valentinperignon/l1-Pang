@@ -240,9 +240,20 @@ const PLATFORMS_LIST = {
     ],
     level5: [
         //horizontal platforms
+
         {
             "position":{
-                "x": 990,
+                "x": 180,
+                "y": 400
+            },
+            "width": 900,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        },  
+        {
+            "position":{
+                "x": 0,
                 "y": 400
             },
             "width": 90,
@@ -252,23 +263,73 @@ const PLATFORMS_LIST = {
         },
         {
             "position":{
-                "x": 820,
-                "y": 400
+                "x": 0,
+                "y": 200
             },
-            "width": 80,
+            "width": 150,
             "height": 30,
             "exist": true,
-            "isDestructible": false
+            "isDestructible": true
         },
         {
             "position":{
-                "x": 620,
-                "y": 400
+                "x": 150,
+                "y": 200
             },
-            "width": 200,
+            "width": 150,
             "height": 30,
             "exist": true,
-            "isDestructible": false
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 300,
+                "y": 200
+            },
+            "width": 150,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 450,
+                "y": 200
+            },
+            "width": 150,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 600,
+                "y": 200
+            },
+            "width": 150,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 750,
+                "y": 200
+            },
+            "width": 150,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 990,
+                "y": 200
+            },
+            "width": 90,
+            "height": 30,
+            "exist": true,
+            "isDestructible": true
         }
     ]
 }
@@ -312,10 +373,10 @@ const LADDERS_LIST = {
         {
             "position":{
                 "x": 900,
-                "y": 300
+                "y": 200
             },
             "width": LADDER_WIDTH,
-            "height": 100,
+            "height": 200,
         }
     ]
 };
@@ -590,6 +651,14 @@ function levelInitialization(num){
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level4));
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level4));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level4));
+			BALLOON_COLOR = "red";
+			BACKGROUND_IMAGE = bg_lion;
+        break;
+
+        case 5:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level5));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level5));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level5));
 			BALLOON_COLOR = "red";
 			BACKGROUND_IMAGE = bg_lion;
         break;
