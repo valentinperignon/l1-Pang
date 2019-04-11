@@ -2408,7 +2408,7 @@ captureKeyboardPress = function(event) {
 				isInvincible = !isInvincible;
                 */
                 player.shieldOn = true;
-			break;        
+			    break;        
 		}
 	}
 }
