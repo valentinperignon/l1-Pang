@@ -78,7 +78,7 @@ const PLATFORMS_LIST = {
             "width": 80,
             "height": 30,
             "exist": true,
-            "isDestructible": false
+            "isDestructible": true
         },
         {
             "position":{
@@ -173,7 +173,7 @@ const PLATFORMS_LIST = {
             "width": 80,
             "height": 30,
             "exist": true,
-            "isDestructible": true
+            "isDestructible": false
         },
         {
             "position":{
@@ -183,7 +183,7 @@ const PLATFORMS_LIST = {
             "width": 200,
             "height": 30,
             "exist": true,
-            "isDestructible": false
+            "isDestructible": true
         },
         
         
@@ -195,7 +195,7 @@ const PLATFORMS_LIST = {
             "width": 80,
             "height": 30,
             "exist": true,
-            "isDestructible": true
+            "isDestructible": false
         },
         {
             "position":{
@@ -205,7 +205,7 @@ const PLATFORMS_LIST = {
             "width": 80,
             "height": 30,
             "exist": true,
-            "isDestructible": true
+            "isDestructible": false
         },
         {
             "position":{
@@ -215,7 +215,7 @@ const PLATFORMS_LIST = {
             "width": 200,
             "height": 30,
             "exist": true,
-            "isDestructible": false
+            "isDestructible": true
         },
         {
             "position":{
@@ -225,7 +225,7 @@ const PLATFORMS_LIST = {
             "width": 80,
             "height": 30,
             "exist": true,
-            "isDestructible": true
+            "isDestructible": false
         },
         {
             "position":{
@@ -237,11 +237,39 @@ const PLATFORMS_LIST = {
             "exist": true,
             "isDestructible": false
         }
-        
-        //vertical platforms
-        
-
-
+    ],
+    level5: [
+        //horizontal platforms
+        {
+            "position":{
+                "x": 990,
+                "y": 400
+            },
+            "width": 90,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 820,
+                "y": 400
+            },
+            "width": 80,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 620,
+                "y": 400
+            },
+            "width": 200,
+            "height": 30,
+            "exist": true,
+            "isDestructible": false
+        }
     ]
 }
 
@@ -270,6 +298,24 @@ const LADDERS_LIST = {
             },
             "width": LADDER_WIDTH,
             "height": 208,
+        }
+    ],
+    "level5": [
+        {
+            "position":{
+                "x": 90,
+                "y": 400
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        },
+        {
+            "position":{
+                "x": 900,
+                "y": 300
+            },
+            "width": LADDER_WIDTH,
+            "height": 100,
         }
     ]
 };
@@ -352,6 +398,44 @@ const BALLOONS_LIST = {
     "level4": [
         {
 			center: {x: 400, y:30},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+		{
+			center: {x: 500, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+		},
+		{
+			center: {x: 600, y:30},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+		}
+    ],
+    "level5": [
+        {
+			center: {x: 200, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 400, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 600, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 800, y:30},
 			size: BALLOON_SIZE[3],
 			velocity:{ x: -1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
@@ -368,7 +452,7 @@ var context = null;
 
 /** Level number */
 var numLevel = 0;
-const MAX_LEVEL = 4;
+const MAX_LEVEL = 5;
 
 /**
  * Variables about game state.
@@ -1826,6 +1910,7 @@ captureKeyboardPress = function(event) {
 			case 50: // niveau 2
             case 51: // niveau 3
             case 52: // niveau 4
+            case 53: // niveau 5
 				numLevel = event.keyCode - 48;
 				levelInitialization(numLevel);
 				break;
