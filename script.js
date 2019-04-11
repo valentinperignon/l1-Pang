@@ -582,7 +582,7 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level2));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level2));
 			BALLOON_COLOR = "blue";
-			BACKGROUND_IMAGE = citadelle;
+			BACKGROUND_IMAGE = bg_citadelle;
         break;
 
         case 3:
@@ -600,13 +600,61 @@ function levelInitialization(num){
 			BALLOON_COLOR = "red";
 			BACKGROUND_IMAGE = bg_lion;
         break;
+
+        case 5:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level5));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level5));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level5));
+			BALLOON_COLOR = "red";
+			BACKGROUND_IMAGE = bg_joux;
+        break;
+
+        case 6:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level6));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level6));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level6));
+			BALLOON_COLOR = "red";
+			BACKGROUND_IMAGE = bg_metabief;
+        break;
+
+        case 7:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level7));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level7));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level7));
+			BALLOON_COLOR = "red";
+			BACKGROUND_IMAGE = bg_musee;
+        break;
+
+        case 8:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level8));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level8));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level8));
+			BALLOON_COLOR = "red";
+			BACKGROUND_IMAGE = bg_gouffre;
+        break;
+
+        case 9:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level9));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level4));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level9));
+			BALLOON_COLOR = "red";
+			BACKGROUND_IMAGE = bg_cascade;
+        break;
+
+        case 10:
+            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level10));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level10));
+            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level10));
+			BALLOON_COLOR = "red";
+			BACKGROUND_IMAGE = bg_fromages;
+        break;
             
         default:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level1));
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level1));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level1));
 			BALLOON_COLOR = "red";
-			BACKGROUND_IMAGE = fac;
+			BACKGROUND_IMAGE = bg_fac;
     }
 
     // initialization of the player
