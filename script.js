@@ -688,8 +688,11 @@ var victory = false;
 var defeat = false;
 var isInvincible = false;                                                                                           // BETA isInvicible
 
-/** Timer */
+/** Timers */
 var timer = 100;
+var balloonsFreezeTimer = Date.now();
+var areBalloonsFreeze = false;
+
 
 /** An array of all the balloons in the game
  * With the position, the radius, the velocity, gravity and the color
@@ -744,8 +747,9 @@ const DOUBLE_HOOK_ITEM = DOUBLE_HOOK_NUMBER; //2
 const TRIDENT_ITEM = TRIDENT_NUMBER; //3
 const TIMER_BOOST_ITEM = 4;
 const DYNAMITE_ITEM = 5;
+const FREEZE_ITEM = 6;
 
-const MAX_ITEM = 5;
+const MAX_ITEM = 6;
 
 /** Constants for the graphical part */
 const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
@@ -783,6 +787,9 @@ const TRIDENT_IMAGE = new Image();
 
 const DYNAMITE_IMAGE = new Image();                         
     DYNAMITE_IMAGE.src = "./assets/dynamite.png";
+
+const FREEZE_IMAGE = new Image();
+    FREEZE_IMAGE.src = "./assets/item_freeze.png";
 
 // ------------------------------------------------------------------------------------------------
 // ######################################## Functions #############################################
@@ -1632,6 +1639,12 @@ function playerTouchItem(){
                             dynamiteExplode();
                             items[i].type = -1;
                         break;
+
+                        case FREEZE_ITEM:
+                            areBalloonsFreeze = true;
+                            balloonsFreezeTimer = Date.now();
+                            items[i].type = -1;
+                        break;
                     }
                 }
             }
@@ -1756,52 +1769,59 @@ update = function(delta) {
     // update timer
     timer -= delta/1000;
 
-    // Update balloons position 
-    for(var i=0 ; i<balloons.length ; i++){
-       
-        if(balloons[i].size.number > 0){
-            // Update balloons[i].velocity
-            balloons[i].velocity.x += balloons[i].gravity.x*delta;
-            balloons[i].velocity.y += balloons[i].gravity.y*delta;
-
-            newballoon = 	{
-                center: {x: balloons[i].center.x, y:balloons[i].center.y},
-                size: balloons[i].size,
-                velocity:{ x: balloons[i].velocity.x, y: balloons[i].velocity.y},
-                gravity: {x : balloons[i].gravity.x, y: balloons[i].gravity.y},
-            } 
-
-            // Update balloons[i].center
-            newballoon.center.x += balloons[i].velocity.x * delta * BALLOON_SPEED;
-            newballoon.center.y += balloons[i].velocity.y * delta * BALLOON_SPEED;
-                            
-            
-            //No, you will not stick out
-            var bordersCorrection = keepBalloonWithinBorders(newballoon);
-            if(!bordersCorrection){    
-                //Don't go into platforms !
-                var correction = false;
-                var j=0 ;
-                while(j < platforms.length && !correction){
-                    correction = keepBalloonOutsideObjects(newballoon, platforms[j]);
-                    j++;
-                }
-            }
-
-            if(!correction){
-                balloons[i].center.x = newballoon.center.x;
-                balloons[i].center.y = newballoon.center.y; 
-            }
-            balloons[i].velocity.x = newballoon.velocity.x;
-            balloons[i].velocity.y = newballoon.velocity.y;
+    if(areBalloonsFreeze){
+        if(Date.now()-balloonsFreezeTimer>3000){
+            areBalloonsFreeze = false;
         }
-    }
+    } else {
+        
+        // Update balloons position 
+        for(var i=0 ; i<balloons.length ; i++){
+        
+            if(balloons[i].size.number > 0){
+                // Update balloons[i].velocity
+                balloons[i].velocity.x += balloons[i].gravity.x*delta;
+                balloons[i].velocity.y += balloons[i].gravity.y*delta;
 
-    //Verifying that balloons do not crash into something
-    for(var i=0 ; i < balloons.length ; i++){
+                newballoon = 	{
+                    center: {x: balloons[i].center.x, y:balloons[i].center.y},
+                    size: balloons[i].size,
+                    velocity:{ x: balloons[i].velocity.x, y: balloons[i].velocity.y},
+                    gravity: {x : balloons[i].gravity.x, y: balloons[i].gravity.y},
+                } 
 
-        if(balloons[i].size.number > 0){    
-            
+                // Update balloons[i].center
+                newballoon.center.x += balloons[i].velocity.x * delta * BALLOON_SPEED;
+                newballoon.center.y += balloons[i].velocity.y * delta * BALLOON_SPEED;
+                                
+                
+                //No, you will not stick out
+                var bordersCorrection = keepBalloonWithinBorders(newballoon);
+                if(!bordersCorrection){    
+                    //Don't go into platforms !
+                    var correction = false;
+                    var j=0 ;
+                    while(j < platforms.length && !correction){
+                        correction = keepBalloonOutsideObjects(newballoon, platforms[j]);
+                        j++;
+                    }
+                }
+
+                if(!correction){
+                    balloons[i].center.x = newballoon.center.x;
+                    balloons[i].center.y = newballoon.center.y; 
+                }
+                balloons[i].velocity.x = newballoon.velocity.x;
+                balloons[i].velocity.y = newballoon.velocity.y;
+            }
+        }
+
+        //Verifying that balloons do not crash into something
+        for(var i=0 ; i < balloons.length ; i++){
+
+            if(balloons[i].size.number > 0){    
+                
+            }
         }
     }
 
@@ -2051,6 +2071,10 @@ render = function() {
 
                     case DYNAMITE_ITEM:
                         context.drawImage(DYNAMITE_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
+                    break;
+
+                    case FREEZE_ITEM:
+                        context.drawImage(FREEZE_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
                 }
             }
