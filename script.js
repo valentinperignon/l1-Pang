@@ -766,6 +766,8 @@ var platforms = [] ;
 /** Ladders in the game */
 var ladders = [] ;
 
+/** Clik with the mouse */
+var clic = { x: 0, y: 0 };
 
 /**
  * Bonus items array
@@ -1830,7 +1832,9 @@ init = function() {
 
 	// 2 listeners on the keyboard (keyup and keydown)
 	document.addEventListener("keydown", captureKeyboardPress)
-	document.addEventListener("keyup", captureKeyboardReleased)
+    document.addEventListener("keyup", captureKeyboardReleased)
+    // 1 listener on the mouse
+    document.addEventListener("click", captureClicSouris)
 
 
 	// Go my little game loop, and never stop
@@ -2424,4 +2428,14 @@ captureKeyboardReleased = function(event) {
 			playerStopMoveLadder();
 			break;
 	}
+}
+
+/**
+ *  Click event
+ */
+captureClicSouris = function(event) {
+    if (event.target.id == "cvs") {
+        clic.x = event.pageX - event.target.offsetLeft;
+        clic.y = event.pageY - event.target.offsetTop;
+    }
 }
