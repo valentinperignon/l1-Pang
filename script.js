@@ -2065,9 +2065,10 @@ function render() {
 		context.fillText(textCopyright, (context.width - context.measureText(textCopyright).width)/2, 189+80+20);
 
         // affichage des boutons
-        var margin = 60, marginButton = 50, sizeButton = 128;
+        var margin = 60, marginButton = 75, widthButton = 132, heightButton = 40;
         for(var i=0; i<5; i++) {
-            context.fillRect(margin + marginButton*i + sizeButton*i, 420, sizeButton, 40);
+            context.fillRect(margin + marginButton*i + widthButton*i, 400, widthButton, heightButton);
+            context.fillRect(margin + marginButton*i + widthButton*i, 400 + heightButton + 40, widthButton, heightButton);
         }
     
     } else {
