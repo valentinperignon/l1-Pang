@@ -730,7 +730,7 @@ const HOOK_SPEED = 0.3 ;
 const HOOK_WITDH = 5;
 
 	// - Others weapons
-// ADD HERE
+const GUN_NUMBER = 4;
 
 /** All the platforms */
 var platforms = [] ;
@@ -752,8 +752,9 @@ const TIMER_BOOST_ITEM = 4;
 const DYNAMITE_ITEM = 5;
 const FREEZE_ITEM = 6;
 const SHIELD_ITEM = 7;
+const GUN_ITEM = 8;
 
-const MAX_ITEM = 7;
+const MAX_ITEM = 8;
 
 /** Constants for the graphical part */
 const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
@@ -1202,15 +1203,19 @@ function shootWeapon(player){
 	switch(player.powerOn){
 		case GRAPPLE_HOOK_NUMBER:
 			shootGrappleHook();
-			break;
+		break;
 
 		case DOUBLE_HOOK_NUMBER:
 			shootGrappleHook();
-			break;
+		break;
 
 		case TRIDENT_NUMBER:
 			shootGrappleHook();
-			break;
+        break;
+            
+        case GUN_NUMBER:
+            shootGun();
+        break;
 	}
 }
 
@@ -1229,6 +1234,20 @@ function shootGrappleHook(){
             time: 0    
         };
     }
+}
+
+/**
+ * Shoot a bullet
+ */
+function shootGun(){
+    weapons[weapons.length] = {
+        type: player.powerOn,
+        shooting: true,
+        position: {x: player.position.x+player.width/2 , y: player.position.y+player.height}, 
+        length: 5,
+        time: 0    
+    };
+    console.log("ed")
 }
 
 /**
@@ -1649,6 +1668,7 @@ function playerTouchItem(){
                         case GRAPPLE_HOOK_ITEM:
                         case DOUBLE_HOOK_ITEM:
                         case TRIDENT_ITEM:
+                        case GUN_ITEM:
                             player.powerOn = items[i].type;
                             items[i].type = -1;
                         break;
@@ -1869,6 +1889,10 @@ function update(delta) {
                 case DOUBLE_HOOK_NUMBER:
                 case TRIDENT_NUMBER:
                     weapons[i].length += HOOK_SPEED * delta ;
+                break;
+
+                case GUN_NUMBER:
+                    weapons[i].position.x += HOOK_SPEED * delta;
                 break;
             }
         } else {
@@ -2115,6 +2139,11 @@ function render() {
                     case SHIELD_ITEM:
                         context.drawImage(SHIELD_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
+
+                    case GUN_ITEM:
+                        context.fillStyle = "blue";
+                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
+                    break;
                 }
             }
         }
@@ -2122,7 +2151,7 @@ function render() {
 
 		// weapons drawing
 		for(var i=0 ; i < weapons.length ; i++){
-			switch(weapons[i].type){
+            switch(weapons[i].type){
 				case GRAPPLE_HOOK_NUMBER :
 					context.fillStyle = GRAPPLE_HOOK_COLOR;
                     context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length);
@@ -2145,6 +2174,11 @@ function render() {
                     context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length + 5);
                     context.drawImage(TRIDENT_IMAGE, weapons[i].position.x-20, weapons[i].position.y - weapons[i].length);
                     break;
+
+                case GUN_NUMBER:
+                    context.fillStyle = "black";
+                    context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,weapons[i].length);
+                break;
 			}
 		}
 
