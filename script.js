@@ -1467,7 +1467,7 @@ function findLadder(object) {
  * Detect if the player is on a platform
  */
 function detectPlatform(object) {
-    var isOn = true;
+    var isNotOn = 0;
 
     for(var i=0; i<platforms.length; i++) {
         if(!platforms[i].exist
@@ -1475,13 +1475,14 @@ function detectPlatform(object) {
         || object.position.x > platforms[i].position.x + platforms[i].width
         || object.position.y > platforms[i].position.y + platforms[i].height
         || object.position.y + object.height < platforms[i].position.y) {
-            isOn = false;
-        } else {
-            isOn = true;
+            isNotOn++;
         }
     }
 
-    return isOn;
+   if(isNotOn < platforms.length) {
+        return true;
+   }
+   return false;
 }
 
 /**
@@ -1489,12 +1490,8 @@ function detectPlatform(object) {
  */
 function isNotOnPlatformOrGround(object){
     isNot = false;
-    
-    if(platforms.length == 0 || ladders.length == 0){
-        return true;
-    }
- 
-    if(object.position.y + object.height < context.height && findLadder(object) == -1 && !detectPlatform(object)) { // not on the ground
+
+    if(object.position.y + object.height < context.height && findLadder(object) == -1 && detectPlatform(object) == false) { // not on something
         isNot = true;
     }
 
