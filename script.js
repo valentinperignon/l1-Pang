@@ -2855,7 +2855,6 @@ captureClicSouris = function(event) {
     if (event.target.id == "cvs") {
         clic.x = event.pageX - content.offsetLeft;
         clic.y = event.pageY - content.offsetTop;
-        console.log(clic);
     }
 
     // Buttons are clicked
