@@ -1,3 +1,4 @@
+
 /**
  * Jeu Pang (Avril 2019)
  * script.js
@@ -459,7 +460,6 @@ const PLATFORMS_LIST = {
                 "x": 990,
                 "y": 200
             },
-            "width": 90,
             "height": 30,
             "exist": true,
             "isDestructible": true
@@ -468,7 +468,362 @@ const PLATFORMS_LIST = {
     level7: [],
     level8: [],
     level9: [],
-    level10: []
+    level10: [
+        //horizontal platforms
+
+        {                   //first layer of platform
+            "position":{
+                "x": 100,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 150,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 200,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 250,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 300,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 350,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 400,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 450,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 500,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 550,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 600,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 650,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 700,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 750,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 800,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 850,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 900,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 950,
+                "y": 90
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {                   //Second layer of platform
+            "position":{
+                "x": 200,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {                  
+            "position":{
+                "x": 250,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {                   
+            "position":{
+                "x": 300,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {                   
+            "position":{
+                "x": 350,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 400,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 450,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 500,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 550,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 600,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 650,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+            },
+        {
+            "position":{
+                "x": 700,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 750,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 800,
+                "y": 300
+            },
+            "width": 45,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+
+        // vertical platforms
+        {
+            "position":{
+                "x": 175,
+                "y": 115
+            },
+            "width": 20,
+            "height": 90,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 175,
+                "y": 207
+            },
+            "width": 20,
+            "height": 90,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 850,
+                "y": 115
+            },
+            "width": 20,
+            "height": 90,
+            "exist": true,
+            "isDestructible": true
+        },
+        {
+            "position":{
+                "x": 850,
+                "y": 207
+            },
+            "width": 20,
+            "height": 90,
+            "exist": true,
+            "isDestructible": true
+        }
+    ]
 }
 
 /** 
@@ -625,13 +980,13 @@ const BALLOONS_LIST = {
         {
 			center: {x: 525, y:30},
 			size: BALLOON_SIZE[3],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: 0, y: 0},
 			gravity: {x :0, y: 9.81/1000},
         },
         {
 			center: {x: 750, y:30},
 			size: BALLOON_SIZE[3],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: 1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
     ],
@@ -639,7 +994,7 @@ const BALLOONS_LIST = {
         {
 			center: {x: 400, y:30},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: -0.75, y: 0},
 			gravity: {x :0, y: 9.81/1000},
         },
 		{
@@ -651,7 +1006,7 @@ const BALLOONS_LIST = {
 		{
 			center: {x: 600, y:30},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: 1, y: 0},
+			velocity:{ x: 0.75, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
     ],
@@ -659,7 +1014,7 @@ const BALLOONS_LIST = {
         {
 			center: {x: 200, y:30},
 			size: BALLOON_SIZE[3],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: 1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
         },
         {
@@ -671,7 +1026,7 @@ const BALLOONS_LIST = {
         {
 			center: {x: 600, y:30},
 			size: BALLOON_SIZE[3],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: 1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
         },
         {
@@ -719,7 +1074,25 @@ const BALLOONS_LIST = {
     ],
     "level10": [
 		{
-			center: {x: 400, y:30},
+			center: {x: 480, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 600, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 350, y:200},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 750, y:200},
 			size: BALLOON_SIZE[4],
 			velocity:{ x: -1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
@@ -835,18 +1208,23 @@ const DOUBLE_HOOK_ITEM_IMAGE = new Image();
 
 const TRIDENT_ITEM_IMAGE = new Image();
     TRIDENT_ITEM_IMAGE.src = "./assets/trident.png";
+
 const TIMER_BOOST_ITEM_IMAGE = new Image();
     TIMER_BOOST_ITEM_IMAGE.src = "./assets/item_timer_bonus.png";
+
 const SHIELD_ITEM_IMAGE = new Image();
     SHIELD_ITEM_IMAGE.src = "./assets/item_shield.png";
 
 var BACKGROUND_IMAGE;
 const PLAYER_IMAGE_LEFT = new Image();
     PLAYER_IMAGE_LEFT.src = "./assets/player_left.png";
+
 const PLAYER_IMAGE_RIGHT = new Image();
     PLAYER_IMAGE_RIGHT.src = "./assets/player_right.png"
+
 const DOUBLE_HOOK_IMAGE = new Image();
     DOUBLE_HOOK_IMAGE.src = "./assets/double_hook.png";
+    
 const TRIDENT_IMAGE = new Image();
     TRIDENT_IMAGE.src = "./assets/trident.png";
 
@@ -868,6 +1246,15 @@ const SHIELD_IMAGE = new Image();
 * Level selection : initialize all the variables
 */
 function levelInitialization(num){
+
+    // initialization of the player
+    player.position.x = context.width/2 - player.width/2;
+    player.position.y = context.height - player.height;
+    player.height = 75;
+    player.width = 42;  
+    player.powerOn = GRAPPLE_HOOK_NUMBER;
+    player.shieldOn = false;
+
     //JSON.parse(JSON.stringify(var)) is to make a copy of the object and not a copy of the adress.
     switch(num){
         case 2:
@@ -928,7 +1315,7 @@ function levelInitialization(num){
 
         case 9:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level9));
-            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level4));
+            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level9));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level9));
 			BALLOON_COLOR = "red";
 			cvs.style.background = "url('assets/bg_cascade.jpg')";
@@ -939,78 +1326,19 @@ function levelInitialization(num){
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level10));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level10));
 			BALLOON_COLOR = "red";
-			cvs.style.background = "url('assets/bg_fromages.jpg')";
+            cvs.style.background = "url('assets/bg_fromages.jpg')";
+            player.position.y = 10;
         break;
 
-        case 5:
-            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level5));
-            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level5));
-            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level5));
-			BALLOON_COLOR = "blue";
-            BACKGROUND_IMAGE = bg_lion;
-            player.position.x = context.width/2 - player.width/2;
-        break;
-
-        case 6:
-            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level6));
-            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level6));
-            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level6));
-			BALLOON_COLOR = "green";
-            BACKGROUND_IMAGE = bg_lion;
-            player.position.x = context.width/2 - player.width/2; 
-        break;
-
-        case 7:
-            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level7));
-            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level7));
-            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level7));
-			BALLOON_COLOR = "green";
-            BACKGROUND_IMAGE = bg_lion;
-            player.position.x = context.width/2 - player.width/2; 
-        break;
-
-        case 8:
-            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level8));
-            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level8));
-            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level8));
-			BALLOON_COLOR = "green";
-            BACKGROUND_IMAGE = bg_lion;
-            player.position.x = context.width/2 - player.width/2; 
-        break;
-
-        case 9:
-            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level9));
-            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level9));
-            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level9));
-			BALLOON_COLOR = "green";
-            BACKGROUND_IMAGE = bg_lion;
-            player.position.x = context.width/2 - player.width/2; 
-        break;
-
-        case 10:
-            ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level10));
-            platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level10));
-            balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level10));
-			BALLOON_COLOR = "green";
-            BACKGROUND_IMAGE = bg_lion;
-            player.position.x = context.width/2 - player.width/2; 
-        break;
-            
         default:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level1));
             platforms = JSON.parse(JSON.stringify(PLATFORMS_LIST.level1));
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level1));
-			BALLOON_COLOR = "red";
-            player.position.x = context.width/4; // player's position on the abscissa's axe 
+            BALLOON_COLOR = "red";
+            cvs.style.background = "url('assets/bg_fac.jpg')";
+            player.position.x = context.width/4;  
     }
 
-    // initialization of the player
-
-    player.position.y = context.height - player.height;
-    player.height = 75;
-    player.width = 42;  
-    player.powerOn = GRAPPLE_HOOK_NUMBER;
-    player.shieldOn = false;
 
     //Initialisation of the timer
     timer = 100;
@@ -2028,7 +2356,7 @@ function update(delta) {
         stopHooks(weapons[i]);
     }
 
-    // Items are falling and olding
+    // Items are falling and getting older
     for(var i=0 ; i < items.length ; i++){
         if(items[i].type != -1 && isNotOnPlatformOrGround(items[i]) && items[i].position.y + items[i].height < cvs.height){
             items[i].position.y =items[i].position.y + GRAVITY.y*delta/10000;
@@ -2368,6 +2696,8 @@ captureKeyboardPress = function(event) {
             case 53: // niveau 5
             case 54: // niveau 6
             case 55: // niveau 7
+            case 56: // niveau 8
+            case 57: // niveau 9
 				numLevel = event.keyCode - 48;
 				levelInitialization(numLevel);
 				break;
