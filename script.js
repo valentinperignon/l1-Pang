@@ -785,6 +785,12 @@ const SHIELD_ITEM = 7;
 
 const MAX_ITEM = 7;
 
+/** Variables about menu's buttons */
+var margin = 60
+var marginButton = 75;
+var widthButton = 132;
+var heightButton = 40;
+
 /** Constants for the graphical part */
 const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
 
@@ -955,6 +961,30 @@ function levelInitialization(num){
     //No items
     items = [];
 
+}
+
+/**
+ * Detect which button is clicked
+ * 
+ * @returns {int} -1 if there is no button, the level else
+ */
+function detectLevelButton() {
+    var niveau = -1, i=0;
+
+    // detect
+    do {
+        if(clic.x >= margin + i*(widthButton + marginButton) && clic.x <= margin + i*(widthButton + marginButton) + widthButton) {
+            if(clic.y <= 440) {
+                niveau = i+1;
+            } else {    
+                niveau = i+6;
+            }
+        } else {
+            i++;
+        }
+    } while(i < 5 && niveau == -1);
+
+    return niveau;
 }
 
 /**
@@ -1844,7 +1874,7 @@ gameLoop = function() {
 	if(!isOnFocus || pause){
 		document.title = "Pang - en pause";
 	} else {
-		if(victory || defeat) {
+		if((victory || defeat) && numLevel > 0) {
 			if(victory) {
 				document.title = "Pang - gagné !";
 			} else {
@@ -2046,23 +2076,20 @@ function render() {
 		// MENU
 		// ---------------
 
-		// display variables
-		var textCopyright = "© Fabian D., Nathanaël H., Valentin P.";
-
-		// black background
+		// Black background
 		context.fillStyle = "black";
 		context.fillRect(0, 0, context.width, context.height);
 
 		// Pang logo
 		context.drawImage(logo, (context.width-400)/2, 80, 400, 189);
 
-		// "copyright" text
+        // "Copyright" text
+        var textCopyright = "© Fabian D., Nathanaël H., Valentin P.";
 		context.fillStyle = "white";
 		context.font = "17px Georgia";
 		context.fillText(textCopyright, (context.width - context.measureText(textCopyright).width)/2, 189+80+20);
 
-        // buttons display
-        var margin = 60, marginButton = 75, widthButton = 132, heightButton = 40;
+        // Buttons display
         var positionXButton, positionXText1, textButton1, positionXText2, textButton2;
         context.font = "bold 17px sans-serif";
         context.textBaseline = "top";
@@ -2428,7 +2455,19 @@ captureKeyboardReleased = function(event) {
  */
 captureClicSouris = function(event) {
     if (event.target.id == "cvs") {
-        clic.x = event.pageX - event.target.offsetLeft;
-        clic.y = event.pageY - event.target.offsetTop;
+        clic.x = event.pageX - content.offsetLeft;
+        clic.y = event.pageY - content.offsetTop;
+        console.log(clic);
+    }
+
+    // Buttons are clicked
+    if((clic.y >= 400 && clic.y <= 440) || (clic.y >= 480 && clic.y <= 520)) { // y position
+        if(clic.x >= 60 && clic.x <= cvs.width-60) { // x position without margin
+            var numButton = detectLevelButton();
+            if(numButton > 0) {
+                numLevel = numButton;
+                levelInitialization(numLevel);
+            }
+        }
     }
 }
