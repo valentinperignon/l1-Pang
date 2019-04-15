@@ -6,9 +6,9 @@
  * @author Fabian Devel, Nathanaël Houn, Valentin Perignon
  */
 
-// -------------------------------------------------------------------------------
-// ################################ Game design ##################################
-// -------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// ################################ Game design ################################
+// -----------------------------------------------------------------------------
 
 /** 
  * Array of all the platforms.
@@ -1100,9 +1100,9 @@ const BALLOONS_LIST = {
 	]
 }
 
-// -------------------------------------------------------------------------------
-// ################################ Variables ####################################
-// -------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// ################################ Variables ################################
+// ---------------------------------------------------------------------------
 
 /** Context */
 var context = null;
@@ -1171,6 +1171,8 @@ var platforms = [] ;
 /** Ladders in the game */
 var ladders = [] ;
 
+/** Clik with the mouse */
+var clic = { x: 0, y: 0 };
 
 /**
  * Bonus items array
@@ -1238,9 +1240,9 @@ const SHIELD_IMAGE = new Image();
     SHIELD_IMAGE.src = "./assets/shield.png";
 
 
-// ------------------------------------------------------------------------------------------------
-// ######################################## Functions #############################################
-// ------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
+// ################################ Functions ################################
+// ---------------------------------------------------------------------------
 
 /**
 * Level selection : initialize all the variables
@@ -1659,19 +1661,16 @@ function isDefeat(ball) {
 	return defeat;
 }
 
-// #####################################
-// #### Shoot, manage and delete Weapons
-
 /**
-*
-*/
+ * Check if is between
+ */
 function isWeaponBetweenX(weapon,rectangle){
 	return(!(weapon.position.x + HOOK_WITDH < rectangle.position.x || weapon.position.x > rectangle.position.x + rectangle.width));
 }
 
 /**
-* Fire a weapon
-*/
+ * Fire a weapon
+ */
 function shootWeapon(player){
 	switch(player.powerOn){
 		case GRAPPLE_HOOK_NUMBER:
@@ -1809,10 +1808,6 @@ function stopHooks(hook){
 
 }
 
-
-// ######################################
-// #### Balloons and platforms collisions
-
 /**
 *
 */
@@ -1879,36 +1874,36 @@ function isInVerticalCollision(ball, object){
 
 
 /**
-* Is the balloon colliding with the bottom right corner ?
-* @return true is yes, else false
-*/
+ * Is the balloon colliding with the bottom right corner ?
+ * @return true is yes, else false
+ */
 function isBalloonCollidingBottomRightCorner(ball,object){
 	let bottomRightCorner = {x: object.position.x + object.width, y: object.position.y + object.height} ;
 	return(squareDistanceBetweenPoints(ball.center,bottomRightCorner) <= ball.size.radius * ball.size.radius);
 }
 
 /**
-* Is the balloon colliding with the top right corner ?
-* @return true is yes, else false
-*/
+ * Is the balloon colliding with the top right corner ?
+ * @return true is yes, else false
+ */
 function isBalloonCollidingTopRightCorner(ball,object){
 	let topRightCorner = {x: object.position.x + object.width, y: object.position.y} ;
 	return(squareDistanceBetweenPoints(ball.center,topRightCorner) <= ball.size.radius * ball.size.radius);
 }
 
 /**
-* Is the balloon colliding with the top left corner ?
-* @return true is yes, else false
-*/
+ * Is the balloon colliding with the top left corner ?
+ * @return true is yes, else false
+ */
 function isBalloonCollidingTopLeftCorner(ball,object){
 	let topLeftCorner = {x: object.position.x, y: object.position.y} ;
 	return(squareDistanceBetweenPoints(ball.center,topLeftCorner) <= ball.size.radius * ball.size.radius);
 }
 
 /**
-* Is the balloon colliding with the top right corner ?
-* @return true is yes, else false
-*/
+ * Is the balloon colliding with the top right corner ?
+ * @return true is yes, else false
+ */
 function isBalloonCollidingBottomLeftCorner(ball,object){
 	let bottomLeftCorner = {x: object.position.x, y: object.position.y + object.height} ;
 	return(squareDistanceBetweenPoints(ball.center,bottomLeftCorner) <= ball.size.radius * ball.size.radius);
@@ -2034,8 +2029,8 @@ function keepBalloonOutsideObjects(ball, object){
 }
 
 /**
-* Collision with any angles with the others functions
-*/ 
+ * Collision with any angles with the others functions
+ */ 
 function collisionsAngles(ball,object){
 	return(isBalloonCollidingBottomLeftCorner(ball,object)
 	|| isBalloonCollidingBottomRightCorner(ball,object)
@@ -2044,8 +2039,8 @@ function collisionsAngles(ball,object){
 }
 
 /**
-* Call the other testing functions and return if there's a collision
-*/
+ * Call the other testing functions and return if there's a collision
+ */
 function collisionsWithPlayer(ball, object){
 	var collisionAngles = collisionsAngles(ball, object).collision;
 	var collisionY = isInVerticalCollision(ball, object);
@@ -2200,9 +2195,9 @@ function dynamiteExplode(){
 }
 
 
-// ------------------------------------------------------------------------------------------------
-// ########################################## Game  ###############################################
-// ------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------
+// ################################ Game  ################################
+// -----------------------------------------------------------------------
 
 /**
 * Initialization of the game
@@ -2226,7 +2221,9 @@ init = function() {
 
 	// 2 listeners on the keyboard (keyup and keydown)
 	document.addEventListener("keydown", captureKeyboardPress)
-	document.addEventListener("keyup", captureKeyboardReleased)
+    document.addEventListener("keyup", captureKeyboardReleased)
+    // 1 listener on the mouse
+    document.addEventListener("click", captureClicSouris)
 
 
 	// Go my little game loop, and never stop
@@ -2445,29 +2442,44 @@ function render() {
 		// MENU
 		// ---------------
 
-		// variables d'affichage
+		// display variables
 		var textCopyright = "© Fabian D., Nathanaël H., Valentin P.";
-		var textPlay = "ENTRÉE POUR COMMENCER ...";
-		var textLevel = "OU SAISISSEZ LE NIVEAU";
 
-		// fond noir
+		// black background
 		context.fillStyle = "black";
 		context.fillRect(0, 0, context.width, context.height);
 
-		// affichage du logo Pang
+		// Pang logo
 		context.drawImage(logo, (context.width-400)/2, 80, 400, 189);
 
-		// affichage du texte "copyright"
+		// "copyright" text
 		context.fillStyle = "white";
 		context.font = "17px Georgia";
 		context.fillText(textCopyright, (context.width - context.measureText(textCopyright).width)/2, 189+80+20);
 
-		// affichage du texte "Commencer à jouer..."
-		context.fillStyle = "white";
-		context.font = "35px Georgia";
-		context.fillText(textPlay, (context.width - context.measureText(textPlay).width)/2, context.height-110-50);
-		context.font = "25px Georgia";
-		context.fillText(textLevel, (context.width - context.measureText(textLevel).width)/2, context.height-70-50);
+        // buttons display
+        var margin = 60, marginButton = 75, widthButton = 132, heightButton = 40;
+        var positionXButton, positionXText1, textButton1, positionXText2, textButton2;
+        context.font = "bold 17px sans-serif";
+        context.textBaseline = "top";
+        for(var i=0; i<5; i++) {
+            // buttons
+            positionXButton = margin + i*(marginButton + widthButton);
+            context.fillStyle = "#E7DBD0";
+            context.fillRect(positionXButton, 400, widthButton, heightButton); // 1 to 5
+            context.fillRect(positionXButton, 400 + heightButton + 40, widthButton, heightButton); // 6 to 10
+
+            // texts
+            textButton1 = "Niveau " + (i+1);
+            textButton2 = "Niveau " + (i+6);
+            positionXText1 = positionXButton + (widthButton - context.measureText(textButton1).width)/2;
+            positionXText2 = positionXButton + (widthButton - context.measureText(textButton2).width)/2;
+            context.fillStyle = "#222222";
+            context.fillText(textButton1, positionXText1, 400 - (17 - heightButton)/2); // 1 to 5
+            context.fillText(textButton2, positionXText2, (400 + heightButton + 40) - (17 - heightButton)/2); // 6 to 10
+
+        }
+        context.textBaseline = "alphabetic";
     
     } else {
         
@@ -2787,7 +2799,7 @@ captureKeyboardPress = function(event) {
 				isInvincible = !isInvincible;
                 */
                 player.shieldOn = true;
-			break;        
+			    break;        
 		}
 	}
 }
@@ -2807,4 +2819,14 @@ captureKeyboardReleased = function(event) {
 			playerStopMoveLadder();
 			break;
 	}
+}
+
+/**
+ *  Click event
+ */
+captureClicSouris = function(event) {
+    if (event.target.id == "cvs") {
+        clic.x = event.pageX - event.target.offsetLeft;
+        clic.y = event.pageY - event.target.offsetTop;
+    }
 }
