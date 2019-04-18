@@ -2823,18 +2823,21 @@ captureKeyboardReleased = function(event) {
  *  Click event
  */
 captureClicSouris = function(event) {
-    if (event.target.id == "cvs") {
-        clic.x = event.pageX - cvs.offsetLeft;
-        clic.y = event.pageY -  cvs.offsetTop;
-    }
+    if(numLevel == 0){
+        if (event.target.id == "cvs") {
+            clic.x = event.pageX - cvs.offsetLeft;
+            clic.y = event.pageY -  cvs.offsetTop;
+        }
+        
 
-    // Buttons are clicked
-    if((clic.y >= 400 && clic.y <= 440) || (clic.y >= 480 && clic.y <= 520)) { // y position
-        if(clic.x >= 60 && clic.x <= cvs.width-60) { // x position without margin
-            var numButton = detectLevelButton();
-            if(numButton > 0) {
-                numLevel = numButton;
-                levelInitialization(numLevel);
+        // Buttons are clicked
+        if((clic.y >= 400 && clic.y <= 440) || (clic.y >= 480 && clic.y <= 520)) { // y position
+            if(clic.x >= 60 && clic.x <= cvs.width-60) { // x position without margin
+                var numButton = detectLevelButton();
+                if(numButton > 0) {
+                    numLevel = numButton;
+                    levelInitialization(numLevel);
+                }
             }
         }
     }
