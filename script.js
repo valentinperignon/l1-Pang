@@ -1640,7 +1640,7 @@ function isDefeat(ball) {
 	var defeat = false;
 
 	// check
-	if(timer < 1 && !isVictory()) {
+	if(timer <= 1 && !isVictory()) {
 		defeat = true;
 	} else if(ball.size.number > 0 && collisionsWithPlayer(ball, player) && !isInvincible){                                             // BETA IsInvicible
         if(player.shieldOn){
