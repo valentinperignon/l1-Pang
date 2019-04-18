@@ -703,36 +703,6 @@ const PLATFORMS_LIST = {
         },
         {
             "position":{
-                "x": 450,
-                "y": 300
-            },
-            "width": 45,
-            "height": 20,
-            "exist": true,
-            "isDestructible": true
-        },
-        {
-            "position":{
-                "x": 500,
-                "y": 300
-            },
-            "width": 45,
-            "height": 20,
-            "exist": true,
-            "isDestructible": true
-        },
-        {
-            "position":{
-                "x": 550,
-                "y": 300
-            },
-            "width": 45,
-            "height": 20,
-            "exist": true,
-            "isDestructible": true
-        },
-        {
-            "position":{
                 "x": 600,
                 "y": 300
             },
@@ -930,7 +900,7 @@ const BALLOONS_LIST = {
 		{
 			center: {x: 400, y:30},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: 1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
 	],
@@ -1119,7 +1089,7 @@ var isOnFocus = true;
 var pause = false;
 var victory = false;
 var defeat = false;
-var isInvincible = false;                                                                                           // BETA isInvicible
+var isInvincible = false;                                                                                           
 
 /** Timers */
 var timer = 100;
@@ -1335,7 +1305,6 @@ function levelInitialization(num){
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level10));
 			BALLOON_COLOR = "red";
             cvs.style.background = "url('assets/bg_fromages.jpg')";
-            player.position.y = 10;
         break;
 
         default:
@@ -1671,13 +1640,13 @@ function isDefeat(ball) {
 	var defeat = false;
 
 	// check
-	if(timer <= 1 && !isVictory()) {
+	if(timer < 1 && !isVictory()) {
 		defeat = true;
 	} else if(ball.size.number > 0 && collisionsWithPlayer(ball, player) && !isInvincible){                                             // BETA IsInvicible
         if(player.shieldOn){
             player.shieldOn = false;
             isInvincible = true;
-            shieldTimer = Date.now();
+            shieldTimer = Date.now();   
             splitBalloon(ball);
             playerBlinkTimer = Date.now();
             
@@ -2295,13 +2264,18 @@ gameLoop = function() {
 function update(delta) {
     // update timer
     timer -= delta/1000;
+    
+    //disable the invincibilty 3s after being hit while having a shield
     if(Date.now() - shieldTimer > 3000){
         isInvincible = false;
     }
 
+    // Make the player invincible while the balloons are freezed
     if(areBalloonsFreeze){
-        if(Date.now()-balloonsFreezeTimer>3000){
+        isInvincible = true;
+        if(Date.now()-balloonsFreezeTimer>5000){
             areBalloonsFreeze = false;
+            isInvincible = false;
         }
     } else {
         
@@ -2571,7 +2545,7 @@ function render() {
 		}
 
 		// balloons displaying
-        if(!areBalloonsFreeze || (Date.now() - balloonBlinkTimer) < 2000 || (Date.now() - balloonBlinkTimer)%200 < 100 ){
+        if(!areBalloonsFreeze || (Date.now() - balloonBlinkTimer) < 4000 || (Date.now() - balloonBlinkTimer)%400 < 100 ){
 
             for(var i=0 ; i<balloons.length ;i++){
                 if(balloons[i].size.number > 0){
@@ -2850,8 +2824,8 @@ captureKeyboardReleased = function(event) {
  */
 captureClicSouris = function(event) {
     if (event.target.id == "cvs") {
-        clic.x = event.pageX - content.offsetLeft;
-        clic.y = event.pageY - content.offsetTop;
+        clic.x = event.pageX - cvs.offsetLeft;
+        clic.y = event.pageY -  cvs.offsetTop;
     }
 
     // Buttons are clicked
