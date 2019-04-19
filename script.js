@@ -460,6 +460,7 @@ const PLATFORMS_LIST = {
                 "x": 990,
                 "y": 200
             },
+            "width": 150,
             "height": 30,
             "exist": true,
             "isDestructible": true
@@ -1170,10 +1171,13 @@ var heightButton = 40;
 const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
 
 const PLATFORM_COLOR = "black";
-const LADDER_COLOR = "gray";
+const LADDERS_IMAGE = new Image();
+    LADDERS_IMAGE.src = "./assets/Ladders.png";
 
 var BALLOON_COLOR;
 var BALLON_GRADIENT;
+
+
 
 const GRAPPLE_HOOK_COLOR = "red";
 const TRIDENT_COLOR1 = "orangered";
@@ -1442,7 +1446,7 @@ function detectPlatform(object) {
         if(!platforms[i].exist
         || object.position.x + object.width < platforms[i].position.x
         || object.position.x > platforms[i].position.x + platforms[i].width
-        || object.position.y > platforms[i].position.y + platforms[i].height
+        || object.position.y >= platforms[i].position.y + platforms[i].height
         || object.position.y + object.height < platforms[i].position.y) {
             isNotOn++;
         }
@@ -2050,13 +2054,17 @@ function collisionsWithPlayer(ball, object){
  * @param {*} ball the splitted balloon
  */
 function createItem(ball){
-    if(ball.size.number>0){
-        items[items.length] = {
-            type: Math.floor(Math.random()*MAX_ITEM)+1,
-            position: {x: ball.center.x, y:ball.center.y},
-            height: 30,
-            width: 30,
-            time: 0
+    // 34% of chance for items to spawn when a balloon is burst
+    var n = Math.random();
+    if(n >= 0.66){
+        if(ball.size.number>0){
+            items[items.length] = {
+                type: Math.floor(Math.random()*MAX_ITEM)+1,
+                position: {x: ball.center.x, y:ball.center.y},
+                height: 40,
+                width: 40,
+                time: 0
+            }
         }
     }
 }
@@ -2379,7 +2387,7 @@ function update(delta) {
             newPosYPlayer = player.position.y;
         }
     }
-    if(isNotOnPlatformOrGround(player)) {
+    if(isNotOnPlatformOrGround(player)) {    
         isGravity = 1;
     } else {
         isGravity = 0;
@@ -2539,9 +2547,9 @@ function render() {
 		}
 
 		// ladders drawing
-		context.fillStyle= LADDER_COLOR ;
+		//context.fillStyle = LADDERS_IMAGE ;
 		for (var i=0; i < ladders.length; i++) {
-			context.fillRect(ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
+            context.drawImage(LADDERS_IMAGE, ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
 		}
 
 		// balloons displaying
