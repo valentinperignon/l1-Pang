@@ -466,7 +466,111 @@ const PLATFORMS_LIST = {
             "isDestructible": true
         }
     ],
-    level7: [],
+    level7: [
+        // Vertical platforms
+        {
+            "position":{
+                "x": 216,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 310,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 405,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 595,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 690,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 785,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+
+        //Vertical platforms
+        {
+            "position":{
+                "x": 530,
+                "y": 130
+            },
+            "width": 20,
+            "height": 75,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 530,
+                "y": 215
+            },
+            "width": 20,
+            "height": 75,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 530,
+                "y": 330
+            },
+            "width": 20,
+            "height": 75,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 530,
+                "y": 415
+            },
+            "width": 20,
+            "height": 75,
+            "exist": true,
+            "isDestructible": false
+        }
+    ],
     level8: [],
     level9: [],
     level10: [
@@ -910,13 +1014,13 @@ const BALLOONS_LIST = {
 		{
 			center: {x: 400, y:30},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: -0.8, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		},
 		{
 			center: {x: 500, y:30},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: 1, y: 0},
+			velocity:{ x: 0.8, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
 	],
@@ -925,13 +1029,13 @@ const BALLOONS_LIST = {
 		{
 			center: {x: 400, y:30},
 			size: BALLOON_SIZE[3],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: -0.8, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		},
 		{
 			center: {x: 500, y:30},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: 1, y: 0},
+			velocity:{ x: 0.5, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		},
 		{
@@ -1009,21 +1113,27 @@ const BALLOONS_LIST = {
     ],
     "level7": [
         {
-			center: {x: 300, y:30},
-			size: BALLOON_SIZE[3],
+			center: {x: 325, y:90},
+			size: BALLOON_SIZE[4],
 			velocity:{ x: -1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
         },
         {
-			center: {x: 525, y:30},
-			size: BALLOON_SIZE[3],
-			velocity:{ x: -1, y: 0},
+			center: {x: 520, y:30},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: -0.6, y: 0},
 			gravity: {x :0, y: 9.81/1000},
         },
         {
-			center: {x: 750, y:30},
-			size: BALLOON_SIZE[2],
-			velocity:{ x: -1, y: 0},
+			center: {x: 560, y:30},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: 0.6, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 750, y:90},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: 1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
     ],
@@ -1059,13 +1169,13 @@ const BALLOONS_LIST = {
         {
 			center: {x: 350, y:200},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: 1, y: 0},
+			velocity:{ x: 0.5, y: 0},
 			gravity: {x :0, y: 9.81/1000},
         },
         {
 			center: {x: 750, y:200},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: -0.5, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
 	]
@@ -1168,9 +1278,9 @@ var widthButton = 132;
 var heightButton = 40;
 
 /** Constants for the graphical part */
-const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
+const DESTRUCTIBLE_PLATFORM_COLOR = "#f47b3e";
 
-const PLATFORM_COLOR = "black";
+const PLATFORM_COLOR = "#a5260a";
 const LADDERS_IMAGE = new Image();
     LADDERS_IMAGE.src = "./assets/Ladders.png";
 
@@ -1224,7 +1334,7 @@ const SHIELD_IMAGE = new Image();
 // ################################ Functions ################################
 // ---------------------------------------------------------------------------
 
-/**
+/**     
 * Level selection : initialize all the variables
 */
 function levelInitialization(num){
@@ -1232,8 +1342,8 @@ function levelInitialization(num){
     // initialization of the player
     player.position.x = context.width/2 - player.width/2;
     player.position.y = context.height - player.height;
-    player.height = 75;
-    player.width = 42;  
+    player.height = 70;
+    player.width = 45;  
     player.powerOn = GRAPPLE_HOOK_NUMBER;
     player.shieldOn = false;
 
@@ -1429,7 +1539,6 @@ function findLadder(object) {
             i++
         }
     }
-
     if(i == ladders.length) {
         i = -1;
     }
@@ -2387,6 +2496,7 @@ function update(delta) {
             newPosYPlayer = player.position.y;
         }
     }
+
     if(isNotOnPlatformOrGround(player)) {    
         isGravity = 1;
     } else {
