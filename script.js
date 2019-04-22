@@ -1387,7 +1387,8 @@ var isOnFocus = true;
 var pause = false;
 var victory = false;
 var defeat = false;
-var isInvincible = false;                                                                                           
+var isInvincible = false;        
+var easterEgg = false;                                                                                  
 
 /** Timers */
 var timer = 100;
@@ -1474,8 +1475,10 @@ const LADDERS_IMAGE = new Image();
 var BALLOON_COLOR;
 var BALLON_GRADIENT;
 
-
-
+const EASTER_BUNNY = new Image();
+    EASTER_BUNNY.src = "./assets/lapin.png";
+const EASTER_EGG = new Image();
+    EASTER_EGG.src = "./assets/easterEgg.png";
 const GRAPPLE_HOOK_COLOR = "red";
 const TRIDENT_COLOR1 = "orangered";
 const TRIDENT_COLOR2 = "orange";
@@ -1913,10 +1916,17 @@ updateCircleColor = function(circle) {
 function fillCircle(circle){
 	updateCircleColor(circle);
 
-	context.beginPath();
-	context.fillStyle=BALLON_GRADIENT;
-	context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
-	context.fill();
+    context.beginPath();
+    if(easterEgg){
+        context.drawImage(EASTER_EGG, circle.center.x - circle.size.radius, circle.center.y - circle.size.radius, circle.size.radius*2, circle.size.radius*2 );
+        context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
+    } else {
+        context.fillStyle=BALLON_GRADIENT;
+        context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
+	    context.fill();
+    }
+	
+	
 }
 
 
@@ -2963,36 +2973,37 @@ function render() {
 			}
 		}
 
-		// Drawing of the player
-		if(!victory){
-            if(!isInvincible || (Date.now() - playerBlinkTimer)%500 < 250){
-                
-                if(player.speed.x > 0){
-                    context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
-                    player_last_direction = 1;
-                } else if (player.speed.x < 0){
-                    context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
-                    player_last_direction = -1;
-                } else {
-
-                    if(player_last_direction > 0){
+        // Drawing of the player
+        if(!easterEgg){
+            if(!victory){
+                if(!isInvincible || (Date.now() - playerBlinkTimer)%500 < 250){         
+                    if(player.speed.x > 0){
                         context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
-                    } else {
+                        player_last_direction = 1;
+                    } else if (player.speed.x < 0){
                         context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
+                        player_last_direction = -1;
+                    } else {
+                        if(player_last_direction > 0){
+                            context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
+                        } else {
+                            context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
+                        }
+                    }
+                    //Shield
+                    if(player.shieldOn){
+                        context.drawImage(SHIELD_IMAGE,player.position.x,player.position.y);
                     }
                 }
-
-                //Shield
-                if(player.shieldOn){
-                    context.drawImage(SHIELD_IMAGE,player.position.x,player.position.y);
+            } else {
+                if(player_last_direction > 0){
+                    context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
+                } else {
+                    context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
                 }
             }
         } else {
-            if(player_last_direction > 0){
-                context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
-            } else {
-                context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
-            }
+            context.drawImage(EASTER_BUNNY, player.position.x, player.position.y);
         }
         
         // Victory and defeat screen
@@ -3014,13 +3025,13 @@ function render() {
 *  Key down event
 */
 // Enter the level which its number's key is pressed  
-captureKeyboardPress = function(event) {
+function captureKeyboardPress(event) {
 	if(numLevel == 0) { // menu
 		switch(event.keyCode) {
 			case 13: //enter
 				numLevel = 1;
-				break;
-			case 49: // niveau 1
+			break;
+            case 49: // niveau 1
 			case 50: // niveau 2
             case 51: // niveau 3
             case 52: // niveau 4
@@ -3031,7 +3042,7 @@ captureKeyboardPress = function(event) {
             case 57: // niveau 9
 				numLevel = event.keyCode - 48;
 				levelInitialization(numLevel);
-				break;
+			break;
 		}
 	} else { // jeu
 		switch (event.keyCode) {
@@ -3039,13 +3050,14 @@ captureKeyboardPress = function(event) {
 			case 39:
 			case 37:
 				playerMove(event.keyCode);
-				break;
+			break;
 
 			// Player1 up or down
 			case 38:
-			case 40:
+            case 40:
+                event.preventDefault(); //disable the default's navigator scrolling action on the html page
 				playerMoveLadder(event.keyCode);
-                break;
+            break;
                 
             // 'M' to return to main menu
             case 77:
@@ -3055,12 +3067,13 @@ captureKeyboardPress = function(event) {
 			// 'P' means pause or unpause
 			case 80:
 				pause = !pause;
-				break;
+			break;
 
 			// Space for fire the weapon
-			case 32:
+            case 32:
+                event.preventDefault();
 				shootWeapon(player);
-				break;
+			break;
 
 			// Enter to insert credits and play again
             case 13: 
@@ -3083,35 +3096,35 @@ captureKeyboardPress = function(event) {
                     victory = !victory;
                     levelInitialization(numLevel);
                 }
-                break;
+            break;
 
 			// Shortcut to victory                                                                      // BETA FUNCTION
 			case 71:
 				victory = !victory;
-				break;
+			break;
 
 			// Shortcut to defeat                                                                       // BETA FUNCTION
 			case 72:
 				defeat = !defeat;
-				break;
+			break;
 
 			//Activate the default weapon : the grapple hook                                            // BETA FUNCTION
 			case 82:
 				player.powerOn = GRAPPLE_HOOK_NUMBER ;
 				console.log("Grappin activé");
-				break;
+			break;
 
 			//Activate the powerOn double grapple hook                                                  // BETA FUNCTION
 			case 84: 
 				player.powerOn = DOUBLE_HOOK_NUMBER ;
 				console.log("Double grappin activé");
-				break;
+			break;
 
 			//Activate the powerOn Trident                                                              // BETA FUNCTION
 			case 89:
 				player.powerOn = TRIDENT_NUMBER ;
 				console.log("Trident activé");
-				break;
+			break;
 
 			//Make the player invincible                                                                // BETA FUNCTION
 			case 73:
@@ -3124,9 +3137,27 @@ captureKeyboardPress = function(event) {
 				isInvincible = !isInvincible;
                 */
                 player.shieldOn = true;
-			    break;        
-		}
-	}
+            break;      
+                
+            case 89:
+				player.powerOn = TRIDENT_NUMBER ;
+				console.log("Trident activé");
+            break;
+              
+        }          
+    }
+    /*******EASTER EGG******/
+    if (event.ctrlKey){
+        event.preventDefault();
+        if(event.altKey){
+            if(event.keyCode == 68){
+                if(easterEgg){
+                    easterEgg = false;
+                }
+                easterEgg = true;
+            }
+        }
+    }
 }
 
 /**
