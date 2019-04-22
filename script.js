@@ -571,7 +571,68 @@ const PLATFORMS_LIST = {
             "isDestructible": false
         }
     ],
-    level8: [],
+    level8: [
+        {
+            "position":{
+                "x": 0,
+                "y": 150
+            },
+            "width": 110,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 200,
+                "y": 300
+            },
+            "width": 110,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 400,
+                "y": 450
+            },
+            "width": 95,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 585,
+                "y": 450
+            },
+            "width": 95,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 770,
+                "y": 300
+            },
+            "width": 110,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 970,
+                "y": 150
+            },
+            "width": 200,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        }
+    ],
     level9: [],
     level10: [
         //horizontal platforms
@@ -965,7 +1026,48 @@ const LADDERS_LIST = {
         }
     ],
     "level7": [],
-    "level8": [],
+    "level8": [
+        {
+            "position":{
+                "x": 110,
+                "y": 150
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        },
+        {
+            "position":{
+                "x": 310,
+                "y": 300
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        },
+        {
+            "position":{
+                "x": 495,
+                "y": 450
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        },   
+        {
+            "position":{
+                "x": 680,
+                "y": 300
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        },
+        {
+            "position":{
+                "x": 880,
+                "y": 150
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        }
+    ],
     "level9": [],
     "level10": []
 };
@@ -1139,7 +1241,37 @@ const BALLOONS_LIST = {
     ],
     "level8": [
 		{
-			center: {x: 400, y:30},
+			center: {x: 60, y:100},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 240, y:260},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 430, y:412},
+			size: BALLOON_SIZE[2],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 645, y:412},
+			size: BALLOON_SIZE[2],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+		},
+        {
+			center: {x: 820, y:260 },
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 1020, y:100},
 			size: BALLOON_SIZE[4],
 			velocity:{ x: -1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
@@ -1530,7 +1662,7 @@ function findLadder(object) {
 
     while(i<ladders.length && !find) {
         if(object.position.x >= ladders[i].position.x - 0.33*object.width && object.position.x <= ladders[i].position.x + ladders[i].width - 0.66*object.width) {
-            if(object.position.y >= ladders[i].position.y - 1.1*object.height && object.position.y <= context.height) {
+            if(object.position.y >= ladders[i].position.y - 1.1*object.height && object.position.y <= ladders[i].position.y + ladders[i].height) {
                 find = true;
             } else {
                 i++;
@@ -1555,6 +1687,7 @@ function detectPlatform(object) {
         if(!platforms[i].exist
         || object.position.x + object.width < platforms[i].position.x
         || object.position.x > platforms[i].position.x + platforms[i].width
+        
         || object.position.y >= platforms[i].position.y + platforms[i].height
         || object.position.y + object.height < platforms[i].position.y) {
             isNotOn++;
@@ -1591,10 +1724,13 @@ function drawFinalMessage(gameState) {
 	if(gameState == 'victory') {
 		context.fillStyle = 'rgb(51, 138, 52, .75)';
 		text = "VICTOIRE !";
-	} else {
+	} else if(player.livesNumber > 1){
 		context.fillStyle = "rgb(171, 0, 13, .75)";
-		text = "PERDU !";
-	}
+        text = "TOUCHÉ...";
+	} else{
+        context.fillStyle = "rgb(171, 0, 13, .75)";
+        text = "PERDU !   SCORE : " + player.score;
+    }
 	context.shadowBlur = 15;
 	context.shadowColor = 'black';
 	context.fillRect(context.width/5, (context.height - 150)/2, context.width/5*3, 150);
@@ -1746,7 +1882,7 @@ function isVictory(){
 
 /**
  * Detect the defeat 
- * (i.e. if there is no time and no ballon remaining)
+ * (i.e. if there is no time and balloons remaining)
  * returns {boolean} true if the defeat is real
  */
 function isDefeat(ball) {
@@ -1759,12 +1895,17 @@ function isDefeat(ball) {
         if(player.shieldOn){
             player.shieldOn = false;
             isInvincible = true;
-            shieldTimer = Date.now();   
-            splitBalloon(ball);
+            shieldTimer = Date.now();
+            if(ball.size.number > 1){   
+                splitBalloon(ball);
+            } else {
+                ball.size = BALLOON_SIZE[ball.size.number-1];
+            }
             playerBlinkTimer = Date.now();
             
         } else {
             defeat = true;
+            
         }
     }
 	return defeat;
@@ -1848,7 +1989,7 @@ function stopHooks(hook){
             case TRIDENT_NUMBER :
                 hook.shooting = false;
                 if(hook.time > 3){
-                    deleteWeapon();
+                    deleteWeapon(hook);
                 }
             break;
 
@@ -1896,6 +2037,9 @@ function stopHooks(hook){
 
                 switch(hook.type){
                     case GRAPPLE_HOOK_NUMBER:
+                        deleteWeapon();
+                    break;
+
                     case TRIDENT_NUMBER:
                         deleteWeapon(hook);
                     break;
@@ -2187,23 +2331,37 @@ function splitBalloon(ball){
     //Two new balloons if the balloons is not of the minimal size
     if(ball.size.number > 1){
         var oldBall = ball;
+        var sizeVelocityX;
+        switch (ball.size.number) {
+            case 4:
+                sizeVelocityX = 0.66
+                break;
+
+            case 3:
+                sizeVelocityX = 0.75
+                break;
+
+            case 2:
+                sizeVelocityX = 1
+                break;
+        }
 
         balloons[balloons.length] =  {
-            center: {x: oldBall.center.x, y: oldBall.center.y},
+            center: {x: oldBall.center.x-10, y: oldBall.center.y-6},
             size: BALLOON_SIZE[oldBall.size.number - 1],
-            velocity:{ x: -1, y: -2},
+            velocity:{ x: -sizeVelocityX, y: -2},
             gravity: {x :0, y: 9.81/1000}
         };
         
         balloons[balloons.length] =  {
-            center: {x: oldBall.center.x, y: oldBall.center.y},
+            center: {x: oldBall.center.x+10, y: oldBall.center.y-4},
             size: BALLOON_SIZE[oldBall.size.number - 1],
-            velocity:{ x: 1, y: -2},
+            velocity:{ x: sizeVelocityX, y: -2},
             gravity: {x :0, y: 9.81/1000}
         };
 
         //Maybe an item is spawning
-        if(Math.random()<1.20){
+        if(Math.random()<0.66){
             createItem(oldBall);
         }   
     }  
@@ -2295,7 +2453,7 @@ function dynamiteExplode(){
                 };
 
                 //Maybe an item is spawning
-                if(Math.random()<1.20){
+                if(Math.random()<0.34){
                     createItem(oldBall);
                 }
 
@@ -2346,7 +2504,7 @@ init = function() {
 /**
 * Game loop
 */
-gameLoop = function() {
+function gameLoop()  {
 	var delta = Date.now()-lastUpdate;
 	lastUpdate = Date.now();
 	// Run the game if it is not on pause
@@ -2782,28 +2940,17 @@ function render() {
             }
         }
         
-		// Victory and defeat screen
-		if(player.livesNumber > 1){
-			var textVictory = "VICTOIRE !";
-			var textDefeat = "PERDU...";
-			if(victory){
-				drawFinalMessage('victory');
+        // Victory and defeat screen
+        if(victory){
+            drawFinalMessage('victory');
+        }
+        if(defeat) {
+		    if(player.livesNumber > 1){
+                drawFinalMessage('defeat')    
 			} else {
-				if(defeat) {
-					player.livesNumber -= 1;
-					defeat = false;
-					levelInitialization(numLevel);    
-				}
-			}
-		} else{
-			if(victory){
-				drawFinalMessage('victory');
-			} else {
-				if(defeat) {
-					player.livesNumber -= 1;
-					drawFinalMessage('defeat');
-				}
-			}
+			    player.livesNumber -= 1;
+                drawFinalMessage('defeat');
+            }
 		}
 	}
 }
@@ -2814,7 +2961,7 @@ function render() {
 captureKeyboardPress = function(event) {
 	if(numLevel == 0) { // menu
 		switch(event.keyCode) {
-			case 13:
+			case 13: //enter
 				numLevel = 1;
 				break;
 			case 49: // niveau 1
@@ -2862,10 +3009,16 @@ captureKeyboardPress = function(event) {
 			// Enter to insert credits and play again
             case 13: 
                 if(defeat){
-                    defeat = false;
-                    levelInitialization(numLevel);
-                    player.livesNumber = 3;
-                    player.score = 0;
+                    if(player.livesNumber > 0){
+                        defeat = false;
+                        levelInitialization(numLevel);
+                        player.livesNumber -= 1;
+                    } else {
+                        defeat = false;
+                        levelInitialization(numLevel);
+                        player.livesNumber = 3;
+                        player.score = 0;
+                    }
                 } else if(victory){
                     numLevel += 1;
                     if(numLevel > MAX_LEVEL){
