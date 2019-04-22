@@ -22,15 +22,17 @@
 
 /* About body */
 #about-body {
-    background-image: url('assets/countryside.jpg');
+    background-image: url('assets/bg_francheComte.png');
     background-attachment: fixed;
     background-size: cover;
+    opacity: 1;
+    
 }
 
 /* Title */
 #title {
     padding: 20px 20px;
-    background-color: #4caf50;
+    background-color: rgb(0, 100, 240);
 }
 
 #title h1 {
@@ -43,7 +45,7 @@
 /* Subtitle */
 .subtitle {
     padding: 10px 20px;
-    background: #087f23;
+    background: rgb(0, 60, 255);
 }
 
 .subtitle h2 {
