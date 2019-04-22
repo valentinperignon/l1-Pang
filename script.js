@@ -1278,10 +1278,65 @@ const BALLOONS_LIST = {
 		}
     ],
     "level9": [
+        {
+			center: {x: 0, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
 		{
-			center: {x: 400, y:30},
-			size: BALLOON_SIZE[4],
-			velocity:{ x: -1, y: 0},
+			center: {x: 140, y:30},
+			size: BALLOON_SIZE[2],
+			velocity:{ x: 0, y: 0.8},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 240, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 1.6},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 340, y:30},
+			size: BALLOON_SIZE[2],
+            velocity:{ x: 0, y: 2.4},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 440, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 3.2},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        // Middle
+        {
+			center: {x: 640, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 3.2},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+            center: {x: 740, y:30},
+			size: BALLOON_SIZE[2],
+			velocity:{ x: 0, y: 2.4},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 840, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 1.6},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+            center: {x: 940, y:30},
+			size: BALLOON_SIZE[2],
+			velocity:{ x: 0, y: 0.8},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+            center: {x: 1040, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
     ],
@@ -2958,6 +3013,7 @@ function render() {
 /**
 *  Key down event
 */
+// Enter the level which its number's key is pressed  
 captureKeyboardPress = function(event) {
 	if(numLevel == 0) { // menu
 		switch(event.keyCode) {
