@@ -1429,10 +1429,11 @@ const GRAPPLE_HOOK_NUMBER = 1 ;
 const DOUBLE_HOOK_NUMBER = 2 ;
 const TRIDENT_NUMBER = 3 ;
 const HOOK_SPEED = 0.3 ;
+const BULLET_SPEED = 0.3;
 const HOOK_WITDH = 5;
 
 	// - Others weapons
-// ADD HERE
+const GUN_NUMBER = 4;
 
 /** All the platforms */
 var platforms = [] ;
@@ -1452,12 +1453,14 @@ var items = [];
 const GRAPPLE_HOOK_ITEM = GRAPPLE_HOOK_NUMBER; //1
 const DOUBLE_HOOK_ITEM = DOUBLE_HOOK_NUMBER; //2
 const TRIDENT_ITEM = TRIDENT_NUMBER; //3
-const TIMER_BOOST_ITEM = 4;
-const DYNAMITE_ITEM = 5;
-const FREEZE_ITEM = 6;
-const SHIELD_ITEM = 7;
+const GUN_ITEM = GUN_NUMBER;
 
-const MAX_ITEM = 7;
+const TIMER_BOOST_ITEM = 5;
+const DYNAMITE_ITEM = 6;
+const FREEZE_ITEM = 7;
+const SHIELD_ITEM = 8;
+
+const MAX_ITEM = 8;
 
 /** Variables about menu's buttons */
 var margin = 60
@@ -1990,15 +1993,19 @@ function shootWeapon(player){
 	switch(player.powerOn){
 		case GRAPPLE_HOOK_NUMBER:
 			shootGrappleHook();
-			break;
+		break;
 
 		case DOUBLE_HOOK_NUMBER:
 			shootGrappleHook();
-			break;
+		break;
 
 		case TRIDENT_NUMBER:
 			shootGrappleHook();
-			break;
+        break;
+            
+        case GUN_NUMBER:
+            shootGun();
+        break;
 	}
 }
 
@@ -2020,6 +2027,19 @@ function shootGrappleHook(){
 }
 
 /**
+ * Shoot a bullet
+ */
+function shootGun(){
+    weapons[weapons.length] = {
+        type: player.powerOn,
+        shooting: true,
+        position: {x: player.position.x+player.width/2 , y: player.position.y+player.height}, 
+        length: 20,
+        time: 0    
+    }
+}
+
+/**
  * Delete the drawing of the weapon
  */
 function deleteWeapon(){
@@ -2034,57 +2054,83 @@ function deleteDoubleHook(){
 	weapons = temp;
 }
 
+/**
+ * Delete a bullet that hit something
+ */
+function deleteBullet(){
+	var temp = weapons.filter(weapons => weapons.shooting);
+	weapons = temp;
+}
 
 /**
- * Checking if the hook should stop
+ * Checking if the weapon should stop
  */
-function stopHooks(hook){
+function stopWeapon(weap){
     // Hit the top of the screen
-    if(hook.position.y - hook.length < 0){
-        switch(hook.type){
+    if(weap.position.y - weap.length < 0){
+        switch(weap.type){
             case GRAPPLE_HOOK_NUMBER :
                 deleteWeapon();
             break;
 
             case DOUBLE_HOOK_NUMBER:
-                hook.shooting = false;
+                weap.shooting = false;
                 deleteDoubleHook();
             break;                    
 
             case TRIDENT_NUMBER :
-                hook.shooting = false;
-                if(hook.time > 3){
-                    deleteWeapon(hook);
+                weap.shooting = false;
+                if(weap.time > 3){
+                    deleteWeapon();
                 }
             break;
 
-            
-        }
+            case GUN_NUMBER :
+                weap.shooting = false;
+                deleteBullet();
+            break;
+        }    
+
     } else {
 
         //Hit a platform
         var isItHittingPlatform = false;
 
         for(var i=0 ; i<platforms.length ; i++){
-            if(platforms[i].exist && isWeaponBetweenX(hook,platforms[i])){
-                if(hook.position.y - hook.length  < platforms[i].position.y + platforms[i].height && hook.position.y > platforms[i].position.y){
+            if(platforms[i].exist && isWeaponBetweenX(weap,platforms[i])){
+                if(weap.position.y - weap.length  < platforms[i].position.y + platforms[i].height && weap.position.y > platforms[i].position.y){
                     
-                    switch(hook.type){
+                    switch(weap.type){
                         case GRAPPLE_HOOK_NUMBER :
-                        case DOUBLE_HOOK_NUMBER :
-                            hook.shooting = false;
+                            weap.shooting = false;
                             deleteWeapon();
                             if(platforms[i].isDestructible){
                                 platforms[i].exist = false;
                             }
                         break;
 
+                        case DOUBLE_HOOK_NUMBER :
+                            weap.shooting = false;
+                            deleteDoubleHook();
+                            if(platforms[i].isDestructible){
+                                platforms[i].exist = false;
+                            }
+                        break;
+
                         case TRIDENT_NUMBER :
-                            hook.shooting = false;
+                            weap.shooting = false;
                             if(platforms[i].isDestructible){
                                 platforms[i].exist = false;
                                 deleteWeapon(); 
                             }
+                        break;
+
+                        case GUN_NUMBER :
+                            weap.shooting = false;
+                            if(platforms[i].isDestructible){
+                                platforms[i].exist = false;
+                            }
+                            deleteBullet(); 
                         break;
                     }
                 }
@@ -2096,22 +2142,27 @@ function stopHooks(hook){
     for(var i=0 ; i<balloons.length ; i++){
         if(balloons[i].size.number > 0){
 
-            if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
-            && balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length
-            && balloons[i].center.y + balloons[i].size.radius < hook.position.y){
+            if( Math.pow(balloons[i].center.x - weap.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
+            && balloons[i].center.y + balloons[i].size.radius > weap.position.y - weap.length
+            && balloons[i].center.y + balloons[i].size.radius < weap.position.y){
 
-                switch(hook.type){
+                switch(weap.type){
                     case GRAPPLE_HOOK_NUMBER:
                         deleteWeapon();
                     break;
 
                     case TRIDENT_NUMBER:
-                        deleteWeapon(hook);
+                        deleteWeapon();
                     break;
 
                     case DOUBLE_HOOK_NUMBER:
-                        hook.shooting = false;
+                        weap.shooting = false;
                         deleteDoubleHook();
+                    break;
+
+                    case GUN_NUMBER:
+                        weap.shooting = false;
+                        deleteBullet();
                     break;
                 }         
 
@@ -2454,6 +2505,7 @@ function playerTouchItem(){
                         case GRAPPLE_HOOK_ITEM:
                         case DOUBLE_HOOK_ITEM:
                         case TRIDENT_ITEM:
+                        case GUN_ITEM:
                             player.powerOn = items[i].type;
                             items[i].type = -1;
                         break;
@@ -2682,6 +2734,10 @@ function update(delta) {
                 case TRIDENT_NUMBER:
                     weapons[i].length += HOOK_SPEED * delta ;
                 break;
+
+                case GUN_NUMBER:
+                    weapons[i].position.y -= BULLET_SPEED * delta;
+                break;
             }
         } else {
 
@@ -2691,7 +2747,7 @@ function update(delta) {
             }
         }
 
-        stopHooks(weapons[i]);
+        stopWeapon(weapons[i]);
     }
 
     // Items are falling and getting older
@@ -2940,6 +2996,11 @@ function render() {
                     case SHIELD_ITEM:
                         context.drawImage(SHIELD_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
+
+                    case GUN_ITEM:
+                        context.fillStyle = "blue";
+                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
+                    break;
                 }
             }
         }
@@ -2947,7 +3008,7 @@ function render() {
 
 		// weapons drawing
 		for(var i=0 ; i < weapons.length ; i++){
-			switch(weapons[i].type){
+            switch(weapons[i].type){
 				case GRAPPLE_HOOK_NUMBER :
 					context.fillStyle = GRAPPLE_HOOK_COLOR;
                     context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length);
@@ -2970,6 +3031,11 @@ function render() {
                     context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length + 5);
                     context.drawImage(TRIDENT_IMAGE, weapons[i].position.x-20, weapons[i].position.y - weapons[i].length);
                     break;
+
+                case GUN_NUMBER:
+                    context.fillStyle = "black";
+                    context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length);
+                break;
 			}
 		}
 
@@ -3126,6 +3192,13 @@ function captureKeyboardPress(event) {
 				console.log("Trident activé");
 			break;
 
+            //Activate the powerOn Gun                                                                  // BETA FUNCTION
+            case 85:
+				player.powerOn = GUN_NUMBER ;
+				console.log("Gun activé");
+				break;
+
+                
 			//Make the player invincible                                                                // BETA FUNCTION
 			case 73:
                 /**
@@ -3169,8 +3242,9 @@ captureKeyboardReleased = function(event) {
 		case 39:
 		case 37:
 			playerStopMove(event.keyCode);
-			break;
-		case 38:
+	    break;
+        
+        case 38:
 		case 40:
 			playerStopMoveLadder();
 			break;
