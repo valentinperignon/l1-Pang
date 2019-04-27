@@ -3042,7 +3042,7 @@ function render() {
         // Drawing of the player
         if(!easterEgg){
             if(!victory){
-                if(!isInvincible || (Date.now() - playerBlinkTimer)%500 < 250){         
+                if(!isInvincible || areBalloonsFreeze || (Date.now() - playerBlinkTimer)%500 < 250){         
                     if(player.speed.x > 0){
                         context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
                         player_last_direction = 1;
