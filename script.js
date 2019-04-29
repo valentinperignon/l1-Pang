@@ -1,6 +1,7 @@
 
 /**
  * Jeu Pang (Avril 2019)
+ * Projet d'Initiation à l'Ingénierie Logicielle
  * script.js
  * 
  * @author Fabian Devel, Nathanaël Houn, Valentin Perignon
