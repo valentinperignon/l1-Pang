@@ -2976,13 +2976,8 @@ function render() {
             // buttons
             positionXButton = margin + i * (marginButton + widthButton);
             context.fillStyle = "#E7DBD0";
-            context.fillRect(positionXButton, 400, widthButton, heightButton); // 1 to 5
-            context.fillRect(
-                positionXButton,
-                400 + heightButton + 40,
-                widthButton,
-                heightButton
-            ); // 6 to 10
+            context.drawImage(buttons, positionXButton, 400, widthButton, heightButton);
+            context.drawImage(buttons, positionXButton, 400 + heightButton + 40, widthButton, heightButton);
 
             // texts
             textButton1 = "Niveau " + (i + 1);
