@@ -1,6 +1,7 @@
 
 /**
  * Jeu Pang (Avril 2019)
+ * Projet d'Initiation à l'Ingénierie Logicielle
  * script.js
  * 
  * @author Fabian Devel, Nathanaël Houn, Valentin Perignon
@@ -460,13 +461,179 @@ const PLATFORMS_LIST = {
                 "x": 990,
                 "y": 200
             },
+            "width": 150,
             "height": 30,
             "exist": true,
             "isDestructible": true
         }
     ],
-    level7: [],
-    level8: [],
+    level7: [
+        // Vertical platforms
+        {
+            "position":{
+                "x": 216,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 310,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 405,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 595,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 690,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 785,
+                "y": 300
+            },
+            "width": 80,
+            "height": 20,
+            "exist": true,
+            "isDestructible": false
+        },
+
+        //Vertical platforms
+        {
+            "position":{
+                "x": 530,
+                "y": 130
+            },
+            "width": 20,
+            "height": 75,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 530,
+                "y": 215
+            },
+            "width": 20,
+            "height": 75,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 530,
+                "y": 330
+            },
+            "width": 20,
+            "height": 75,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 530,
+                "y": 415
+            },
+            "width": 20,
+            "height": 75,
+            "exist": true,
+            "isDestructible": false
+        }
+    ],
+    level8: [
+        {
+            "position":{
+                "x": 0,
+                "y": 150
+            },
+            "width": 110,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 200,
+                "y": 300
+            },
+            "width": 110,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 400,
+                "y": 450
+            },
+            "width": 95,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 585,
+                "y": 450
+            },
+            "width": 95,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 770,
+                "y": 300
+            },
+            "width": 110,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        },
+        {
+            "position":{
+                "x": 970,
+                "y": 150
+            },
+            "width": 200,
+            "height": 58,
+            "exist": true,
+            "isDestructible": false
+        }
+    ],
     level9: [],
     level10: [
         //horizontal platforms
@@ -703,36 +870,6 @@ const PLATFORMS_LIST = {
         },
         {
             "position":{
-                "x": 450,
-                "y": 300
-            },
-            "width": 45,
-            "height": 20,
-            "exist": true,
-            "isDestructible": true
-        },
-        {
-            "position":{
-                "x": 500,
-                "y": 300
-            },
-            "width": 45,
-            "height": 20,
-            "exist": true,
-            "isDestructible": true
-        },
-        {
-            "position":{
-                "x": 550,
-                "y": 300
-            },
-            "width": 45,
-            "height": 20,
-            "exist": true,
-            "isDestructible": true
-        },
-        {
-            "position":{
                 "x": 600,
                 "y": 300
             },
@@ -890,7 +1027,48 @@ const LADDERS_LIST = {
         }
     ],
     "level7": [],
-    "level8": [],
+    "level8": [
+        {
+            "position":{
+                "x": 110,
+                "y": 150
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        },
+        {
+            "position":{
+                "x": 310,
+                "y": 300
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        },
+        {
+            "position":{
+                "x": 495,
+                "y": 450
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        },   
+        {
+            "position":{
+                "x": 680,
+                "y": 300
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        },
+        {
+            "position":{
+                "x": 880,
+                "y": 150
+            },
+            "width": LADDER_WIDTH,
+            "height": 208,
+        }
+    ],
     "level9": [],
     "level10": []
 };
@@ -930,7 +1108,7 @@ const BALLOONS_LIST = {
 		{
 			center: {x: 400, y:30},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: 1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
 	],
@@ -939,13 +1117,13 @@ const BALLOONS_LIST = {
 		{
 			center: {x: 400, y:30},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: -0.8, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		},
 		{
 			center: {x: 500, y:30},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: 1, y: 0},
+			velocity:{ x: 0.8, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
 	],
@@ -954,13 +1132,13 @@ const BALLOONS_LIST = {
 		{
 			center: {x: 400, y:30},
 			size: BALLOON_SIZE[3],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: -0.8, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		},
 		{
 			center: {x: 500, y:30},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: 1, y: 0},
+			velocity:{ x: 0.5, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		},
 		{
@@ -1038,37 +1216,128 @@ const BALLOONS_LIST = {
     ],
     "level7": [
         {
-			center: {x: 300, y:30},
-			size: BALLOON_SIZE[3],
+			center: {x: 325, y:90},
+			size: BALLOON_SIZE[4],
 			velocity:{ x: -1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
         },
         {
-			center: {x: 525, y:30},
-			size: BALLOON_SIZE[3],
-			velocity:{ x: -1, y: 0},
+			center: {x: 520, y:30},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: -0.6, y: 0},
 			gravity: {x :0, y: 9.81/1000},
         },
         {
-			center: {x: 750, y:30},
-			size: BALLOON_SIZE[2],
-			velocity:{ x: -1, y: 0},
+			center: {x: 560, y:30},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: 0.6, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 750, y:90},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: 1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
     ],
     "level8": [
 		{
-			center: {x: 400, y:30},
+			center: {x: 60, y:100},
+			size: BALLOON_SIZE[4],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 240, y:260},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 430, y:412},
+			size: BALLOON_SIZE[2],
+			velocity:{ x: -1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 645, y:412},
+			size: BALLOON_SIZE[2],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+		},
+        {
+			center: {x: 820, y:260 },
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 1, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 1020, y:100},
 			size: BALLOON_SIZE[4],
 			velocity:{ x: -1, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
     ],
     "level9": [
+        {
+			center: {x: 0, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 0},
+			gravity: {x :0, y: 9.81/1000},
+        },
 		{
-			center: {x: 400, y:30},
-			size: BALLOON_SIZE[4],
-			velocity:{ x: -1, y: 0},
+			center: {x: 140, y:30},
+			size: BALLOON_SIZE[2],
+			velocity:{ x: 0, y: 0.8},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 240, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 1.6},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 340, y:30},
+			size: BALLOON_SIZE[2],
+            velocity:{ x: 0, y: 2.4},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 440, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 3.2},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        // Middle
+        {
+			center: {x: 640, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 3.2},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+            center: {x: 740, y:30},
+			size: BALLOON_SIZE[2],
+			velocity:{ x: 0, y: 2.4},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+			center: {x: 840, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 1.6},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+            center: {x: 940, y:30},
+			size: BALLOON_SIZE[2],
+			velocity:{ x: 0, y: 0.8},
+			gravity: {x :0, y: 9.81/1000},
+        },
+        {
+            center: {x: 1040, y:30},
+			size: BALLOON_SIZE[3],
+			velocity:{ x: 0, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
     ],
@@ -1088,13 +1357,13 @@ const BALLOONS_LIST = {
         {
 			center: {x: 350, y:200},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: 1, y: 0},
+			velocity:{ x: 0.5, y: 0},
 			gravity: {x :0, y: 9.81/1000},
         },
         {
 			center: {x: 750, y:200},
 			size: BALLOON_SIZE[4],
-			velocity:{ x: -1, y: 0},
+			velocity:{ x: -0.5, y: 0},
 			gravity: {x :0, y: 9.81/1000},
 		}
 	]
@@ -1119,7 +1388,8 @@ var isOnFocus = true;
 var pause = false;
 var victory = false;
 var defeat = false;
-var isInvincible = false;                                                                                           // BETA isInvicible
+var isInvincible = false;        
+var easterEgg = false;                                                                                  
 
 /** Timers */
 var timer = 100;
@@ -1160,10 +1430,11 @@ const GRAPPLE_HOOK_NUMBER = 1 ;
 const DOUBLE_HOOK_NUMBER = 2 ;
 const TRIDENT_NUMBER = 3 ;
 const HOOK_SPEED = 0.3 ;
+const BULLET_SPEED = 0.3;
 const HOOK_WITDH = 5;
 
 	// - Others weapons
-// ADD HERE
+const GUN_NUMBER = 4;
 
 /** All the platforms */
 var platforms = [] ;
@@ -1183,12 +1454,14 @@ var items = [];
 const GRAPPLE_HOOK_ITEM = GRAPPLE_HOOK_NUMBER; //1
 const DOUBLE_HOOK_ITEM = DOUBLE_HOOK_NUMBER; //2
 const TRIDENT_ITEM = TRIDENT_NUMBER; //3
-const TIMER_BOOST_ITEM = 4;
-const DYNAMITE_ITEM = 5;
-const FREEZE_ITEM = 6;
-const SHIELD_ITEM = 7;
+const GUN_ITEM = GUN_NUMBER;
 
-const MAX_ITEM = 7;
+const TIMER_BOOST_ITEM = 5;
+const DYNAMITE_ITEM = 6;
+const FREEZE_ITEM = 7;
+const SHIELD_ITEM = 8;
+
+const MAX_ITEM = 8;
 
 /** Variables about menu's buttons */
 var margin = 60
@@ -1197,14 +1470,19 @@ var widthButton = 132;
 var heightButton = 40;
 
 /** Constants for the graphical part */
-const DESTRUCTIBLE_PLATFORM_COLOR = "darkgrey";
+const DESTRUCTIBLE_PLATFORM_COLOR = "#f47b3e";
 
-const PLATFORM_COLOR = "black";
-const LADDER_COLOR = "gray";
+const PLATFORM_COLOR = "#a5260a";
+const LADDERS_IMAGE = new Image();
+    LADDERS_IMAGE.src = "./assets/Ladders.png";
 
 var BALLOON_COLOR;
 var BALLON_GRADIENT;
 
+const EASTER_BUNNY = new Image();
+    EASTER_BUNNY.src = "./assets/lapin.png";
+const EASTER_EGG = new Image();
+    EASTER_EGG.src = "./assets/easterEgg.png";
 const GRAPPLE_HOOK_COLOR = "red";
 const TRIDENT_COLOR1 = "orangered";
 const TRIDENT_COLOR2 = "orange";
@@ -1250,7 +1528,7 @@ const SHIELD_IMAGE = new Image();
 // ################################ Functions ################################
 // ---------------------------------------------------------------------------
 
-/**
+/**     
 * Level selection : initialize all the variables
 */
 function levelInitialization(num){
@@ -1258,8 +1536,8 @@ function levelInitialization(num){
     // initialization of the player
     player.position.x = context.width/2 - player.width/2;
     player.position.y = context.height - player.height;
-    player.height = 75;
-    player.width = 42;  
+    player.height = 70;
+    player.width = 45;  
     player.powerOn = GRAPPLE_HOOK_NUMBER;
     player.shieldOn = false;
 
@@ -1335,7 +1613,6 @@ function levelInitialization(num){
             balloons = JSON.parse(JSON.stringify(BALLOONS_LIST.level10));
 			BALLOON_COLOR = "red";
             cvs.style.background = "url('assets/bg_fromages.jpg')";
-            player.position.y = 10;
         break;
 
         default:
@@ -1447,7 +1724,7 @@ function findLadder(object) {
 
     while(i<ladders.length && !find) {
         if(object.position.x >= ladders[i].position.x - 0.33*object.width && object.position.x <= ladders[i].position.x + ladders[i].width - 0.66*object.width) {
-            if(object.position.y >= ladders[i].position.y - 1.1*object.height && object.position.y <= context.height) {
+            if(object.position.y >= ladders[i].position.y - 1.1*object.height && object.position.y <= ladders[i].position.y + ladders[i].height) {
                 find = true;
             } else {
                 i++;
@@ -1456,7 +1733,6 @@ function findLadder(object) {
             i++
         }
     }
-
     if(i == ladders.length) {
         i = -1;
     }
@@ -1473,7 +1749,8 @@ function detectPlatform(object) {
         if(!platforms[i].exist
         || object.position.x + object.width < platforms[i].position.x
         || object.position.x > platforms[i].position.x + platforms[i].width
-        || object.position.y > platforms[i].position.y + platforms[i].height
+        
+        || object.position.y >= platforms[i].position.y + platforms[i].height
         || object.position.y + object.height < platforms[i].position.y) {
             isNotOn++;
         }
@@ -1509,10 +1786,13 @@ function drawFinalMessage(gameState) {
 	if(gameState == 'victory') {
 		context.fillStyle = 'rgb(51, 138, 52, .75)';
 		text = "VICTOIRE !";
-	} else {
+	} else if(player.livesNumber > 1){
 		context.fillStyle = "rgb(171, 0, 13, .75)";
-		text = "PERDU !";
-	}
+        text = "TOUCHÉ...";
+	} else{
+        context.fillStyle = "rgb(171, 0, 13, .75)";
+        text = "PERDU !   SCORE : " + player.score;
+    }
 	context.shadowBlur = 15;
 	context.shadowColor = 'black';
 	context.fillRect(context.width/5, (context.height - 150)/2, context.width/5*3, 150);
@@ -1640,10 +1920,17 @@ updateCircleColor = function(circle) {
 function fillCircle(circle){
 	updateCircleColor(circle);
 
-	context.beginPath();
-	context.fillStyle=BALLON_GRADIENT;
-	context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
-	context.fill();
+    context.beginPath();
+    if(easterEgg){
+        context.drawImage(EASTER_EGG, circle.center.x - circle.size.radius, circle.center.y - circle.size.radius, circle.size.radius*2, circle.size.radius*2 );
+        context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
+    } else {
+        context.fillStyle=BALLON_GRADIENT;
+        context.arc(circle.center.x, circle.center.y, circle.size.radius, 0, 2 * Math.PI);
+	    context.fill();
+    }
+	
+	
 }
 
 
@@ -1664,7 +1951,7 @@ function isVictory(){
 
 /**
  * Detect the defeat 
- * (i.e. if there is no time and no ballon remaining)
+ * (i.e. if there is no time and balloons remaining)
  * returns {boolean} true if the defeat is real
  */
 function isDefeat(ball) {
@@ -1678,11 +1965,16 @@ function isDefeat(ball) {
             player.shieldOn = false;
             isInvincible = true;
             shieldTimer = Date.now();
-            splitBalloon(ball);
+            if(ball.size.number > 1){   
+                splitBalloon(ball);
+            } else {
+                ball.size = BALLOON_SIZE[ball.size.number-1];
+            }
             playerBlinkTimer = Date.now();
             
         } else {
             defeat = true;
+            
         }
     }
 	return defeat;
@@ -1702,15 +1994,19 @@ function shootWeapon(player){
 	switch(player.powerOn){
 		case GRAPPLE_HOOK_NUMBER:
 			shootGrappleHook();
-			break;
+		break;
 
 		case DOUBLE_HOOK_NUMBER:
 			shootGrappleHook();
-			break;
+		break;
 
 		case TRIDENT_NUMBER:
 			shootGrappleHook();
-			break;
+        break;
+            
+        case GUN_NUMBER:
+            shootGun();
+        break;
 	}
 }
 
@@ -1732,6 +2028,19 @@ function shootGrappleHook(){
 }
 
 /**
+ * Shoot a bullet
+ */
+function shootGun(){
+    weapons[weapons.length] = {
+        type: player.powerOn,
+        shooting: true,
+        position: {x: player.position.x+player.width/2 , y: player.position.y+player.height}, 
+        length: 20,
+        time: 0    
+    }
+}
+
+/**
  * Delete the drawing of the weapon
  */
 function deleteWeapon(){
@@ -1746,57 +2055,83 @@ function deleteDoubleHook(){
 	weapons = temp;
 }
 
+/**
+ * Delete a bullet that hit something
+ */
+function deleteBullet(){
+	var temp = weapons.filter(weapons => weapons.shooting);
+	weapons = temp;
+}
 
 /**
- * Checking if the hook should stop
+ * Checking if the weapon should stop
  */
-function stopHooks(hook){
+function stopWeapon(weap){
     // Hit the top of the screen
-    if(hook.position.y - hook.length < 0){
-        switch(hook.type){
+    if(weap.position.y - weap.length < 0){
+        switch(weap.type){
             case GRAPPLE_HOOK_NUMBER :
                 deleteWeapon();
             break;
 
             case DOUBLE_HOOK_NUMBER:
-                hook.shooting = false;
+                weap.shooting = false;
                 deleteDoubleHook();
             break;                    
 
             case TRIDENT_NUMBER :
-                hook.shooting = false;
-                if(hook.time > 3){
+                weap.shooting = false;
+                if(weap.time > 3){
                     deleteWeapon();
                 }
             break;
 
-            
-        }
+            case GUN_NUMBER :
+                weap.shooting = false;
+                deleteBullet();
+            break;
+        }    
+
     } else {
 
         //Hit a platform
         var isItHittingPlatform = false;
 
         for(var i=0 ; i<platforms.length ; i++){
-            if(platforms[i].exist && isWeaponBetweenX(hook,platforms[i])){
-                if(hook.position.y - hook.length  < platforms[i].position.y + platforms[i].height && hook.position.y > platforms[i].position.y){
+            if(platforms[i].exist && isWeaponBetweenX(weap,platforms[i])){
+                if(weap.position.y - weap.length  < platforms[i].position.y + platforms[i].height && weap.position.y > platforms[i].position.y){
                     
-                    switch(hook.type){
+                    switch(weap.type){
                         case GRAPPLE_HOOK_NUMBER :
-                        case DOUBLE_HOOK_NUMBER :
-                            hook.shooting = false;
+                            weap.shooting = false;
                             deleteWeapon();
                             if(platforms[i].isDestructible){
                                 platforms[i].exist = false;
                             }
                         break;
 
+                        case DOUBLE_HOOK_NUMBER :
+                            weap.shooting = false;
+                            deleteDoubleHook();
+                            if(platforms[i].isDestructible){
+                                platforms[i].exist = false;
+                            }
+                        break;
+
                         case TRIDENT_NUMBER :
-                            hook.shooting = false;
+                            weap.shooting = false;
                             if(platforms[i].isDestructible){
                                 platforms[i].exist = false;
                                 deleteWeapon(); 
                             }
+                        break;
+
+                        case GUN_NUMBER :
+                            weap.shooting = false;
+                            if(platforms[i].isDestructible){
+                                platforms[i].exist = false;
+                            }
+                            deleteBullet(); 
                         break;
                     }
                 }
@@ -1808,19 +2143,27 @@ function stopHooks(hook){
     for(var i=0 ; i<balloons.length ; i++){
         if(balloons[i].size.number > 0){
 
-            if( Math.pow(balloons[i].center.x - hook.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
-            && balloons[i].center.y + balloons[i].size.radius > hook.position.y - hook.length
-            && balloons[i].center.y + balloons[i].size.radius < hook.position.y){
+            if( Math.pow(balloons[i].center.x - weap.position.x, 2) < Math.pow(balloons[i].size.radius, 2) 
+            && balloons[i].center.y + balloons[i].size.radius > weap.position.y - weap.length
+            && balloons[i].center.y + balloons[i].size.radius < weap.position.y){
 
-                switch(hook.type){
+                switch(weap.type){
                     case GRAPPLE_HOOK_NUMBER:
+                        deleteWeapon();
+                    break;
+
                     case TRIDENT_NUMBER:
-                        deleteWeapon(hook);
+                        deleteWeapon();
                     break;
 
                     case DOUBLE_HOOK_NUMBER:
-                        hook.shooting = false;
+                        weap.shooting = false;
                         deleteDoubleHook();
+                    break;
+
+                    case GUN_NUMBER:
+                        weap.shooting = false;
+                        deleteBullet();
                     break;
                 }         
 
@@ -2081,13 +2424,17 @@ function collisionsWithPlayer(ball, object){
  * @param {*} ball the splitted balloon
  */
 function createItem(ball){
-    if(ball.size.number>0){
-        items[items.length] = {
-            type: Math.floor(Math.random()*MAX_ITEM)+1,
-            position: {x: ball.center.x, y:ball.center.y},
-            height: 30,
-            width: 30,
-            time: 0
+    // 34% of chance for items to spawn when a balloon is burst
+    var n = Math.random();
+    if(n >= 0.66){
+        if(ball.size.number>0){
+            items[items.length] = {
+                type: Math.floor(Math.random()*MAX_ITEM)+1,
+                position: {x: ball.center.x, y:ball.center.y},
+                height: 40,
+                width: 40,
+                time: 0
+            }
         }
     }
 }
@@ -2101,23 +2448,37 @@ function splitBalloon(ball){
     //Two new balloons if the balloons is not of the minimal size
     if(ball.size.number > 1){
         var oldBall = ball;
+        var sizeVelocityX;
+        switch (ball.size.number) {
+            case 4:
+                sizeVelocityX = 0.66
+                break;
+
+            case 3:
+                sizeVelocityX = 0.75
+                break;
+
+            case 2:
+                sizeVelocityX = 1
+                break;
+        }
 
         balloons[balloons.length] =  {
-            center: {x: oldBall.center.x, y: oldBall.center.y},
+            center: {x: oldBall.center.x-10, y: oldBall.center.y-6},
             size: BALLOON_SIZE[oldBall.size.number - 1],
-            velocity:{ x: -1, y: -2},
+            velocity:{ x: -sizeVelocityX, y: -2},
             gravity: {x :0, y: 9.81/1000}
         };
         
         balloons[balloons.length] =  {
-            center: {x: oldBall.center.x, y: oldBall.center.y},
+            center: {x: oldBall.center.x+10, y: oldBall.center.y-4},
             size: BALLOON_SIZE[oldBall.size.number - 1],
-            velocity:{ x: 1, y: -2},
+            velocity:{ x: sizeVelocityX, y: -2},
             gravity: {x :0, y: 9.81/1000}
         };
 
         //Maybe an item is spawning
-        if(Math.random()<1.20){
+        if(Math.random()<0.66){
             createItem(oldBall);
         }   
     }  
@@ -2145,6 +2506,7 @@ function playerTouchItem(){
                         case GRAPPLE_HOOK_ITEM:
                         case DOUBLE_HOOK_ITEM:
                         case TRIDENT_ITEM:
+                        case GUN_ITEM:
                             player.powerOn = items[i].type;
                             items[i].type = -1;
                         break;
@@ -2209,7 +2571,7 @@ function dynamiteExplode(){
                 };
 
                 //Maybe an item is spawning
-                if(Math.random()<1.20){
+                if(Math.random()<0.34){
                     createItem(oldBall);
                 }
 
@@ -2260,7 +2622,7 @@ init = function() {
 /**
 * Game loop
 */
-gameLoop = function() {
+function gameLoop()  {
 	var delta = Date.now()-lastUpdate;
 	lastUpdate = Date.now();
 	// Run the game if it is not on pause
@@ -2295,13 +2657,18 @@ gameLoop = function() {
 function update(delta) {
     // update timer
     timer -= delta/1000;
+    
+    //disable the invincibilty 3s after being hit while having a shield
     if(Date.now() - shieldTimer > 3000){
         isInvincible = false;
     }
 
+    // Make the player invincible while the balloons are freezed
     if(areBalloonsFreeze){
-        if(Date.now()-balloonsFreezeTimer>3000){
+        isInvincible = true;
+        if(Date.now()-balloonsFreezeTimer>5000){
             areBalloonsFreeze = false;
+            isInvincible = false;
         }
     } else {
         
@@ -2368,6 +2735,10 @@ function update(delta) {
                 case TRIDENT_NUMBER:
                     weapons[i].length += HOOK_SPEED * delta ;
                 break;
+
+                case GUN_NUMBER:
+                    weapons[i].position.y -= BULLET_SPEED * delta;
+                break;
             }
         } else {
 
@@ -2377,7 +2748,7 @@ function update(delta) {
             }
         }
 
-        stopHooks(weapons[i]);
+        stopWeapon(weapons[i]);
     }
 
     // Items are falling and getting older
@@ -2405,7 +2776,8 @@ function update(delta) {
             newPosYPlayer = player.position.y;
         }
     }
-    if(isNotOnPlatformOrGround(player)) {
+
+    if(isNotOnPlatformOrGround(player)) {    
         isGravity = 1;
     } else {
         isGravity = 0;
@@ -2565,13 +2937,13 @@ function render() {
 		}
 
 		// ladders drawing
-		context.fillStyle= LADDER_COLOR ;
+		//context.fillStyle = LADDERS_IMAGE ;
 		for (var i=0; i < ladders.length; i++) {
-			context.fillRect(ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
+            context.drawImage(LADDERS_IMAGE, ladders[i].position.x, ladders[i].position.y, ladders[i].width, ladders[i].height);
 		}
 
 		// balloons displaying
-        if(!areBalloonsFreeze || (Date.now() - balloonBlinkTimer) < 2000 || (Date.now() - balloonBlinkTimer)%200 < 100 ){
+        if(!areBalloonsFreeze || (Date.now() - balloonBlinkTimer) < 4000 || (Date.now() - balloonBlinkTimer)%400 < 100 ){
 
             for(var i=0 ; i<balloons.length ;i++){
                 if(balloons[i].size.number > 0){
@@ -2625,6 +2997,11 @@ function render() {
                     case SHIELD_ITEM:
                         context.drawImage(SHIELD_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                     break;
+
+                    case GUN_ITEM:
+                        context.fillStyle = "blue";
+                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
+                    break;
                 }
             }
         }
@@ -2632,7 +3009,7 @@ function render() {
 
 		// weapons drawing
 		for(var i=0 ; i < weapons.length ; i++){
-			switch(weapons[i].type){
+            switch(weapons[i].type){
 				case GRAPPLE_HOOK_NUMBER :
 					context.fillStyle = GRAPPLE_HOOK_COLOR;
                     context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length);
@@ -2655,63 +3032,58 @@ function render() {
                     context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length + 5);
                     context.drawImage(TRIDENT_IMAGE, weapons[i].position.x-20, weapons[i].position.y - weapons[i].length);
                     break;
+
+                case GUN_NUMBER:
+                    context.fillStyle = "black";
+                    context.fillRect(weapons[i].position.x,weapons[i].position.y,HOOK_WITDH,-weapons[i].length);
+                break;
 			}
 		}
 
-		// Drawing of the player
-		if(!victory){
-            if(!isInvincible || (Date.now() - playerBlinkTimer)%500 < 250){
-                
-                if(player.speed.x > 0){
-                    context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
-                    player_last_direction = 1;
-                } else if (player.speed.x < 0){
-                    context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
-                    player_last_direction = -1;
-                } else {
-
-                    if(player_last_direction > 0){
+        // Drawing of the player
+        if(!easterEgg){
+            if(!victory){
+                if(!isInvincible || areBalloonsFreeze || (Date.now() - playerBlinkTimer)%500 < 250){         
+                    if(player.speed.x > 0){
                         context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
-                    } else {
+                        player_last_direction = 1;
+                    } else if (player.speed.x < 0){
                         context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
+                        player_last_direction = -1;
+                    } else {
+                        if(player_last_direction > 0){
+                            context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
+                        } else {
+                            context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
+                        }
+                    }
+                    //Shield
+                    if(player.shieldOn){
+                        context.drawImage(SHIELD_IMAGE,player.position.x,player.position.y);
                     }
                 }
-
-                //Shield
-                if(player.shieldOn){
-                    context.drawImage(SHIELD_IMAGE,player.position.x,player.position.y);
+            } else {
+                if(player_last_direction > 0){
+                    context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
+                } else {
+                    context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
                 }
             }
         } else {
-            if(player_last_direction > 0){
-                context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
-            } else {
-                context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
-            }
+            context.drawImage(EASTER_BUNNY, player.position.x, player.position.y);
         }
         
-		// Victory and defeat screen
-		if(player.livesNumber > 1){
-			var textVictory = "VICTOIRE !";
-			var textDefeat = "PERDU...";
-			if(victory){
-				drawFinalMessage('victory');
+        // Victory and defeat screen
+        if(victory){
+            drawFinalMessage('victory');
+        }
+        if(defeat) {
+		    if(player.livesNumber > 1){
+                drawFinalMessage('defeat')    
 			} else {
-				if(defeat) {
-					player.livesNumber -= 1;
-					defeat = false;
-					levelInitialization(numLevel);    
-				}
-			}
-		} else{
-			if(victory){
-				drawFinalMessage('victory');
-			} else {
-				if(defeat) {
-					player.livesNumber -= 1;
-					drawFinalMessage('defeat');
-				}
-			}
+			    player.livesNumber -= 1;
+                drawFinalMessage('defeat');
+            }
 		}
 	}
 }
@@ -2719,13 +3091,14 @@ function render() {
 /**
 *  Key down event
 */
-captureKeyboardPress = function(event) {
+// Enter the level which its number's key is pressed  
+function captureKeyboardPress(event) {
 	if(numLevel == 0) { // menu
 		switch(event.keyCode) {
-			case 13:
+			case 13: //enter
 				numLevel = 1;
-				break;
-			case 49: // niveau 1
+			break;
+            case 49: // niveau 1
 			case 50: // niveau 2
             case 51: // niveau 3
             case 52: // niveau 4
@@ -2736,7 +3109,7 @@ captureKeyboardPress = function(event) {
             case 57: // niveau 9
 				numLevel = event.keyCode - 48;
 				levelInitialization(numLevel);
-				break;
+			break;
 		}
 	} else { // jeu
 		switch (event.keyCode) {
@@ -2744,13 +3117,14 @@ captureKeyboardPress = function(event) {
 			case 39:
 			case 37:
 				playerMove(event.keyCode);
-				break;
+			break;
 
 			// Player1 up or down
 			case 38:
-			case 40:
+            case 40:
+                event.preventDefault(); //disable the default's navigator scrolling action on the html page
 				playerMoveLadder(event.keyCode);
-                break;
+            break;
                 
             // 'M' to return to main menu
             case 77:
@@ -2760,20 +3134,27 @@ captureKeyboardPress = function(event) {
 			// 'P' means pause or unpause
 			case 80:
 				pause = !pause;
-				break;
+			break;
 
 			// Space for fire the weapon
-			case 32:
+            case 32:
+                event.preventDefault();
 				shootWeapon(player);
-				break;
+			break;
 
 			// Enter to insert credits and play again
             case 13: 
                 if(defeat){
-                    defeat = false;
-                    levelInitialization(numLevel);
-                    player.livesNumber = 3;
-                    player.score = 0;
+                    if(player.livesNumber > 0){
+                        defeat = false;
+                        levelInitialization(numLevel);
+                        player.livesNumber -= 1;
+                    } else {
+                        defeat = false;
+                        levelInitialization(numLevel);
+                        player.livesNumber = 3;
+                        player.score = 0;
+                    }
                 } else if(victory){
                     numLevel += 1;
                     if(numLevel > MAX_LEVEL){
@@ -2782,36 +3163,43 @@ captureKeyboardPress = function(event) {
                     victory = !victory;
                     levelInitialization(numLevel);
                 }
-                break;
+            break;
 
 			// Shortcut to victory                                                                      // BETA FUNCTION
 			case 71:
 				victory = !victory;
-				break;
+			break;
 
 			// Shortcut to defeat                                                                       // BETA FUNCTION
 			case 72:
 				defeat = !defeat;
-				break;
+			break;
 
 			//Activate the default weapon : the grapple hook                                            // BETA FUNCTION
 			case 82:
 				player.powerOn = GRAPPLE_HOOK_NUMBER ;
 				console.log("Grappin activé");
-				break;
+			break;
 
 			//Activate the powerOn double grapple hook                                                  // BETA FUNCTION
 			case 84: 
 				player.powerOn = DOUBLE_HOOK_NUMBER ;
 				console.log("Double grappin activé");
-				break;
+			break;
 
 			//Activate the powerOn Trident                                                              // BETA FUNCTION
 			case 89:
 				player.powerOn = TRIDENT_NUMBER ;
 				console.log("Trident activé");
+			break;
+
+            //Activate the powerOn Gun                                                                  // BETA FUNCTION
+            case 85:
+				player.powerOn = GUN_NUMBER ;
+				console.log("Gun activé");
 				break;
 
+                
 			//Make the player invincible                                                                // BETA FUNCTION
 			case 73:
                 /**
@@ -2823,9 +3211,27 @@ captureKeyboardPress = function(event) {
 				isInvincible = !isInvincible;
                 */
                 player.shieldOn = true;
-			    break;        
-		}
-	}
+            break;      
+                
+            case 89:
+				player.powerOn = TRIDENT_NUMBER ;
+				console.log("Trident activé");
+            break;
+              
+        }          
+    }
+    /*******EASTER EGG******/
+    if (event.ctrlKey){
+        event.preventDefault();
+        if(event.altKey){
+            if(event.keyCode == 68){
+                if(easterEgg){
+                    easterEgg = false;
+                }
+                easterEgg = true;
+            }
+        }
+    }
 }
 
 /**
@@ -2837,8 +3243,9 @@ captureKeyboardReleased = function(event) {
 		case 39:
 		case 37:
 			playerStopMove(event.keyCode);
-			break;
-		case 38:
+	    break;
+        
+        case 38:
 		case 40:
 			playerStopMoveLadder();
 			break;
@@ -2849,18 +3256,21 @@ captureKeyboardReleased = function(event) {
  *  Click event
  */
 captureClicSouris = function(event) {
-    if (event.target.id == "cvs") {
-        clic.x = event.pageX - content.offsetLeft;
-        clic.y = event.pageY - content.offsetTop;
-    }
+    if(numLevel == 0){
+        if (event.target.id == "cvs") {
+            clic.x = event.pageX - cvs.offsetLeft;
+            clic.y = event.pageY -  cvs.offsetTop;
+        }
+        
 
-    // Buttons are clicked
-    if((clic.y >= 400 && clic.y <= 440) || (clic.y >= 480 && clic.y <= 520)) { // y position
-        if(clic.x >= 60 && clic.x <= cvs.width-60) { // x position without margin
-            var numButton = detectLevelButton();
-            if(numButton > 0) {
-                numLevel = numButton;
-                levelInitialization(numLevel);
+        // Buttons are clicked
+        if((clic.y >= 400 && clic.y <= 440) || (clic.y >= 480 && clic.y <= 520)) { // y position
+            if(clic.x >= 60 && clic.x <= cvs.width-60) { // x position without margin
+                var numButton = detectLevelButton();
+                if(numButton > 0) {
+                    numLevel = numButton;
+                    levelInitialization(numLevel);
+                }
             }
         }
     }
