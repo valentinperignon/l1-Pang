@@ -2958,17 +2958,7 @@ function render() {
         context.fillRect(0, 0, context.width, context.height);
 
         // Pang logo
-        context.drawImage(logo, (context.width - 400) / 2, 80, 400, 189);
-
-        // "Copyright" text
-        var textCopyright = "© Fabian D., Nathanaël H., Valentin P.";
-        context.fillStyle = "white";
-        context.font = "17px Georgia";
-        context.fillText(
-            textCopyright,
-            (context.width - context.measureText(textCopyright).width) / 2,
-            189 + 80 + 20
-        );
+        context.drawImage(logo, (context.width - 400) / 2, 50, 400, 290);
 
         // Buttons display
         var positionXButton,
@@ -2982,13 +2972,8 @@ function render() {
             // buttons
             positionXButton = margin + i * (marginButton + widthButton);
             context.fillStyle = "#E7DBD0";
-            context.fillRect(positionXButton, 400, widthButton, heightButton); // 1 to 5
-            context.fillRect(
-                positionXButton,
-                400 + heightButton + 40,
-                widthButton,
-                heightButton
-            ); // 6 to 10
+            context.drawImage(buttons, positionXButton, 400, widthButton, heightButton);
+            context.drawImage(buttons, positionXButton, 400 + heightButton + 40, widthButton, heightButton);
 
             // texts
             textButton1 = "Niveau " + (i + 1);
