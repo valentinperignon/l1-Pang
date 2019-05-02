@@ -1546,7 +1546,7 @@ SHIELD_IMAGE.src = "./assets/shield.png";
  * Level selection : initialize all the variables
  */
 function levelInitialization(num) {
-    // initialization of the player
+    //Initialization of the player
     player.position.x = context.width / 2 - player.width / 2;
     player.position.y = context.height - player.height;
     player.height = 70;
@@ -1554,7 +1554,8 @@ function levelInitialization(num) {
     player.powerOn = GRAPPLE_HOOK_NUMBER;
     player.shieldOn = false;
 
-    //JSON.parse(JSON.stringify(var)) is to make a copy of the object and not a copy of the adress.
+    //Init of the ladders, platforms, balloons and background depending on the level number
+    //JSON.parse(JSON.stringify(var)) is to make a copy of the object and not a copy of the adress
     switch (num) {
         case 2:
             ladders = JSON.parse(JSON.stringify(LADDERS_LIST.level2));
@@ -1637,7 +1638,7 @@ function levelInitialization(num) {
             player.position.x = context.width / 4;
     }
 
-    //Initialisation of the timer
+    //Init of the timer
     timer = 100;
 
     //No weapon
@@ -1847,6 +1848,7 @@ function drawFinalMessage(gameState) {
 
 /**
  * It does exactly what you expect
+ * If the player goes out of the borders, changes his position to a correct one
  */
 function keepPlayerWithinBorder() {
     if (player.position.x < 0) {
@@ -1899,10 +1901,10 @@ function isPlayerWithinObject(player, newPosX, newPosY, object) {
 }
 
 /**
- * Keep balloons inside of the canvas
+ * Keep a balloon inside the canvas
  * @param {*} ball - A balloon
  *
- * @returns {int} The changement
+ * @returns {boolean} true if there is a changement
  */
 function keepBalloonWithinBorders(ball) {
     var changement = false;
@@ -2005,6 +2007,7 @@ function fillCircle(circle) {
 
 /**
  * Detect the victory (= no balloon remaining)
+ * @returns {boolean} true if the victory is actual
  */
 function isVictory() {
     var isOneBalloonRemaining = false;
@@ -2020,8 +2023,8 @@ function isVictory() {
 
 /**
  * Detect the defeat
- * (i.e. if there is no time and balloons remaining)
- * returns {boolean} true if the defeat is real
+ * (i.e. if there is no time and at least one balloon remains)
+ * @returns {boolean} true if the defeat is here
  */
 function isDefeat(ball) {
     var defeat = false;
@@ -2053,7 +2056,11 @@ function isDefeat(ball) {
 }
 
 /**
- * Check if is between
+ * Check if a weapon is between the x coordinates of a rectangle
+ * @param weapon the weapon we want to check
+ * @param rectangle the rectangle
+ * 
+ * @returns {boolean} true if the weapon is
  */
 function isWeaponBetweenX(weapon, rectangle) {
     return !(
@@ -2064,6 +2071,7 @@ function isWeaponBetweenX(weapon, rectangle) {
 
 /**
  * Fire a weapon
+ * @param player the player who has his weapon fired
  */
 function shootWeapon(player) {
     switch (player.powerOn) {
@@ -2086,7 +2094,8 @@ function shootWeapon(player) {
 }
 
 /**
- * Shoot a hook
+ * Shoot a grapple hook, simple or double
+ * Change are made in the weapons array
  */
 function shootGrappleHook() {
     //No grapple hook shot or double grapple hook bonus is on
@@ -2109,6 +2118,7 @@ function shootGrappleHook() {
 
 /**
  * Shoot a bullet
+ * Change are made in the weapons array
  */
 function shootGun() {
     weapons[weapons.length] = {
@@ -2124,32 +2134,29 @@ function shootGun() {
 }
 
 /**
- * Delete the drawing of the weapon
+ * Delete all the weapons
+ * Reset the 'weapons' array
  */
 function deleteWeapon() {
     weapons = [];
 }
 
 /**
- * Delete a double hook that is on the top
+ * Delete all the stopped weapons in the 'weapons' array
  */
-function deleteDoubleHook() {
+function deleteStoppedWeapons() {
     var temp = weapons.filter(weapons => weapons.shooting);
     weapons = temp;
 }
 
-/**
- * Delete a bullet that hit something
- */
-function deleteBullet() {
-    var temp = weapons.filter(weapons => weapons.shooting);
-    weapons = temp;
-}
 
 /**
  * Checking if the weapon should stop
+ * And stop it if it needs to
+ * @param weap the weapon we are checking
  */
 function stopWeapon(weap) {
+
     // Hit the top of the screen
     if (weap.position.y - weap.length < 0) {
         switch (weap.type) {
@@ -2159,7 +2166,7 @@ function stopWeapon(weap) {
 
             case DOUBLE_HOOK_NUMBER:
                 weap.shooting = false;
-                deleteDoubleHook();
+                deleteStoppedWeapons();
                 break;
 
             case TRIDENT_NUMBER:
@@ -2171,20 +2178,18 @@ function stopWeapon(weap) {
 
             case GUN_NUMBER:
                 weap.shooting = false;
-                deleteBullet();
+                deleteStoppedWeapons();
                 break;
         }
     } else {
+
         //Hit a platform
         var isItHittingPlatform = false;
 
         for (var i = 0; i < platforms.length; i++) {
             if (platforms[i].exist && isWeaponBetweenX(weap, platforms[i])) {
-                if (
-                    weap.position.y - weap.length <
-                    platforms[i].position.y + platforms[i].height &&
-                    weap.position.y > platforms[i].position.y
-                ) {
+                if (weap.position.y - weap.length < platforms[i].position.y + platforms[i].height
+                    && weap.position.y > platforms[i].position.y) {
                     switch (weap.type) {
                         case GRAPPLE_HOOK_NUMBER:
                             weap.shooting = false;
@@ -2196,7 +2201,7 @@ function stopWeapon(weap) {
 
                         case DOUBLE_HOOK_NUMBER:
                             weap.shooting = false;
-                            deleteDoubleHook();
+                            deleteStoppedWeapons();
                             if (platforms[i].isDestructible) {
                                 platforms[i].exist = false;
                             }
@@ -2215,7 +2220,7 @@ function stopWeapon(weap) {
                             if (platforms[i].isDestructible) {
                                 platforms[i].exist = false;
                             }
-                            deleteBullet();
+                            deleteStoppedWeapons();
                             break;
                     }
                 }
@@ -2244,16 +2249,16 @@ function stopWeapon(weap) {
 
                     case DOUBLE_HOOK_NUMBER:
                         weap.shooting = false;
-                        deleteDoubleHook();
+                        deleteStoppedWeapons();
                         break;
 
                     case GUN_NUMBER:
                         weap.shooting = false;
-                        deleteBullet();
+                        deleteStoppedWeapons();
                         break;
                 }
 
-                //Points
+                //Add some points
                 player.score += balloons[i].size.radius * 10;
 
                 //Split the balloon
@@ -2264,7 +2269,10 @@ function stopWeapon(weap) {
 }
 
 /**
- *
+ * @param pointA the first point with .x and .y
+ * @param pointB the second point
+ * 
+ * @returns {int} the (distance between the points)²
  */
 function squareDistanceBetweenPoints(pointA, pointB) {
     return (
@@ -2274,8 +2282,11 @@ function squareDistanceBetweenPoints(pointA, pointB) {
 }
 
 /**
- * Is the balloonX between the x and (x + width) of the rectangle ? Return boolean
- * Inputs : balloon with x, rectangle with x and width
+ * Is the balloonX between the x and (x + width) of the rectangle ?
+ * @param {*} ball the ball we want to check
+ * @param rectangle the rectangle
+ * 
+ * @returns {boolean} true if it is
  */
 function isBalloonBetweenRectangleX(ball, rectangle) {
     return (
@@ -2285,8 +2296,11 @@ function isBalloonBetweenRectangleX(ball, rectangle) {
 }
 
 /**
- * Is the ballon Y between the y and (y + width) of the rectangle ? Return boolean
- * Inputs : balloon with y, rectangle with y and height
+ * Is the ballon Y between the y and (y + width) of the rectangle ? 
+ * @param {*} ball the ball we want to check
+ * @param rectangle the rectangle
+ * 
+ * @returns {boolean} true if it is
  */
 function isBalloonBetweenRectangleY(ball, rectangle) {
     return (
@@ -2296,8 +2310,11 @@ function isBalloonBetweenRectangleY(ball, rectangle) {
 }
 
 /**
- * Is the balloon near a plateform ? (= near to collide but we don't know if it does)
- * @return true or false
+ * Is the balloon near a plateform ? (= near to collide but we don't know if it really does)
+ * @param {*} ball the ball we want to check
+ * @param {*} object the object as a rectangle
+
+ * @return {boolean} true if it is
  */
 function isBalloonNearObject(ball, object) {
     return !(
@@ -2309,14 +2326,17 @@ function isBalloonNearObject(ball, object) {
 }
 
 /**
- * @return 'true' if the balloon touches the bottom or the upside of a rectangular object
+ * @param {*} ball the ball we want to check
+ * @param {*} object the object as a rectangle
+
+ * @return {boolean} true if the balloon touches the bottom or the upside of a rectangular object
  */
 function isInHorizontalCollision(ball, object) {
     var collision = false;
     if (isBalloonBetweenRectangleX(ball, object)) {
         if (
-            ball.center.y + ball.size.radius >= object.position.y + 3  &&
-            ball.center.y - ball.size.radius <= object.position.y + object.height -3
+            ball.center.y + ball.size.radius >= object.position.y + 3 &&
+            ball.center.y - ball.size.radius <= object.position.y + object.height - 3
         ) {
             collision = true;
         }
@@ -2325,14 +2345,17 @@ function isInHorizontalCollision(ball, object) {
 }
 
 /**
- *@return 'true' if the balloon touches the left or the right of a rectangular object
+ * @param {*} ball the ball we want to check
+ * @param {*} object the object as a rectangle
+
+ * @return {boolean} true if the balloon touches the left or the right of a rectangular object
  */
 function isInVerticalCollision(ball, object) {
     var collision = false;
     if (isBalloonBetweenRectangleY(ball, object)) {
         if (
             ball.center.x + ball.size.radius >= object.position.x + 5 &&
-            ball.center.x - ball.size.radius <= object.position.x - 5 + object.width 
+            ball.center.x - ball.size.radius <= object.position.x - 5 + object.width
         ) {
             collision = true;
         }
@@ -2342,7 +2365,10 @@ function isInVerticalCollision(ball, object) {
 
 /**
  * Is the balloon colliding with the bottom right corner ?
- * @return true is yes, else false
+ * @param {*} ball the ball we want to check
+ * @param {*} object the object as a rectangle
+
+ * @return {boolean} true is yes, else false
  */
 function isBalloonCollidingBottomRightCorner(ball, object) {
     let bottomRightCorner = {
@@ -2357,7 +2383,10 @@ function isBalloonCollidingBottomRightCorner(ball, object) {
 
 /**
  * Is the balloon colliding with the top right corner ?
- * @return true is yes, else false
+ * @param {*} ball the ball we want to check
+ * @param {*} object the object as a rectangle
+
+ * @return {boolean} true is yes, else false
  */
 function isBalloonCollidingTopRightCorner(ball, object) {
     let topRightCorner = {
@@ -2372,7 +2401,10 @@ function isBalloonCollidingTopRightCorner(ball, object) {
 
 /**
  * Is the balloon colliding with the top left corner ?
- * @return true is yes, else false
+ * @param {*} ball the ball we want to check
+ * @param {*} object the object as a rectangle
+
+ * @return {boolean} true is yes, else false
  */
 function isBalloonCollidingTopLeftCorner(ball, object) {
     let topLeftCorner = { x: object.position.x, y: object.position.y };
@@ -2384,7 +2416,10 @@ function isBalloonCollidingTopLeftCorner(ball, object) {
 
 /**
  * Is the balloon colliding with the top right corner ?
- * @return true is yes, else false
+ * @param {*} ball the ball we want to check
+ * @param {*} object the object as a rectangle
+
+ * @return {boolean} true is yes, else false
  */
 function isBalloonCollidingBottomLeftCorner(ball, object) {
     let bottomLeftCorner = {
@@ -2402,7 +2437,7 @@ function isBalloonCollidingBottomLeftCorner(ball, object) {
  * @param {*} ball - The balloon
  * @param {*} object - A rectangular object
  *
- * @returns {boolean} True if the balloon collided with the object
+ * @returns {boolean} true if the balloon collided with the object
  */
 function keepBalloonOutsideObjects(ball, object) {
     if (object.exist) {
@@ -2413,7 +2448,7 @@ function keepBalloonOutsideObjects(ball, object) {
             // Collision with horizontal surfaces
             if (isInHorizontalCollision(ball, object)) {
                 if (ball.center.y < object.position.y) {
-                    if(ball.velocity.y > 3){
+                    if (ball.velocity.y > 3) {
                         ball.velocity.y *= -1;
                     } else {
                         ball.velocity.y = -3;
@@ -2512,6 +2547,10 @@ function keepBalloonOutsideObjects(ball, object) {
 
 /**
  * Collision with any angles with the others functions
+ * @param ball the ball we want to check
+ * @param object the object as a rectangle
+ * 
+ * @return {boolean} true is yes, else false
  */
 function collisionsAngles(ball, object) {
     return (
@@ -2524,6 +2563,10 @@ function collisionsAngles(ball, object) {
 
 /**
  * Call the other testing functions and return if there's a collision
+ * @param ball the ball we want to check
+ * @param object the object as a rectangle
+ * 
+ * @return {boolean} true is yes, else false 
  */
 function collisionsWithPlayer(ball, object) {
     var collisionAngles = collisionsAngles(ball, object).collision;
@@ -2533,7 +2576,7 @@ function collisionsWithPlayer(ball, object) {
 }
 
 /**
- * Create a random item when splitting a balloon
+ * Create a random item when splitting a balloon directly in the 'items' array
  * @param {*} ball the splitted balloon
  */
 function createItem(ball) {
@@ -2543,13 +2586,14 @@ function createItem(ball) {
             position: { x: ball.center.x, y: ball.center.y },
             height: 40,
             width: 40,
-             time: 0
+            time: 0
         };
     }
 }
 
 /**
- * Split a ballon and maybe make an item spawn
+ * Split a balloon and maybe make an item spawn
+ * Delete the old balloon from the 'balloons' array
  * @param {*} ball the ball you want to split
  */
 function splitBalloon(ball) {
@@ -2596,6 +2640,7 @@ function splitBalloon(ball) {
 
 /**
  * Update the player powerOn if he touch an item
+ * Directly in the 'player'
  */
 function playerTouchItem() {
     for (var i = 0; i < items.length; i++) {
@@ -2653,7 +2698,8 @@ function playerTouchItem() {
 }
 
 /**
- * Dynamite item : boooom
+ * Dynamite item : explode all the balloons until they reach their minimal size
+ * Modify directly in the 'balloons' array
  */
 function dynamiteExplode() {
     var bigBalloonRemaining = true;
@@ -2700,7 +2746,7 @@ function dynamiteExplode() {
 /**
  * Initialization of the game
  */
-init = function () {
+function init() {
     // Initizalisation of the global var context
     context = document.getElementById("cvs").getContext("2d");
     context.width = document.getElementById("cvs").width;
@@ -2725,7 +2771,7 @@ init = function () {
 
     // Go my little game loop, and never stop
     gameLoop();
-};
+}
 
 /**
  * Game loop
@@ -2932,7 +2978,7 @@ function update(delta) {
     player.speed.y = newSpdYPlayer;
     keepPlayerWithinBorder();
 
-    // Yeah an item
+    // Maybe the player is touching one item
     playerTouchItem();
 
     //Detect the victory
@@ -2940,10 +2986,13 @@ function update(delta) {
         victory = true;
         player.score += 5 * Math.floor(timer);
     }
+
     //Detect the defeat
-    for (var i = 0; i < balloons.length; i++) {
-        if (isDefeat(balloons[i])) {
-            defeat = true;
+    if (!victory) {
+        for (var i = 0; i < balloons.length; i++) {
+            if (isDefeat(balloons[i])) {
+                defeat = true;
+            }
         }
     }
 }
@@ -3073,7 +3122,6 @@ function render() {
         }
 
         // ladders drawing
-        //context.fillStyle = LADDERS_IMAGE ;
         for (var i = 0; i < ladders.length; i++) {
             context.drawImage(
                 LADDERS_IMAGE,
@@ -3084,7 +3132,7 @@ function render() {
             );
         }
 
-        // balloons displaying
+        // balloons drawing
         if (
             !areBalloonsFreeze ||
             Date.now() - balloonBlinkTimer < 4000 ||
@@ -3097,7 +3145,7 @@ function render() {
             }
         }
 
-        // items displaying
+        // items drawing
         for (var i = 0; i < items.length; i++) {
             if (items[i].type != -1) {
                 if (items[i].time < 2) {
@@ -3120,82 +3168,36 @@ function render() {
                 switch (items[i].type) {
                     case GRAPPLE_HOOK_ITEM:
                         context.fillStyle = GRAPPLE_HOOK_ITEM_COLOR;
-                        context.fillRect(
-                            items[i].position.x,
-                            items[i].position.y,
-                            items[i].width,
-                            items[i].height
-                        );
+                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                         break;
 
                     case DOUBLE_HOOK_ITEM:
-                        context.drawImage(
-                            DOUBLE_HOOK_ITEM_IMAGE,
-                            items[i].position.x,
-                            items[i].position.y,
-                            items[i].width,
-                            items[i].height
-                        );
+                        context.drawImage(DOUBLE_HOOK_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                         break;
 
                     case TRIDENT_ITEM:
-                        context.drawImage(
-                            TRIDENT_ITEM_IMAGE,
-                            items[i].position.x,
-                            items[i].position.y,
-                            items[i].width,
-                            items[i].height
-                        );
+                        context.drawImage(TRIDENT_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                         break;
 
                     case TIMER_BOOST_ITEM:
-                        context.drawImage(
-                            TIMER_BOOST_ITEM_IMAGE,
-                            items[i].position.x,
-                            items[i].position.y,
-                            items[i].width,
-                            items[i].height
-                        );
+                        context.drawImage(TIMER_BOOST_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                         break;
 
                     case DYNAMITE_ITEM:
-                        context.drawImage(
-                            DYNAMITE_IMAGE,
-                            items[i].position.x,
-                            items[i].position.y,
-                            items[i].width,
-                            items[i].height
-                        );
+                        context.drawImage(DYNAMITE_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                         break;
 
                     case FREEZE_ITEM:
-                        context.drawImage(
-                            FREEZE_IMAGE,
-                            items[i].position.x,
-                            items[i].position.y,
-                            items[i].width,
-                            items[i].height
-                        );
+                        context.drawImage(FREEZE_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                         break;
 
                     case SHIELD_ITEM:
-                        context.drawImage(
-                            SHIELD_ITEM_IMAGE,
-                            items[i].position.x,
-                            items[i].position.y,
-                            items[i].width,
-                            items[i].height
-                        );
+                        context.drawImage(SHIELD_ITEM_IMAGE, items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                         break;
 
                     case GUN_ITEM:
                         context.fillStyle = "blue";
-                        context.fillRect(
-                            items[i].position.x,
-                            items[i].position.y,
-                            items[i].width,
-                            items[i].height
-                        );
+                        context.fillRect(items[i].position.x, items[i].position.y, items[i].width, items[i].height);
                         break;
                 }
             }
@@ -3206,27 +3208,13 @@ function render() {
             switch (weapons[i].type) {
                 case GRAPPLE_HOOK_NUMBER:
                     context.fillStyle = GRAPPLE_HOOK_COLOR;
-                    context.fillRect(
-                        weapons[i].position.x,
-                        weapons[i].position.y,
-                        HOOK_WITDH,
-                        -weapons[i].length
-                    );
+                    context.fillRect(weapons[i].position.x, weapons[i].position.y, HOOK_WITDH, -weapons[i].length);
                     break;
 
                 case DOUBLE_HOOK_NUMBER:
                     context.fillStyle = "black";
-                    context.fillRect(
-                        weapons[i].position.x,
-                        weapons[i].position.y,
-                        HOOK_WITDH,
-                        -weapons[i].length
-                    );
-                    context.drawImage(
-                        DOUBLE_HOOK_IMAGE,
-                        weapons[i].position.x - 5,
-                        weapons[i].position.y - weapons[i].length
-                    );
+                    context.fillRect(weapons[i].position.x, weapons[i].position.y, HOOK_WITDH, -weapons[i].length);
+                    context.drawImage(DOUBLE_HOOK_IMAGE, weapons[i].position.x - 5, weapons[i].position.y - weapons[i].length);
                     break;
 
                 case TRIDENT_NUMBER:
@@ -3237,27 +3225,13 @@ function render() {
                     } else {
                         context.fillStyle = TRIDENT_COLOR3;
                     }
-                    context.fillRect(
-                        weapons[i].position.x,
-                        weapons[i].position.y,
-                        HOOK_WITDH,
-                        -weapons[i].length + 5
-                    );
-                    context.drawImage(
-                        TRIDENT_IMAGE,
-                        weapons[i].position.x - 20,
-                        weapons[i].position.y - weapons[i].length
-                    );
+                    context.fillRect(weapons[i].position.x, weapons[i].position.y, HOOK_WITDH, -weapons[i].length + 5);
+                    context.drawImage(TRIDENT_IMAGE, weapons[i].position.x - 20, weapons[i].position.y - weapons[i].length);
                     break;
 
                 case GUN_NUMBER:
                     context.fillStyle = "black";
-                    context.fillRect(
-                        weapons[i].position.x,
-                        weapons[i].position.y,
-                        HOOK_WITDH,
-                        -weapons[i].length
-                    );
+                    context.fillRect(weapons[i].position.x, weapons[i].position.y, HOOK_WITDH, -weapons[i].length);
                     break;
             }
         }
@@ -3271,56 +3245,28 @@ function render() {
                     (Date.now() - playerBlinkTimer) % 500 < 250
                 ) {
                     if (player.speed.x > 0) {
-                        context.drawImage(
-                            PLAYER_IMAGE_RIGHT,
-                            player.position.x,
-                            player.position.y
-                        );
+                        context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
                         player_last_direction = 1;
                     } else if (player.speed.x < 0) {
-                        context.drawImage(
-                            PLAYER_IMAGE_LEFT,
-                            player.position.x,
-                            player.position.y
-                        );
+                        context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
                         player_last_direction = -1;
                     } else {
                         if (player_last_direction > 0) {
-                            context.drawImage(
-                                PLAYER_IMAGE_RIGHT,
-                                player.position.x,
-                                player.position.y
-                            );
+                            context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
                         } else {
-                            context.drawImage(
-                                PLAYER_IMAGE_LEFT,
-                                player.position.x,
-                                player.position.y
-                            );
+                            context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
                         }
                     }
                     //Shield
                     if (player.shieldOn) {
-                        context.drawImage(
-                            SHIELD_IMAGE,
-                            player.position.x,
-                            player.position.y
-                        );
+                        context.drawImage(SHIELD_IMAGE, player.position.x, player.position.y);
                     }
                 }
             } else {
                 if (player_last_direction > 0) {
-                    context.drawImage(
-                        PLAYER_IMAGE_RIGHT,
-                        player.position.x,
-                        player.position.y
-                    );
+                    context.drawImage(PLAYER_IMAGE_RIGHT, player.position.x, player.position.y);
                 } else {
-                    context.drawImage(
-                        PLAYER_IMAGE_LEFT,
-                        player.position.x,
-                        player.position.y
-                    );
+                    context.drawImage(PLAYER_IMAGE_LEFT, player.position.x, player.position.y);
                 }
             }
         } else {
@@ -3344,6 +3290,7 @@ function render() {
 
 /**
  *  Key down event
+ * @param event an event listener
  */
 // Enter the level which its number's key is pressed
 function captureKeyboardPress(event) {
@@ -3425,9 +3372,9 @@ function captureKeyboardPress(event) {
     /*******EASTER EGG******/
     if (event.ctrlKey) {
         event.preventDefault();
-        if(event.altKey){
+        if (event.altKey) {
             event.preventDefault();
-            if(event.keyCode == 68){
+            if (event.keyCode == 68) {
                 easterEgg = !easterEgg;
                 if (easterEgg) {
                     player.width = 35;
@@ -3441,6 +3388,7 @@ function captureKeyboardPress(event) {
 
 /**
  *  Key up event
+ * @param event an event listener
  */
 captureKeyboardReleased = function (event) {
     switch (event.keyCode) {
@@ -3458,7 +3406,8 @@ captureKeyboardReleased = function (event) {
 };
 
 /**
- *  Click event
+ * Click event
+ * @param event an event listener
  */
 captureClicSouris = function (event) {
     if (numLevel == 0) {
