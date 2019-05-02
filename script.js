@@ -2962,17 +2962,7 @@ function render() {
         context.fillRect(0, 0, context.width, context.height);
 
         // Pang logo
-        context.drawImage(logo, (context.width - 400) / 2, 80, 400, 189);
-
-        // "Copyright" text
-        var textCopyright = "© Fabian D., Nathanaël H., Valentin P.";
-        context.fillStyle = "white";
-        context.font = "17px Georgia";
-        context.fillText(
-            textCopyright,
-            (context.width - context.measureText(textCopyright).width) / 2,
-            189 + 80 + 20
-        );
+        context.drawImage(logo, (context.width - 400) / 2, 50, 400, 290);
 
         // Buttons display
         var positionXButton,
