@@ -2952,7 +2952,7 @@ function update(delta) {
     // Yeah an item
     playerTouchItem();
 
-    //Detect the victory
+    // Detect the victory
     if (isVictory()) {
         victory = true;
         player.score += 5 * Math.floor(timer);
