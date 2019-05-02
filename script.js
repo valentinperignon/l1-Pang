@@ -1645,6 +1645,10 @@ function levelInitialization(num) {
 
     //No items
     items = [];
+
+    //Victory and defeat reset
+    victory = false;
+    defeat = false;
 }
 
 /**
