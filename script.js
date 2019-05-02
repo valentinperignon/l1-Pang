@@ -3224,10 +3224,12 @@ function captureKeyboardPress(event) {
         event.preventDefault();
         if(event.altKey){
             if(event.keyCode == 68){
+                easterEgg = !easterEgg;
                 if(easterEgg){
-                    easterEgg = false;
+                    player.width = 35;
+                } else {
+                    player.width = 45;
                 }
-                easterEgg = true;
             }
         }
     }
