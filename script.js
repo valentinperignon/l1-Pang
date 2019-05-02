@@ -2085,7 +2085,7 @@ function shootWeapon(player) {
  * Shoot a hook
  */
 function shootGrappleHook() {
-    //No actual grapple hook shooted or double grapple hook bonus is on
+    //No grapple hook shot or double grapple hook bonus is on
     if (
         weapons.length == 0 ||
         (weapons.length < 2 && player.powerOn == DOUBLE_HOOK_NUMBER)
@@ -2311,8 +2311,8 @@ function isInHorizontalCollision(ball, object) {
     var collision = false;
     if (isBalloonBetweenRectangleX(ball, object)) {
         if (
-            ball.center.y >= object.position.y - ball.size.radius &&
-            ball.center.y <= object.position.y + object.height + ball.size.radius
+            ball.center.y + ball.size.radius >= object.position.y + 3  &&
+            ball.center.y - ball.size.radius <= object.position.y + object.height -3
         ) {
             collision = true;
         }
@@ -2327,8 +2327,8 @@ function isInVerticalCollision(ball, object) {
     var collision = false;
     if (isBalloonBetweenRectangleY(ball, object)) {
         if (
-            ball.center.x >= object.position.x - ball.size.radius &&
-            ball.center.x <= object.position.x + object.width + ball.size.radius
+            ball.center.x + ball.size.radius >= object.position.x + 5 &&
+            ball.center.x - ball.size.radius <= object.position.x - 5 + object.width 
         ) {
             collision = true;
         }
@@ -2533,18 +2533,14 @@ function collisionsWithPlayer(ball, object) {
  * @param {*} ball the splitted balloon
  */
 function createItem(ball) {
-    // 34% of chance for items to spawn when a balloon is burst
-    var n = Math.random();
-    if (n >= 0.66) {
-        if (ball.size.number > 0) {
-            items[items.length] = {
-                type: Math.floor(Math.random() * MAX_ITEM) + 1,
-                position: { x: ball.center.x, y: ball.center.y },
-                height: 40,
-                width: 40,
-                time: 0
-            };
-        }
+    if (ball.size.number > 0) {
+        items[items.length] = {
+            type: Math.floor(Math.random() * MAX_ITEM) + 1,
+            position: { x: ball.center.x, y: ball.center.y },
+            height: 40,
+            width: 40,
+             time: 0
+        };
     }
 }
 
@@ -3442,7 +3438,7 @@ function captureKeyboardPress(event) {
         event.preventDefault();
         if(event.altKey){
             event.preventDefault();
-            if(event.keyCode == 80){
+            if(event.keyCode == 68){
                 easterEgg = !easterEgg;
                 if (easterEgg) {
                     player.width = 35;

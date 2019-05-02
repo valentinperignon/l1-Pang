@@ -7,12 +7,12 @@
         <link rel="stylesheet" href="style.css">
     </head>
     <body id="about-body">
-        <!-- Titre -->
+        <!-- Title -->
         <div id="title">
             <h1>Bienvenue dans Pang Édition Deluxe Franccomtoise ! </h1>
         </div>
 
-        <!-- Règles du jeu -->
+        <!-- game's rules -->
         <div id="regles" class="hidden">
             <div class="subtitle">
                 <h2>Règles du jeu</h2>
@@ -87,7 +87,7 @@
              * @return {String} The value of the parameter
              */
             function getURL(paramSearch) {
-                // varaibles
+                // variables
                 var currentLocation, params, index;
 
                 // current URL (after ?)
@@ -97,7 +97,7 @@
                 // parameters
                 params = currentLocation.split('=');
 
-                // recherche du paramètre
+                // research of the parameter
                 index = params.indexOf(paramSearch);
                 if(index == -1) {
                     return "";
