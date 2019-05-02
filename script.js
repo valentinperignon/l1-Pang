@@ -2030,7 +2030,7 @@ function isDefeat(ball) {
         collisionsWithPlayer(ball, player) &&
         !isInvincible
     ) {
-        // BETA IsInvicible
+        // Shield
         if (player.shieldOn) {
             player.shieldOn = false;
             isInvincible = true;
@@ -2409,27 +2409,10 @@ function keepBalloonOutsideObjects(ball, object) {
             // Collision with horizontal surfaces
             if (isInHorizontalCollision(ball, object)) {
                 if (ball.center.y < object.position.y) {
-                    switch (ball.size.number) {
-                        case 4:
-                            ball.velocity.y =
-                                ball.size.Yvelocity -
-                                (ball.size.Yvelocity * (500 - ball.center.y)) / 500;
-                            break;
-                        case 3:
-                            ball.velocity.y =
-                                ball.size.Yvelocity -
-                                (ball.size.Yvelocity * (400 - ball.center.y)) / 400;
-                            break;
-                        case 2:
-                            ball.velocity.y =
-                                ball.size.Yvelocity -
-                                (ball.size.Yvelocity * (300 - ball.center.y)) / 300;
-                            break;
-                        case 1:
-                            ball.velocity.y =
-                                ball.size.Yvelocity -
-                                (ball.size.Yvelocity * (200 - ball.center.y)) / 200;
-                            break;
+                    if(ball.velocity.y > 3){
+                        ball.velocity.y *= -1;
+                    } else {
+                        ball.velocity.y = -3;
                     }
                 } else {
                     ball.velocity.y *= -1;
