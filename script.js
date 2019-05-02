@@ -3202,14 +3202,6 @@ function captureKeyboardPress(event) {
                 
 			//Make the player invincible                                                                // BETA FUNCTION
 			case 73:
-                /**
-                if(isInvincible){
-					console.log("Joueur plus invincible");
-				} else {
-				console.log("Joueur invincible");
-				}
-				isInvincible = !isInvincible;
-                */
                 player.shieldOn = true;
             break;      
                 
@@ -3224,7 +3216,8 @@ function captureKeyboardPress(event) {
     if (event.ctrlKey){
         event.preventDefault();
         if(event.altKey){
-            if(event.keyCode == 68){
+            event.preventDefault();
+            if(event.keyCode == 80){
                 easterEgg = !easterEgg;
                 if(easterEgg){
                     player.width = 35;
