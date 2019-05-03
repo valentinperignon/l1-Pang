@@ -1074,7 +1074,8 @@ const LADDERS_LIST = {
 };
 
 /**
- * List of size of balloons
+ * List of size of balloons.
+ * With the umber, the radius and velocity
  */
 const BALLOON_SIZE = [
     {
@@ -1396,7 +1397,7 @@ var defeat = false;
 var isInvincible = false;
 var easterEgg = false;
 
-/** Timers */
+/** Variables about timer */
 var timer = 100;
 var balloonsFreezeTimer = Date.now();
 var areBalloonsFreeze = false;
@@ -1440,15 +1441,14 @@ var player_last_direction = 0;
 var weapons = [];
 
 /** Weapons related variables */
-// - Hooks
+    // Hook
 const GRAPPLE_HOOK_NUMBER = 1;
 const DOUBLE_HOOK_NUMBER = 2;
 const TRIDENT_NUMBER = 3;
 const HOOK_SPEED = 0.3;
 const BULLET_SPEED = 0.3;
 const HOOK_WITDH = 5;
-
-// - Others weapons
+    // Other weapons
 const GUN_NUMBER = 4;
 
 /** All the platforms */
@@ -1460,22 +1460,18 @@ var ladders = [];
 /** Clik with the mouse */
 var clic = { x: 0, y: 0 };
 
-/**
- * Bonus items array
- */
+/** Bonus items array */
 var items = [];
 
-/** Item related variables */
+/** Variables about items */
 const GRAPPLE_HOOK_ITEM = GRAPPLE_HOOK_NUMBER; //1
 const DOUBLE_HOOK_ITEM = DOUBLE_HOOK_NUMBER; //2
 const TRIDENT_ITEM = TRIDENT_NUMBER; //3
 const GUN_ITEM = GUN_NUMBER;
-
 const TIMER_BOOST_ITEM = 5;
 const DYNAMITE_ITEM = 6;
 const FREEZE_ITEM = 7;
 const SHIELD_ITEM = 8;
-
 const MAX_ITEM = 8;
 
 /** Variables about menu's buttons */
@@ -1543,7 +1539,9 @@ SHIELD_IMAGE.src = "./assets/shield.png";
 // ---------------------------------------------------------------------------
 
 /**
- * Level selection : initialize all the variables
+ * Level selection, initialize all the variables
+ * 
+ * @param {int} num - Number of the level
  */
 function levelInitialization(num) {
     //Initialization of the player
@@ -1682,6 +1680,8 @@ function detectLevelButton() {
 
 /**
  * Moving the player (horizontally)
+ * 
+ * @param {int} move - Direction of the move
  */
 function playerMove(move) {
     switch (move) {
@@ -1696,6 +1696,8 @@ function playerMove(move) {
 
 /**
  * Stop the player's movement (horizontally)
+ * 
+ * @param {int} move - Direction of the move
  */
 function playerStopMove(move) {
     switch (move) {
@@ -1714,6 +1716,8 @@ function playerStopMove(move) {
 
 /**
  * Moving the player (with ladders)
+ * 
+ * @param {int} move - Direction of the move
  */
 playerMoveLadder = function (move) {
     if (findLadder(player) != -1) {
@@ -1737,6 +1741,10 @@ function playerStopMoveLadder() {
 
 /**
  * Return the ladder array's index
+ * 
+ * @param {*} object - Object to compare with ladder
+ * 
+ * @returns {int} Index of the ladder
  */
 function findLadder(object) {
     var i = 0;
@@ -1768,6 +1776,10 @@ function findLadder(object) {
 
 /**
  * Detect if the player is on a platform
+ * 
+ * @param {*} object - Object to compare with platforms
+ * 
+ * @returns {boolean} True if the object is on the ladder
  */
 function detectPlatform(object) {
     var isNotOn = 0;
@@ -1791,7 +1803,11 @@ function detectPlatform(object) {
 }
 
 /**
- * Return true if the object is not on the ground, a platform, or a ladder
+ * Detect if the object is not on the ground, a platform, or a ladder
+ * 
+ * @param {*} object - Object to compare with elements
+ * 
+ * @returns {boolean} True if the object is not on the ground, a platform, or a ladder
  */
 function isNotOnPlatformOrGround(object) {
     isNot = false;
@@ -1810,6 +1826,7 @@ function isNotOnPlatformOrGround(object) {
 
 /**
  * Draw a message in case of victory or defeat
+ * 
  * @param {*} gameState - Game state, e.g. 'victory' or 'defeat'
  */
 function drawFinalMessage(gameState) {
@@ -1847,7 +1864,6 @@ function drawFinalMessage(gameState) {
 }
 
 /**
- * It does exactly what you expect
  * If the player goes out of the borders, changes his position to a correct one
  */
 function keepPlayerWithinBorder() {
@@ -1870,6 +1886,7 @@ function keepPlayerWithinBorder() {
 
 /**
  * Checks if the player will collide with an object
+ * 
  * @param {*} ball - The player
  * @param {float} newPosX - The (maybe) new X coordinate of the player
  * @param {float} newPosY - The (maybe) new Y coordinate of the player
@@ -1902,6 +1919,7 @@ function isPlayerWithinObject(player, newPosX, newPosY, object) {
 
 /**
  * Keep a balloon inside the canvas
+ * 
  * @param {*} ball - A balloon
  *
  * @returns {boolean} true if there is a changement
@@ -1939,6 +1957,7 @@ function keepBalloonWithinBorders(ball) {
 
 /**
  * Update the gradient of a circle
+ * 
  * @param {*} circle - Balloon which will be update
  */
 updateCircleColor = function (circle) {
@@ -1971,6 +1990,7 @@ updateCircleColor = function (circle) {
 
 /**
  * Draw a circle
+ * 
  * @param {*} circle - Balloon which will be draw
  */
 function fillCircle(circle) {
@@ -2007,6 +2027,7 @@ function fillCircle(circle) {
 
 /**
  * Detect the victory (= no balloon remaining)
+ * 
  * @returns {boolean} true if the victory is actual
  */
 function isVictory() {
@@ -2024,6 +2045,9 @@ function isVictory() {
 /**
  * Detect the defeat
  * (i.e. if there is no time and at least one balloon remains)
+ * 
+ * @param {*} ball The ball
+ * 
  * @returns {boolean} true if the defeat is here
  */
 function isDefeat(ball) {
@@ -2057,6 +2081,7 @@ function isDefeat(ball) {
 
 /**
  * Check if a weapon is between the x coordinates of a rectangle
+ * 
  * @param weapon the weapon we want to check
  * @param rectangle the rectangle
  * 
@@ -2071,6 +2096,7 @@ function isWeaponBetweenX(weapon, rectangle) {
 
 /**
  * Fire a weapon
+ * 
  * @param player the player who has his weapon fired
  */
 function shootWeapon(player) {
@@ -2153,6 +2179,7 @@ function deleteStoppedWeapons() {
 /**
  * Checking if the weapon should stop
  * And stop it if it needs to
+ * 
  * @param weap the weapon we are checking
  */
 function stopWeapon(weap) {
@@ -2269,10 +2296,12 @@ function stopWeapon(weap) {
 }
 
 /**
- * @param pointA the first point with .x and .y
- * @param pointB the second point
+ * Calcul of the square of the distance between points
  * 
- * @returns {int} the (distance between the points)²
+ * @param pointA The first point with x and y
+ * @param pointB The second point
+ * 
+ * @returns {int} The (distance between the points)²
  */
 function squareDistanceBetweenPoints(pointA, pointB) {
     return (
@@ -2282,11 +2311,12 @@ function squareDistanceBetweenPoints(pointA, pointB) {
 }
 
 /**
- * Is the balloonX between the x and (x + width) of the rectangle ?
- * @param {*} ball the ball we want to check
- * @param rectangle the rectangle
+ * Check if the balloonX is between the x and (x + width) of the rectangle
  * 
- * @returns {boolean} true if it is
+ * @param {*} ball The ball we want to check
+ * @param rectangle The rectangle
+ * 
+ * @returns {boolean} True if it is
  */
 function isBalloonBetweenRectangleX(ball, rectangle) {
     return (
@@ -2297,10 +2327,11 @@ function isBalloonBetweenRectangleX(ball, rectangle) {
 
 /**
  * Is the ballon Y between the y and (y + width) of the rectangle ? 
- * @param {*} ball the ball we want to check
- * @param rectangle the rectangle
  * 
- * @returns {boolean} true if it is
+ * @param {*} ball The ball we want to check
+ * @param rectangle The rectangle
+ * 
+ * @returns {boolean} True if it is
  */
 function isBalloonBetweenRectangleY(ball, rectangle) {
     return (
@@ -2311,10 +2342,11 @@ function isBalloonBetweenRectangleY(ball, rectangle) {
 
 /**
  * Is the balloon near a plateform ? (= near to collide but we don't know if it really does)
- * @param {*} ball the ball we want to check
- * @param {*} object the object as a rectangle
+ * 
+ * @param {*} ball The ball we want to check
+ * @param {*} object The object as a rectangle
 
- * @return {boolean} true if it is
+ * @return {boolean} True if it is
  */
 function isBalloonNearObject(ball, object) {
     return !(
@@ -2326,10 +2358,12 @@ function isBalloonNearObject(ball, object) {
 }
 
 /**
- * @param {*} ball the ball we want to check
- * @param {*} object the object as a rectangle
+ * Check if there is an horizontal collision
+ * 
+ * @param {*} ball The ball we want to check
+ * @param {*} object The object as a rectangle
 
- * @return {boolean} true if the balloon touches the bottom or the upside of a rectangular object
+ * @return {boolean} True if the balloon touches the bottom or the upside of a rectangular object
  */
 function isInHorizontalCollision(ball, object) {
     var collision = false;
@@ -2345,10 +2379,12 @@ function isInHorizontalCollision(ball, object) {
 }
 
 /**
- * @param {*} ball the ball we want to check
- * @param {*} object the object as a rectangle
+ * Check if there is an horizontal collision
+ * 
+ * @param {*} ball The ball we want to check
+ * @param {*} object The object as a rectangle
 
- * @return {boolean} true if the balloon touches the left or the right of a rectangular object
+ * @return {boolean} True if the balloon touches the left or the right of a rectangular object
  */
 function isInVerticalCollision(ball, object) {
     var collision = false;
@@ -2364,11 +2400,12 @@ function isInVerticalCollision(ball, object) {
 }
 
 /**
- * Is the balloon colliding with the bottom right corner ?
- * @param {*} ball the ball we want to check
- * @param {*} object the object as a rectangle
+ * Check if the balloon is colliding with the bottom right corner
+ * 
+ * @param {*} ball The ball we want to check
+ * @param {*} object The object as a rectangle
 
- * @return {boolean} true is yes, else false
+ * @return {boolean} True is yes, else false
  */
 function isBalloonCollidingBottomRightCorner(ball, object) {
     let bottomRightCorner = {
@@ -2382,11 +2419,12 @@ function isBalloonCollidingBottomRightCorner(ball, object) {
 }
 
 /**
- * Is the balloon colliding with the top right corner ?
- * @param {*} ball the ball we want to check
- * @param {*} object the object as a rectangle
+ * Check if the balloon is colliding with the top right corner
+ * 
+ * @param {*} ball The ball we want to check
+ * @param {*} object The object as a rectangle
 
- * @return {boolean} true is yes, else false
+ * @return {boolean} True is yes, else false
  */
 function isBalloonCollidingTopRightCorner(ball, object) {
     let topRightCorner = {
@@ -2400,11 +2438,12 @@ function isBalloonCollidingTopRightCorner(ball, object) {
 }
 
 /**
- * Is the balloon colliding with the top left corner ?
- * @param {*} ball the ball we want to check
- * @param {*} object the object as a rectangle
+ * Check if the balloon is colliding with the top left corner
+ * 
+ * @param {*} ball The ball we want to check
+ * @param {*} object The object as a rectangle
 
- * @return {boolean} true is yes, else false
+ * @return {boolean} True is yes, else false
  */
 function isBalloonCollidingTopLeftCorner(ball, object) {
     let topLeftCorner = { x: object.position.x, y: object.position.y };
@@ -2415,11 +2454,12 @@ function isBalloonCollidingTopLeftCorner(ball, object) {
 }
 
 /**
- * Is the balloon colliding with the top right corner ?
- * @param {*} ball the ball we want to check
- * @param {*} object the object as a rectangle
+ * Check if the balloon is colliding with the top right corner
+ * 
+ * @param {*} ball The ball we want to check
+ * @param {*} object The object as a rectangle
 
- * @return {boolean} true is yes, else false
+ * @return {boolean} True is yes, else false
  */
 function isBalloonCollidingBottomLeftCorner(ball, object) {
     let bottomLeftCorner = {
@@ -2434,10 +2474,11 @@ function isBalloonCollidingBottomLeftCorner(ball, object) {
 
 /**
  * Make sure the balloons are not colliding with rectangle objects like platforms
+ * 
  * @param {*} ball - The balloon
  * @param {*} object - A rectangular object
  *
- * @returns {boolean} true if the balloon collided with the object
+ * @returns {boolean} True if the balloon collided with the object
  */
 function keepBalloonOutsideObjects(ball, object) {
     if (object.exist) {
@@ -2547,10 +2588,11 @@ function keepBalloonOutsideObjects(ball, object) {
 
 /**
  * Collision with any angles with the others functions
- * @param ball the ball we want to check
- * @param object the object as a rectangle
  * 
- * @return {boolean} true is yes, else false
+ * @param ball The ball we want to check
+ * @param object The object as a rectangle
+ * 
+ * @return {boolean} True if there is a collision
  */
 function collisionsAngles(ball, object) {
     return (
@@ -2563,10 +2605,11 @@ function collisionsAngles(ball, object) {
 
 /**
  * Call the other testing functions and return if there's a collision
- * @param ball the ball we want to check
- * @param object the object as a rectangle
  * 
- * @return {boolean} true is yes, else false 
+ * @param ball The ball we want to check
+ * @param object The object as a rectangle
+ * 
+ * @return {boolean} True is yes, else false 
  */
 function collisionsWithPlayer(ball, object) {
     var collisionAngles = collisionsAngles(ball, object).collision;
@@ -2577,7 +2620,8 @@ function collisionsWithPlayer(ball, object) {
 
 /**
  * Create a random item when splitting a balloon directly in the 'items' array
- * @param {*} ball the splitted balloon
+ * 
+ * @param {*} ball The splitted balloon
  */
 function createItem(ball) {
     if (ball.size.number > 0) {
@@ -2594,7 +2638,8 @@ function createItem(ball) {
 /**
  * Split a balloon and maybe make an item spawn
  * Delete the old balloon from the 'balloons' array
- * @param {*} ball the ball you want to split
+ * 
+ * @param {*} ball The ball you want to split
  */
 function splitBalloon(ball) {
     //Two new balloons if the balloons is not of the minimal size
@@ -2806,7 +2851,8 @@ function gameLoop() {
 
 /**
  *  Game update
- *  @param delta the time between now and the last update
+ * 
+ *  @param delta The time between now and the last update
  */
 function update(delta) {
     // update timer
@@ -3289,10 +3335,10 @@ function render() {
 }
 
 /**
- *  Key down event
- * @param event an event listener
+ * Key down event
+ * 
+ * @param event An event listener
  */
-// Enter the level which its number's key is pressed
 function captureKeyboardPress(event) {
     if (numLevel == 0) {
         // menu
@@ -3369,7 +3415,9 @@ function captureKeyboardPress(event) {
                 break;
         }
     }
-    /*******EASTER EGG******/
+
+    /******* EASTER EGG ******/
+
     if (event.ctrlKey) {
         event.preventDefault();
         if (event.altKey) {
@@ -3387,8 +3435,9 @@ function captureKeyboardPress(event) {
 }
 
 /**
- *  Key up event
- * @param event an event listener
+ * Key up event
+ * 
+ * @param event An event listener
  */
 captureKeyboardReleased = function (event) {
     switch (event.keyCode) {
@@ -3407,7 +3456,8 @@ captureKeyboardReleased = function (event) {
 
 /**
  * Click event
- * @param event an event listener
+ * 
+ * @param event An event listener
  */
 captureClicSouris = function (event) {
     if (numLevel == 0) {
