@@ -2828,8 +2828,11 @@ function gameLoop() {
 	lastUpdate = Date.now();
 	// Run the game if it is not on pause
 	if (!isOnFocus || pause) {
-		document.title = "Pang - en pause";
-	} else {
+        document.title = "Pang - en pause";
+        //Pause
+        context.fillStyle = "black";
+        context.fillText("PAUSE",500,300);
+    } else {
 		if ((victory || defeat) && numLevel > 0) {
 			if (victory) {
 				document.title = "Pang - gagné !";
@@ -3107,7 +3110,26 @@ function render() {
 		//context.clearRect(0, 0, context.width, context.height);
 		context.clearRect(0, 0, 1080, 608);
 
-		// Timer text
+        // Level text
+        var textLevel = "LEVEL "+numLevel;
+        context.fillStyle = "white";
+		context.strokeStyle = "black";
+		context.lineWidth = 1.6;
+		context.font = "bolder 30px Arial";
+		context.fillText(
+			textLevel,
+			context.width/2 - context.measureText(textLevel).width+60,
+			40
+        );
+        context.strokeText(
+			textLevel,
+			context.width/2 - context.measureText(textLevel).width+60,
+			40
+		);
+
+
+		// Timer textvar pauseBlinkTimer = Date.now();
+
 		var textTime = "TIME : ";
 		if (Math.floor(timer) > 10 && Math.floor(timer) < 100) {
 			textTime += "0";
