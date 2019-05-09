@@ -2184,115 +2184,117 @@ function deleteStoppedWeapons() {
  */
 function stopWeapon(weap) {
 
-	// Hit the top of the screen
-	if (weap.position.y - weap.length < 0) {
-		switch (weap.type) {
-			case GRAPPLE_HOOK_NUMBER:
-				deleteWeapon();
-				break;
+    // Hit the top of the screen
+    if (weap.position.y - weap.length < 0) {
+        switch (weap.type) {
+            case GRAPPLE_HOOK_NUMBER:
+                deleteWeapon();
+                break;
 
-			case DOUBLE_HOOK_NUMBER:
-				weap.shooting = false;
-				deleteStoppedWeapons();
-				break;
+            case DOUBLE_HOOK_NUMBER:
+                weap.shooting = false;
+                deleteStoppedWeapons();
+                break;
 
-			case TRIDENT_NUMBER:
-				weap.shooting = false;
-				if (weap.time > 3) {
-					deleteWeapon();
-				}
-				break;
+            case TRIDENT_NUMBER:
+                weap.shooting = false;
+                if (weap.time > 3) {
+                    deleteWeapon();
+                }
+                break;
 
-			case GUN_NUMBER:
-				weap.shooting = false;
-				deleteStoppedWeapons();
-				break;
-		}
-	} else {
+            case GUN_NUMBER:
+                weap.shooting = false;
+                deleteStoppedWeapons();
+                break;
+        }
+    } else {
 
-		//Hit a platform
-		var isItHittingPlatform = false;
+        //Hit a platform
+        var isItHittingPlatform = false;
 
-		for (var i = 0; i < platforms.length; i++) {
-			if (platforms[i].exist && isWeaponBetweenX(weap, platforms[i])) {
-				if (weap.position.y - weap.length < platforms[i].position.y + platforms[i].height
-					&& weap.position.y > platforms[i].position.y) {
-					switch (weap.type) {
-						case GRAPPLE_HOOK_NUMBER:
-							weap.shooting = false;
-							deleteWeapon();
-							if (platforms[i].isDestructible) {
-								platforms[i].exist = false;
-							}
-							break;
+        for (var i = 0; i < platforms.length; i++) {
+            if (platforms[i].exist && isWeaponBetweenX(weap, platforms[i])) {
+                if (weap.position.y - weap.length < platforms[i].position.y + platforms[i].height
+                    && weap.position.y > platforms[i].position.y) {
+                    switch (weap.type) {
+                        case GRAPPLE_HOOK_NUMBER:
+                            weap.shooting = false;
+                            deleteWeapon();
+                            if (platforms[i].isDestructible) {
+                                platforms[i].exist = false;
+                            }
+                            break;
 
-						case DOUBLE_HOOK_NUMBER:
-							weap.shooting = false;
-							deleteStoppedWeapons();
-							if (platforms[i].isDestructible) {
-								platforms[i].exist = false;
-							}
-							break;
+                        case DOUBLE_HOOK_NUMBER:
+                            weap.shooting = false;
+                            deleteStoppedWeapons();
+                            if (platforms[i].isDestructible) {
+                                platforms[i].exist = false;
+                            }
+                            break;
 
-						case TRIDENT_NUMBER:
-							weap.shooting = false;
-							if (platforms[i].isDestructible) {
-								platforms[i].exist = false;
-								deleteWeapon();
-							}
-							break;
+                        case TRIDENT_NUMBER:
+                            weap.shooting = false;
+                            if (platforms[i].isDestructible) {
+                                platforms[i].exist = false;
+                                deleteWeapon();
+                            } else if(weap.time >3) {
+                                deleteWeapon();
+                            }
+                            break;
 
-						case GUN_NUMBER:
-							weap.shooting = false;
-							if (platforms[i].isDestructible) {
-								platforms[i].exist = false;
-							}
-							deleteStoppedWeapons();
-							break;
-					}
-				}
-			}
-		}
-	}
+                        case GUN_NUMBER:
+                            weap.shooting = false;
+                            if (platforms[i].isDestructible) {
+                                platforms[i].exist = false;
+                            }
+                            deleteStoppedWeapons();
+                            break;
+                    }
+                }
+            }
+        }
+    }
 
-	//Hitting a balloon
-	for (var i = 0; i < balloons.length; i++) {
-		if (balloons[i].size.number > 0) {
-			if (
-				Math.pow(balloons[i].center.x - weap.position.x, 2) <
-				Math.pow(balloons[i].size.radius, 2) &&
-				balloons[i].center.y + balloons[i].size.radius >
-				weap.position.y - weap.length &&
-				balloons[i].center.y + balloons[i].size.radius < weap.position.y
-			) {
-				switch (weap.type) {
-					case GRAPPLE_HOOK_NUMBER:
-						deleteWeapon();
-						break;
+    //Hitting a balloon
+    for (var i = 0; i < balloons.length; i++) {
+        if (balloons[i].size.number > 0) {
+            if (
+                Math.pow(balloons[i].center.x - weap.position.x, 2) <
+                Math.pow(balloons[i].size.radius, 2) &&
+                balloons[i].center.y + balloons[i].size.radius >
+                weap.position.y - weap.length &&
+                balloons[i].center.y + balloons[i].size.radius < weap.position.y
+            ) {
+                switch (weap.type) {
+                    case GRAPPLE_HOOK_NUMBER:
+                        deleteWeapon();
+                        break;
 
-					case TRIDENT_NUMBER:
-						deleteWeapon();
-						break;
+                    case TRIDENT_NUMBER:
+                        deleteWeapon();
+                        break;
 
-					case DOUBLE_HOOK_NUMBER:
-						weap.shooting = false;
-						deleteStoppedWeapons();
-						break;
+                    case DOUBLE_HOOK_NUMBER:
+                        weap.shooting = false;
+                        deleteStoppedWeapons();
+                        break;
 
-					case GUN_NUMBER:
-						weap.shooting = false;
-						deleteStoppedWeapons();
-						break;
-				}
+                    case GUN_NUMBER:
+                        weap.shooting = false;
+                        deleteStoppedWeapons();
+                        break;
+                }
 
-				//Add some points
-				player.score += balloons[i].size.radius * 10;
+                //Add some points
+                player.score += balloons[i].size.radius * 10;
 
-				//Split the balloon
-				splitBalloon(balloons[i]);
-			}
-		}
-	}
+                //Split the balloon
+                splitBalloon(balloons[i]);
+            }
+        }
+    }
 }
 
 /**
