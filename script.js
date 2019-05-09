@@ -2212,6 +2212,8 @@ function stopWeapon(weap) {
                             if (platforms[i].isDestructible) {
                                 platforms[i].exist = false;
                                 deleteWeapon();
+                            } else if(weap.time >3) {
+                                deleteWeapon();
                             }
                             break;
 
