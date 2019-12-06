@@ -12,7 +12,8 @@ Pang
 Ceci est un simulation du jeu rétro Pang *([voir le wiki en anglais](https://en.wikipedia.org/wiki/Pang_(video_game)))* réalisée avec mon trinôme dans le cadre du *Projet d'Initiation à l'Ingénierie Logicielle* de Licence 1.
 
 ## Comment jouer au jeu ?
-Vous pouvez télécharger le jeu *([ici](https://github.com/nathanaelhoun/Pang/archive/master.zip))*, le dézipper puis ouvrir pang_game.html afin de lancer le jeu dans votre navigateur favori. Amusez-vous bien !
+Vous pouvez tester le jeu [sur le site de Valentin](https://www.valentin-perignon.fr/data/projects/pang/) ou de [Nathanaël](https://nathanaelhoun.fr/projects/pang/).
+Vous pouvez aussi télécharger le jeu *([ici](https://github.com/nathanaelhoun/Pang/archive/master.zip))*, le dézipper puis ouvrir `pang_game.html` afin de lancer le jeu dans votre navigateur favori. Amusez-vous bien !
 
 ## Comment nous aider ?
 Si jamais vous repérez un bug, n'hésitez pas à le signaler en créant une [issue](https://github.com/nathanaelhoun/Pang/issues). Nous sommes aussi ouverts à toute proposition de nouvelles fonctionnalités à implanter.
