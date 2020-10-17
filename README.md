@@ -1,6 +1,6 @@
 Pang 
 ======================
-<p align="center">Le jeu rétro Pang codé avec FabianCMI et ValentinLab dans le cadre du Projet d'Initiation à l'Ingénierie Logicielle de première année.</p>
+<p align="center">Le jeu rétro Pang codé avec FabianCMI et ValentinPerignon dans le cadre du Projet d'Initiation à l'Ingénierie Logicielle de première année.</p>
 
 <p align="center">
 	  <img src="https://img.shields.io/badge/built%20with-js-brightgreen.svg">
